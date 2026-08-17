@@ -360,7 +360,7 @@ SET @sql = IF(@col_exists = 0, 'ALTER TABLE users ADD COLUMN surname VARCHAR(255
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 SET @col_exists = (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'properties' AND COLUMN_NAME = 'agent_id');
-SET @sql = IF(@col_exists = 0, 'ALTER TABLE properties ADD COLUMN agent_id INT, ADD FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE SET NULL', 'SELECT 1');
+SET @sql = IF(@col_exists = 0, 'ALTER TABLE properties ADD COLUMN agent_id INT, ADD CONSTRAINT fk_properties_agent FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE SET NULL', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 SET FOREIGN_KEY_CHECKS = 1;

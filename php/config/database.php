@@ -40,8 +40,13 @@ function db_connect(): ?PDO
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::MYSQL_ATTR_FOUND_ROWS => true,
     ];
+    // PDO::MYSQL_ATTR_FOUND_ROWS is deprecated since PHP 8.5
+    if (PHP_VERSION_ID >= 80500) {
+        $opts[\Pdo\Mysql::ATTR_FOUND_ROWS] = true;
+    } else {
+        $opts[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
+    }
 
     // sslmode=require / PROVIDENT_DB_SSL=1 → enable SSL (Neon-style URLs)
     if (env('PROVIDENT_DB_SSL') === '1' || str_contains(strtolower($query), 'sslmode=require') || str_contains(strtolower($query), 'sslmode=verify-full')) {
