@@ -33,5 +33,19 @@
     "playwright-core": "^1.62.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sameerwork243-droid/zoyaventures.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sameerwork243-droid/zoyaventures/issues"
+  },
+  "homepage": "https://github.com/sameerwork243-droid/zoyaventures#readme"
 }

@@ -1,0 +1,830 @@
+/* ===== Robust desktop layout for the #Book_a_Valuation contact form =====
+   The base media query applies margin-left:80px to the page-level
+   .form-section, which fights the flexible content | form side-by-side
+   layout. These overrides keep the container deterministic regardless of
+   load order. The form itself is a single centered column (see provident.css). */
+@media screen and (min-width: 1200px) {
+  #Book_a_Valuation.contact-form-wrapper .content-section,
+  #Book_a_Valuation.contact-form-wrapper .form-section {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+
+/* ===== Saved property / wishlist (unchanged) ===== */
+.sb-myacc.icon.wishlist-icn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 3;
+}
+
+.search-filters-container .cta-section .sb-myacc.icon.wishlist-icn {
+  position: static;
+  right: auto;
+  top: auto;
+  z-index: auto;
+}
+
+.sb-myacc.icon.wishlist-icn a {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  display: flex;
+  height: 36px;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  width: 36px;
+}
+
+.sb-myacc.icon.wishlist-icn a:hover {
+  transform: scale(1.08);
+}
+
+.sb-myacc.icon.wishlist-icn .property-save {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+
+.sb-myacc.icon.wishlist-icn .icon-save {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M10 17.5S3 13.2 3 8.1C3 5.6 4.9 3.8 7.1 3.8c1.3 0 2.3.6 2.9 1.6.6-1 1.6-1.6 2.9-1.6 2.2 0 4.1 1.8 4.1 4.3 0 5.1-7 9.4-7 9.4Z' stroke='%23EE7133' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.sb-myacc.icon.wishlist-icn .icon-saved {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='%23EE7133'%3E%3Cpath d='M10 17.5S3 13.2 3 8.1C3 5.6 4.9 3.8 7.1 3.8c1.3 0 2.3.6 2.9 1.6.6-1 1.6-1.6 2.9-1.6 2.2 0 4.1 1.8 4.1 4.3 0 5.1-7 9.4-7 9.4Z'/%3E%3C/svg%3E");
+}
+
+.sb-myacc.icon.wishlist-icn .icon-saved,
+.sb-myacc.icon.wishlist-icn.saved .icon-save {
+  display: none;
+}
+
+.sb-myacc.icon.wishlist-icn.saved .icon-saved {
+  display: block;
+}
+
+.detail-save-wrap {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.detail-save-btn {
+  align-items: center;
+  background: none;
+  border: 1px solid #e1e8ed;
+  border-radius: 4px;
+  color: #142121;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  gap: 8px;
+  padding: 8px 14px;
+  transition: all 0.2s ease;
+}
+
+.detail-save-btn:hover {
+  border-color: #005480;
+  color: #005480;
+}
+
+.detail-save-btn.saved {
+  background: #fdf0ee;
+  border-color: #ee7133;
+  color: #ee7133;
+}
+
+/* ===== Portal cards / headings ===== */
+.app-title-link {
+  color: #005480;
+  text-decoration: none;
+}
+
+.app-title-link:hover {
+  text-decoration: underline;
+}
+
+.app-card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+}
+
+.app-card + .app-card {
+  margin-top: 20px;
+}
+
+.app-card h2 {
+  color: #142121;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.app-card .app-card-sub {
+  color: #9399a4;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.app-card .app-card-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* ===== Tables ===== */
+.app-table {
+  border-collapse: collapse;
+  font-size: 13px;
+  width: 100%;
+}
+
+.app-table th {
+  background: #f7f9fa;
+  color: #142121;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 10px 12px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.app-table td {
+  border-bottom: 1px solid #f0f0f0;
+  color: #35373c;
+  padding: 12px;
+  vertical-align: top;
+}
+
+.app-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.app-table td strong {
+  color: #142121;
+  font-weight: 600;
+}
+
+.app-table .row-actions {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* ===== Buttons ===== */
+.app-btn {
+  align-items: center;
+  background: #005480;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  min-height: 38px;
+  padding: 0 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-btn:hover {
+  background: #004266;
+  box-shadow: 0 2px 6px rgba(0, 84, 128, 0.3);
+}
+
+.app-btn.ghost {
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  box-shadow: none;
+  color: #35373c;
+}
+
+.app-btn.ghost:hover {
+  background: #f5f7f9;
+  border-color: #005480;
+  box-shadow: none;
+  color: #005480;
+}
+
+.app-btn.danger {
+  background: #fff;
+  border: 1px solid #f5c6bc;
+  box-shadow: none;
+  color: #b3261e;
+}
+
+.app-btn.danger:hover {
+  background: #fdf0ee;
+  box-shadow: none;
+}
+
+.app-btn.sm {
+  font-size: 12px;
+  min-height: 30px;
+  padding: 0 10px;
+}
+
+.app-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.app-empty {
+  color: #9399a4;
+  font-size: 14px;
+  padding: 32px 0;
+  text-align: center;
+}
+
+/* ===== Forms ===== */
+.app-form-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.app-field label {
+  color: #35373c;
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12px;
+  margin-bottom: 5px;
+}
+
+.app-field .hint {
+  color: #9399a4;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.app-field input,
+.app-field select,
+.app-field textarea {
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  color: #142121;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  padding: 9px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.app-field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.app-field input:focus,
+.app-field select:focus,
+.app-field textarea:focus {
+  border-color: #005480;
+  box-shadow: 0 0 0 1px #005480;
+}
+
+.app-field select {
+  appearance: auto;
+}
+
+.app-check-row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.app-check-row input {
+  height: 16px;
+  width: 16px;
+}
+
+.app-badge {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  text-transform: capitalize;
+}
+
+.app-badge.new,
+.app-badge.requested,
+.app-badge.pending {
+  background: #fff3e0;
+  color: #b26a00;
+}
+
+.app-badge.contacted,
+.app-badge.confirmed,
+.app-badge.in-progress {
+  background: #e3f2fd;
+  color: #075985;
+}
+
+.app-badge.closed,
+.app-badge.completed,
+.app-badge.done,
+.app-badge.inactive {
+  background: #f0f3f8;
+  color: #64748b;
+}
+
+.app-badge.active,
+.app-badge.approved,
+.app-badge.published {
+  background: #e8f5e9;
+  color: #1e6f2e;
+}
+
+/* ===== Modal ===== */
+.app-modal-backdrop {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding: 24px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1300;
+}
+
+.app-modal {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
+  max-height: 92vh;
+  max-width: 720px;
+  overflow-y: auto;
+  padding: 28px;
+  width: 100%;
+}
+
+.app-modal.wide {
+  max-width: 960px;
+}
+
+.app-modal h3 {
+  color: #142121;
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.app-modal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ===== Inline form pages (create/edit screens in the content area) ===== */
+.app-card .form-actions {
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 18px;
+}
+
+.app-card .form-page-back {
+  color: #005480;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 0;
+}
+
+/* ===== Toast ===== */
+.app-toast {
+  background: #323232;
+  border-radius: 4px;
+  bottom: 24px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 13px;
+  left: 50%;
+  padding: 12px 20px;
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 1400;
+}
+
+/* ===== Stats ===== */
+.app-stats {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.app-stat {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 18px;
+}
+
+.app-stat .label {
+  color: #9399a4;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.app-stat .value {
+  color: #142121;
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.app-stat .sub {
+  color: #005480;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ===== Misc ===== */
+.app-logout-btn {
+  color: #b3261e;
+}
+
+.app-search {
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  max-width: 280px;
+  outline: none;
+  padding: 8px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.app-search:focus {
+  border-color: #005480;
+  box-shadow: 0 0 0 1px #005480;
+}
+
+.app-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.app-chip {
+  align-items: center;
+  background: #f0f3f8;
+  border: 1px solid #e1e8ed;
+  border-radius: 999px;
+  color: #35373c;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 12px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.app-chip .app-chip-label {
+  white-space: nowrap;
+}
+
+.app-chip .app-chip-x {
+  align-items: center;
+  color: #d64545;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  margin-left: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.15s ease;
+  width: 0;
+}
+
+.app-chip:hover {
+  background: #e9eef4;
+}
+
+.app-chip:hover .app-chip-x {
+  margin-left: 7px;
+  opacity: 1;
+  width: 16px;
+}
+
+.app-chip.active {
+  background: #005480;
+  border-color: #005480;
+  color: #fff;
+}
+
+.app-chip.active:hover {
+  background: #003f63;
+}
+
+.app-chip.active .app-chip-x {
+  color: #fff;
+}
+
+@media screen and (max-width: 992px) {
+  .app-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .app-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .app-stats {
+    grid-template-columns: 1fr;
+  }
+  .app-card {
+    padding: 16px;
+  }
+}
+
+/* ===== react-select base structure (restores missing emotion styles) ===== */
+.react-select__control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  outline: 0 !important;
+}
+
+.react-select__control .react-select__value-container {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.react-select__control .react-select__single-value {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.react-select__control .react-select__indicators {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.react-select__control .react-select__indicators .react-select__indicator {
+  align-items: center;
+  display: flex;
+}
+
+.react-select__menu {
+  background: #fff;
+  border: 1px solid #e1e8ed;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(7, 35, 75, 0.16), 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.08);
+  margin-top: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  position: absolute;
+  top: calc(100% + 4px);
+  z-index: 20;
+}
+
+.react-select__menu-list {
+  padding: 4px 0;
+}
+
+.react-select__option {
+  background: transparent;
+  color: #35373c;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.react-select__option--is-focused,
+.react-select__option:active {
+  background: #f0f3f8;
+  color: #07234b;
+}
+
+.react-select__option--is-selected {
+  background: #f0f3f8;
+  color: #07234b;
+}
+
+/* ===== Property Type select in the search filters bar ===== */
+.search-filters-container .filters-section .filter-select .react-select__control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__value-container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__single-value {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__indicators {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__indicator-separator {
+  display: none;
+}
+
+.search-filters-container .filters-section .filter-select .dropdown-indicator {
+  display: flex;
+  align-items: center;
+  margin-left: 12px !important;
+}
+
+.search-filters-container .filters-section .filter-select .dropdown-indicator svg {
+  display: block;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__menu {
+  background: #fff;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(7, 35, 75, 0.16), 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.08);
+  margin-top: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  position: absolute;
+  top: calc(100% + 4px);
+  z-index: 20;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__menu-list {
+  padding: 4px 0;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__option {
+  color: #35373c;
+  display: block;
+  font-size: 14px;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__option:hover,
+.search-filters-container .filters-section .filter-select .react-select__option--is-focused,
+.search-filters-container .filters-section .filter-select .react-select__option:active {
+  background: #f0f3f8;
+  color: #07234b;
+}
+
+.search-filters-container .filters-section .filter-select .react-select__option--is-selected {
+  background: #f0f3f8;
+  color: #07234b;
+}
+/* ===================== Admin detail window ===================== */
+.app-modal-backdrop {
+  background: rgba(7, 35, 75, 0.45);
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  padding: 32px 16px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1300;
+}
+.app-modal {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(7, 35, 75, 0.25);
+  margin: 0 auto;
+  max-width: 640px;
+  width: 100%;
+}
+.app-modal-head {
+  align-items: center;
+  border-bottom: 1px solid #e1e8ed;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+.app-modal-head h3 {
+  color: #07234b;
+  font-size: 16px;
+  margin: 0;
+}
+.app-modal-close {
+  align-items: center;
+  background: #f0f3f8;
+  border: none;
+  border-radius: 6px;
+  color: #07234b;
+  cursor: pointer;
+  display: inline-flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+.app-modal-close:hover {
+  background: #e1e8ed;
+}
+.app-modal-body {
+  padding: 20px;
+}
+.app-detail-group {
+  margin-bottom: 20px;
+}
+.app-detail-group-label {
+  color: #9399a4;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+.app-detail-group-body {
+  display: grid;
+  gap: 12px 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.app-detail-field {
+  min-width: 0;
+}
+.app-detail-label {
+  color: #9399a4;
+  font-size: 12px;
+  margin: 0 0 2px;
+}
+.app-detail-value {
+  color: #07234b;
+  font-size: 14px;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.app-detail-actions {
+  align-items: center;
+  border-top: 1px solid #f0f3f8;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+.app-row-click {
+  cursor: pointer;
+}
+.app-row-click:hover td {
+  background: #f7fafc;
+}

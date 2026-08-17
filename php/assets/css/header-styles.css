@@ -1,0 +1,261 @@
+/* Header styling is provided by provident.css (live site.css).
+   These overrides fix mobile responsiveness issues for the ported header/drawer. */
+
+/* --- Mobile brand text: match live site behavior (logo-name hidden <=743px) --- */
+@media screen and (max-width: 743px) {
+  .header .site-brand-text {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Hardening: the desktop nav (mega menus) and brand text must NEVER render
+   on small screens regardless of stylesheet load order or overrides.
+   Root cause of the reported overlap: the only rule hiding .nav-menu-list
+   below 1200px is a low-specificity bare rule in provident.css that any
+   later override could defeat. These !important gates make it bulletproof.
+   ========================================================================== */
+
+@media screen and (max-width: 1199.98px) {
+  .header .nav-menu-section > .nav-menu.nav-menu-list,
+  .header .nav-menu-section .nav-menu-list {
+    display: none !important;
+  }
+
+  .header .nav-menu-section > .nav-menu-property-list-button {
+    display: none !important;
+  }
+
+  /* Header must always span the full viewport on tablet/mobile and never
+     push the page wider (desktop keeps its original container centering) */
+  .header {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* expand the invisible hit-area of the 24px header icons to touch-friendly
+     ~44px without changing the visual layout */
+  .header .nav-menu-icon-wrap {
+    position: relative;
+  }
+  .header .nav-menu-icon-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -11px;
+  }
+}
+
+/* 1200-1600px: the mega menus + icons + login + List Property button together
+   exceeded the container (overflow up to ~29px -> clipped/scrollable).
+   Tighter item spacing keeps the exact same layout inside the viewport;
+   >=1600px keeps the original 40px desktop rhythm untouched. */
+@media screen and (min-width: 1200px) and (max-width: 1299.98px) {
+  .header .nav-menu-section .nav-menu {
+    margin-left: 14px;
+  }
+}
+@media screen and (min-width: 1300px) and (max-width: 1599.98px) {
+  .header .nav-menu-section .nav-menu {
+    margin-left: 20px;
+  }
+}
+
+@media screen and (max-width: 743px) {
+  .header .site-brand-text {
+    display: none !important;
+  }
+}
+
+/* Header must never push the page wider */
+.header {
+  max-width: 100%;
+}
+.header .nav-menu-section {
+  min-width: 0;
+}
+.header .site-brand {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* --- Prevent overflow of the icon row on <=374px screens --- */
+@media screen and (max-width: 374px) {
+  .header .nav-menu-section .nav-menu {
+    margin-left: 10px;
+  }
+}
+
+/* ==========================================================================
+   Mobile drawer (hamburger menu) — ported from the live site's burger menu
+   ========================================================================== */
+.mobile-drawer-overlay {
+  background: rgba(7, 35, 75, 0.55);
+  display: flex;
+  height: 100%;
+  inset: 0;
+  justify-content: flex-end;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+  animation: mobile-drawer-fade-in 0.25s ease-out;
+}
+
+@keyframes mobile-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-drawer {
+  animation: mobile-drawer-slide-in 0.3s ease-out;
+  background: #fff;
+  box-shadow: -12px 0 32px rgba(7, 35, 75, 0.18);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: min(430px, 100%);
+}
+
+@keyframes mobile-drawer-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobile-drawer-header {
+  align-items: center;
+  border-bottom: 1px solid #f0f3f8;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+
+.mobile-drawer-close {
+  align-items: center;
+  background: none;
+  border: 1px solid #e1e8ed;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  height: 38px;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease;
+  width: 38px;
+}
+
+.mobile-drawer-close:hover {
+  background: #f4f8fb;
+}
+
+.mobile-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 20px 20px;
+}
+
+.mobile-drawer-body .mobile-nav-item {
+  border-bottom: 1px solid #f0f3f8;
+  color: #07234b;
+  display: block;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 140%;
+  padding: 15px 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-drawer-body .mobile-nav-item:hover {
+  color: #ee7133;
+}
+
+.mobile-drawer-body .accordion-item {
+  border-bottom: 1px solid #f0f3f8;
+}
+
+.mobile-drawer-body .accordion-item .accordion-header {
+  margin: 0;
+}
+
+.mobile-drawer-body .accordion-item .accordion-button {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #07234b;
+  cursor: pointer;
+  display: flex;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: space-between;
+  line-height: 140%;
+  padding: 15px 0;
+  text-align: left;
+  transition: color 0.2s ease;
+  width: 100%;
+}
+
+.mobile-drawer-body .accordion-item .accordion-button::after {
+  border-bottom: 1.5px solid #07234b;
+  border-right: 1.5px solid #07234b;
+  content: "";
+  height: 8px;
+  transform: rotate(45deg) translate(-3px, -3px);
+  transition: transform 0.25s ease;
+  width: 8px;
+}
+
+.mobile-drawer-body .accordion-item.open .accordion-button::after {
+  transform: rotate(-135deg) translate(-3px, 3px);
+}
+
+.mobile-drawer-body .accordion-item .accordion-button:hover {
+  color: #ee7133;
+}
+
+.mobile-drawer-body .accordion-item .accordion-collapse .cta-section.accordion-body {
+  display: grid;
+  gap: 0;
+  margin: 0 0 12px;
+  padding: 0 0 0 12px;
+}
+
+.mobile-drawer-body .accordion-item .accordion-collapse .cta {
+  color: #35373c;
+  display: block;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+  padding: 9px 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-drawer-body .accordion-item .accordion-collapse .cta:hover {
+  color: #ee7133;
+}
+
+.mobile-drawer-footer {
+  background: #f4f8fb;
+  border-top: 1px solid #f0f3f8;
+  padding: 16px 20px 20px;
+}
+
+.mobile-drawer-footer .list-prop-btn {
+  align-items: center;
+  display: flex;
+  height: 48px;
+  justify-content: center;
+  width: 100%;
+}

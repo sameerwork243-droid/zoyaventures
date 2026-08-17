@@ -1,0 +1,32 @@
+.developer-card .img-section {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  height: 200px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.developer-card .img-section .logo-section {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 4px;
+  bottom: 0;
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  margin: 16px;
+  padding: 12px;
+  position: absolute;
+  width: 140px;
+}
+
+.developer-card .img-section .logo-section img {
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1) !important;
+  width: 100%;
+}

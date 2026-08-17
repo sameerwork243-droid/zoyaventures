@@ -1,0 +1,423 @@
+{
+  "featuredSliders": [
+    {
+      "name": "featured",
+      "links": [
+        "/buy/properties-for-sale",
+        "/buy/4-bedroom-villa-for-sale-in-al-habtoor-polo-resort-club-the-residences-dubai-land-dubai31311",
+        "/buy/4-bedroom-villa-for-sale-in-al-habtoor-polo-resort-club-the-residences-dubai-land-dubai31310",
+        "/buy/2-bedroom-apartment-for-sale-in-clearpoint-building-1-clearpoint-mina-rashid-dubai31309",
+        "/buy/2-bedroom-apartment-for-sale-in-club-place-dubai-hills-estate-dubai31308",
+        "/buy/1-bedroom-apartment-for-sale-in-crest-grande-sobhahartland-mohammed-bin-rashid-city-dubai31307",
+        "/buy/1-bedroom-apartment-for-sale-in-noura-tower-al-habtoor-city-business-bay-dubai31306"
+      ]
+    },
+    {
+      "name": "signature",
+      "links": [
+        "/buy/properties-for-sale/above-20000000",
+        "/buy/4-bedroom-duplex-for-sale-in-one-at-palm-jumeirah-palm-jumeirah-dubai31263",
+        "/buy/5-bedroom-villa-for-sale-in-kempinski-palm-residence-the-crescent-palm-jumeirah-dubai31098",
+        "/buy/2-bedroom-apartment-for-sale-in-volante-business-bay-dubai30878",
+        "/buy/4-bedroom-penthouse-for-sale-in-le-reve-dubai-marina-dubai30849",
+        "/buy/2-bedroom-apartment-for-sale-in-volante-business-bay-dubai30834",
+        "/buy/5-bedroom-villa-for-sale-in-wadi-villas-by-arista-district-11-mohammed-bin-rashid-city-dubai30832"
+      ]
+    }
+  ],
+  "developers": [
+    "Binghatti",
+    "Select Group",
+    "City View Developments",
+    "Ellington Properties",
+    "Majid Al Futtaim",
+    "Damac Properties",
+    "Emaar Properties",
+    "Meraas",
+    "Sobha Realty",
+    "Nakheel",
+    "Binghatti",
+    "Select Group",
+    "City View Developments",
+    "Ellington Properties",
+    "Majid Al Futtaim",
+    "Damac Properties",
+    "Emaar Properties",
+    "Meraas",
+    "Sobha Realty",
+    "Nakheel",
+    "Binghatti",
+    "Select Group",
+    "City View Developments",
+    "Ellington Properties",
+    "Majid Al Futtaim",
+    "icon",
+    "icon",
+    "icon",
+    "icon"
+  ],
+  "featuredNews": [
+    {
+      "slug": "how-to-sell-property-in-dubai-guide",
+      "title": "How to Sell Property in Dubai: A Complete Step-by-Step Guide",
+      "date": "July 24, 2026",
+      "category": "Legal Advices",
+      "description": "Selling property in Dubai follows a regulated process through the Dubai Land Department (DLD) and most sellers can complete a transfer within four to eight weeks from listing to title deed handover.",
+      "image": "https://d3h330vgpwpjr8.cloudfront.net/x/1260x/Dubai_Population_Growth_and_Its_Impact_on_Property_Demand_in_2026_fe4f844d34.webp"
+    },
+    {
+      "slug": "top-dubai-apartment-areas",
+      "title": "Best Areas to Buy Apartments in Dubai in 2026",
+      "date": "July 20, 2026",
+      "image": "https://d3h330vgpwpjr8.cloudfront.net/x/340x/Best_Areas_to_Buy_Apartments_in_Dubai_in_2026_5b6c80c36d.webp"
+    },
+    {
+      "slug": "celebrities-who-own-homes-in-dubai",
+      "title": "Which A-List Celebrities Live in Dubai?",
+      "date": "July 17, 2026",
+      "image": "https://d3h330vgpwpjr8.cloudfront.net/x/340x/10_A_List_Celebrities_Who_Own_Lavish_Homes_in_Dubai_5b865e16f9.webp"
+    },
+    {
+      "slug": "best-areas-to-buy-off-plan-properties-in-dubai",
+      "title": "Discover Dubai's Top Areas to Buy Off-Plan Properties in Dubai",
+      "date": "July 16, 2026",
+      "image": "https://d3h330vgpwpjr8.cloudfront.net/x/340x/Best_Areas_to_Buy_Off_Plan_Properties_in_Dubai_2026_Guide_Provident_Estate_e8a9ea2df7.webp"
+    }
+  ],
+  "reviews": [
+    {
+      "name": "Bashar Masalha",
+      "date": "7 months ago",
+      "title": "An Honest Approach to Real Estate",
+      "description": "I worked with Zeinab Haidar, it was an exceptional experience. She combines deep market knowledge with genuine care for her clients, She took the time..."
+    },
+    {
+      "name": "Anadi Mishra",
+      "date": "7 months ago",
+      "title": "Expert Guidance and Value-Driven Solutions",
+      "description": "I have worked with Mr Kahled Redha for buying a property in UAE . He is an exceptional individual and a highly astute property professional in the UAE..."
+    },
+    {
+      "name": "Violin Lee",
+      "date": "10 months ago",
+      "title": "A Supportive and Professional Experience",
+      "description": "Working with Nasreldin was a great experience. Finding the right apartment wasn't always easy, but he stayed patient, professional, and supportive thr..."
+    },
+    {
+      "name": "Gabriela",
+      "date": "10 months ago",
+      "title": "Professional, Patient, and Committed",
+      "description": "We had an amazing experience working with Giuseppe Santagata and Adrian Bak throughout our apartment search and move-in process. From the very beginni..."
+    },
+    {
+      "name": "Keivan Sabbaghi",
+      "date": "11 months ago",
+      "title": "Found My Dream Home",
+      "description": "If you're diving into the real estate world and want someone amazing by your side, you NEED to work with Joyce. She recently helped me buy my dream ho..."
+    },
+    {
+      "name": "M. Zakariya",
+      "date": "2 years ago",
+      "title": "Found the Perfect Investment Property!",
+      "description": "Even though I'm an experienced investor, trying to invest in Dubai property for the first time was overwhelming. I was lost in a sea of options and di..."
+    },
+    {
+      "name": "K. Ashwin",
+      "date": "2 years ago",
+      "title": "I'm Living in a Perfect Family Home!",
+      "description": "Moving to Dubai with my wife and two kids was a huge change, and finding a home for my family was my top priority but also a big headache. Zoya Ventures Real Estate R..."
+    },
+    {
+      "name": "M. Poulin",
+      "date": "2 years ago",
+      "title": "Smart Investment Advice for a First-Time Buyer",
+      "description": "As a first-time property buyer, I was pretty confused and didn't know where to start. Zoya Ventures Real Estate's agents were incredibly knowledgeable and..."
+    },
+    {
+      "name": "M. Khan",
+      "date": "2 years ago",
+      "title": "Smooth Relocation Experience",
+      "description": "Relocating to Dubai for work was a big move, and finding a new home was stressing me out. I needed a reliable real estate company to help me out. Prov..."
+    },
+    {
+      "name": "J. Walker",
+      "date": "2 years ago",
+      "title": "A Perfect Rental for a Busy Professional",
+      "description": "I was looking to rent a place close to my work, when I came across Zoya Ventures Real Estate their agents were super patient and knowledgeable, guiding me through eac..."
+    }
+  ],
+  "communities": [
+    {
+      "href": "/buy/properties-for-sale/in-dubai-marina/",
+      "label": "Dubai Marina"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-downtown-dubai/",
+      "label": "Downtown Dubai"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-beach-residence/",
+      "label": "Jumeirah Beach Residence"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-sobha-hartland-mohammed-bin-rashid-city/",
+      "label": "Sobha Hartland"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-palm-jumeirah/",
+      "label": "Palm Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-hills-estate/",
+      "label": "Dubai Hills Estate"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-lagoons/",
+      "label": "Damac Lagoons"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-the-springs/",
+      "label": "The Springs"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-creek-harbour-the-lagoons/",
+      "label": "Dubai Creek Harbour"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-emaar-beachfront-dubai-harbour/",
+      "label": "Emaar Beachfront"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-hills/",
+      "label": "DAMAC Hills"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-triangle/",
+      "label": "Jumeirah Village Triangle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-circle/",
+      "label": "Jumeirah Village Circle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-golf-estates/",
+      "label": "Jumeirah Golf Estates"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah/",
+      "label": "Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-city-business-bay/",
+      "label": "Al Habtoor City"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-polo-resort-club-the-residences/",
+      "label": "Al Habtoor Polo Resort and Club"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-marina/",
+      "label": "Dubai Marina"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-downtown-dubai/",
+      "label": "Downtown Dubai"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-beach-residence/",
+      "label": "Jumeirah Beach Residence"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-sobha-hartland-mohammed-bin-rashid-city/",
+      "label": "Sobha Hartland"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-palm-jumeirah/",
+      "label": "Palm Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-hills-estate/",
+      "label": "Dubai Hills Estate"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-lagoons/",
+      "label": "Damac Lagoons"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-the-springs/",
+      "label": "The Springs"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-creek-harbour-the-lagoons/",
+      "label": "Dubai Creek Harbour"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-emaar-beachfront-dubai-harbour/",
+      "label": "Emaar Beachfront"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-hills/",
+      "label": "DAMAC Hills"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-triangle/",
+      "label": "Jumeirah Village Triangle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-circle/",
+      "label": "Jumeirah Village Circle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-golf-estates/",
+      "label": "Jumeirah Golf Estates"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah/",
+      "label": "Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-city-business-bay/",
+      "label": "Al Habtoor City"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-polo-resort-club-the-residences/",
+      "label": "Al Habtoor Polo Resort and Club"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-marina/",
+      "label": "Dubai Marina"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-downtown-dubai/",
+      "label": "Downtown Dubai"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-beach-residence/",
+      "label": "Jumeirah Beach Residence"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-sobha-hartland-mohammed-bin-rashid-city/",
+      "label": "Sobha Hartland"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-palm-jumeirah/",
+      "label": "Palm Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-hills-estate/",
+      "label": "Dubai Hills Estate"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-lagoons/",
+      "label": "Damac Lagoons"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-the-springs/",
+      "label": "The Springs"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-creek-harbour-the-lagoons/",
+      "label": "Dubai Creek Harbour"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-emaar-beachfront-dubai-harbour/",
+      "label": "Emaar Beachfront"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-hills/",
+      "label": "DAMAC Hills"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-triangle/",
+      "label": "Jumeirah Village Triangle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-circle/",
+      "label": "Jumeirah Village Circle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-golf-estates/",
+      "label": "Jumeirah Golf Estates"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah/",
+      "label": "Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-city-business-bay/",
+      "label": "Al Habtoor City"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-polo-resort-club-the-residences/",
+      "label": "Al Habtoor Polo Resort and Club"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-marina/",
+      "label": "Dubai Marina"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-downtown-dubai/",
+      "label": "Downtown Dubai"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-beach-residence/",
+      "label": "Jumeirah Beach Residence"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-sobha-hartland-mohammed-bin-rashid-city/",
+      "label": "Sobha Hartland"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-palm-jumeirah/",
+      "label": "Palm Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-hills-estate/",
+      "label": "Dubai Hills Estate"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-lagoons/",
+      "label": "Damac Lagoons"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-the-springs/",
+      "label": "The Springs"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-dubai-creek-harbour-the-lagoons/",
+      "label": "Dubai Creek Harbour"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-emaar-beachfront-dubai-harbour/",
+      "label": "Emaar Beachfront"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-damac-hills/",
+      "label": "DAMAC Hills"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-triangle/",
+      "label": "Jumeirah Village Triangle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-village-circle/",
+      "label": "Jumeirah Village Circle"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah-golf-estates/",
+      "label": "Jumeirah Golf Estates"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-jumeirah/",
+      "label": "Jumeirah"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-city-business-bay/",
+      "label": "Al Habtoor City"
+    },
+    {
+      "href": "/buy/properties-for-sale/in-al-habtoor-polo-resort-club-the-residences/",
+      "label": "Al Habtoor Polo Resort and Club"
+    }
+  ]
+}
