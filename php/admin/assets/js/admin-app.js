@@ -50,6 +50,57 @@
     });
   }
 
+  function uploadFile(file) {
+    var fd = new FormData();
+    fd.append("file", file);
+    return api("/api/admin/upload", { method: "POST", body: fd }).then(function (res) {
+      if (!res.ok) throw new Error(res.data.error || "Upload failed");
+      return res.data.url;
+    });
+  }
+
+  function fileButtonFor(control, state, key, sep) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "app-btn ghost sm";
+    btn.textContent = "From file";
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.style.display = "none";
+    input.addEventListener("change", function () {
+      var file = input.files[0];
+      if (!file) return;
+      btn.disabled = true;
+      btn.textContent = "Uploading…";
+      uploadFile(file).then(function (url) {
+        if (sep) {
+          var parts = control.value.split(sep).map(function (s) { return s.trim(); }).filter(Boolean);
+          if (parts.indexOf(url) === -1) parts.push(url);
+          control.value = parts.join(sep);
+        } else {
+          control.value = url;
+        }
+        state[key] = control.value;
+        btn.disabled = false;
+        btn.textContent = "From file";
+      }).catch(function () {
+        window.alert("Upload failed");
+        btn.disabled = false;
+        btn.textContent = "From file";
+      });
+      input.value = "";
+    });
+    btn.addEventListener("click", function () { input.click(); });
+    var box = document.createElement("div");
+    box.style.cssText = "display:flex;gap:8px;align-items:stretch";
+    control.style.flex = "1";
+    box.appendChild(control);
+    box.appendChild(btn);
+    box.appendChild(input);
+    return box;
+  }
+
   function singular(title) {
     if (/ies$/.test(title)) return title.slice(0, -3) + "y";
     if (/s$/.test(title)) return title.slice(0, -1);
@@ -255,7 +306,12 @@
         control.value = state[fd.key];
         control.addEventListener("input", function () { state[fd.key] = control.value; });
       }
-      wrap.appendChild(control);
+      if (fd.file) {
+        var sep = fd.type === "textarea" ? "\n" : (fd.type === "json" ? ", " : "");
+        wrap.appendChild(fileButtonFor(control, state, fd.key, sep));
+      } else {
+        wrap.appendChild(control);
+      }
       if (fd.hint && fd.type !== "checkbox") {
         var hint = document.createElement("div");
         hint.className = "hint";
@@ -1597,19 +1653,19 @@
         { key: "display_price", label: "Display price (e.g. 1.96M)", full: true },
         { key: "completion_year", label: "Completion year", full: true },
         { key: "payment_plan_text", label: "Payment plan text (e.g. 80/20)", full: true },
-        { key: "gallery", label: "Gallery images (one URL per line)", type: "textarea", full: true },
-        { key: "amenities", label: "Amenities (one per line: Name|Image URL)", type: "textarea", full: true },
-        { key: "floorplans", label: "Floor plans (one per line: Title|Image URL)", type: "textarea", full: true },
+        { key: "gallery", label: "Gallery images (one URL per line)", type: "textarea", full: true, file: true },
+        { key: "amenities", label: "Amenities (one per line: Name|Image URL)", type: "textarea", full: true, file: true },
+        { key: "floorplans", label: "Floor plans (one per line: Title|Image URL)", type: "textarea", full: true, file: true },
         { key: "usp_heading", label: "USP heading", full: true },
         { key: "usp_title", label: "USP title", full: true },
         { key: "usp_description", label: "USP description (HTML allowed)", type: "textarea", full: true },
-        { key: "usp_image", label: "USP image URL", full: true },
+        { key: "usp_image", label: "USP image URL", full: true, file: true },
         { key: "loc_heading", label: "Location heading", full: true },
         { key: "loc_title", label: "Location title", full: true },
         { key: "loc_description", label: "Location description (HTML allowed)", type: "textarea", full: true },
-        { key: "loc_image", label: "Location image URL", full: true },
+        { key: "loc_image", label: "Location image URL", full: true, file: true },
         { key: "brochure_pdf", label: "Brochure PDF URL", full: true },
-        { key: "brochure_cover", label: "Brochure cover image URL", full: true },
+        { key: "brochure_cover", label: "Brochure cover image URL", full: true, file: true },
         { key: "faqs", label: "FAQ (one per line: Question|Answer)", type: "textarea", full: true },
       ];
       var init = {

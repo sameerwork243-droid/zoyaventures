@@ -7,7 +7,7 @@ import { COUNTRIES, CountryFlag } from "@/components/phone-flag";
 type User = PortalUser;
 
 type FieldType = "text" | "textarea" | "number" | "select" | "checkbox" | "json" | "agent";
-type FieldDef = { key: string; label: string; type?: FieldType; options?: string[]; full?: boolean; hint?: string; required?: boolean };
+type FieldDef = { key: string; label: string; type?: FieldType; options?: string[]; full?: boolean; hint?: string; required?: boolean; file?: boolean };
 
 export function AdminApp({ user }: { user: User }) {
   const [tab, setTab] = useState("overview");
@@ -331,6 +331,53 @@ function ResourceManager({ endpoint, title, fields, columns, onDetails }: { endp
   );
 }
 
+function FileField({ value, onValue, textarea }: {
+  value: string;
+  onValue: (v: string) => void;
+  textarea?: boolean;
+}) {
+  const [busy, setBusy] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
+  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || "Upload failed");
+      const url = String(d.url);
+      if (textarea) {
+        const parts = value.split("\n").map((s) => s.trim()).filter(Boolean);
+        if (!parts.includes(url)) parts.push(url);
+        onValue(parts.join("\n"));
+      } else {
+        onValue(url);
+      }
+    } catch (err: any) {
+      alert(err.message || "Upload failed");
+    } finally {
+      setBusy(false);
+      if (ref.current) ref.current.value = "";
+    }
+  }
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
+      <input type="file" accept="image/*" style={{ display: "none" }} ref={ref} onChange={onPick} />
+      {textarea ? (
+        <textarea value={value} onChange={(e) => onValue(e.target.value)} style={{ flex: 1 }} />
+      ) : (
+        <input type="text" value={value} onChange={(e) => onValue(e.target.value)} style={{ flex: 1 }} />
+      )}
+      <button type="button" className="app-btn ghost sm" disabled={busy} onClick={() => ref.current?.click()}>
+        {busy ? "Uploading…" : "From file"}
+      </button>
+    </div>
+  );
+}
+
 function FormPage({ title, backLabel, fields, initial, busy, onCancel, onSave }: {
   title: string;
   backLabel: string;
@@ -369,7 +416,11 @@ function FormPage({ title, backLabel, fields, initial, busy, onCancel, onSave }:
           <div className={"app-field" + (fd.full ? " full" : "")} key={fd.key}>
             <label>{fd.label}</label>
             {fd.type === "textarea" ? (
-              <textarea value={form[fd.key] || ""} onChange={(e) => set(fd.key, e.target.value)} />
+              fd.file ? (
+                <FileField textarea value={form[fd.key] || ""} onValue={(v) => set(fd.key, v)} />
+              ) : (
+                <textarea value={form[fd.key] || ""} onChange={(e) => set(fd.key, e.target.value)} />
+              )
             ) : fd.type === "number" ? (
               <input type="number" value={form[fd.key] ?? ""} onChange={(e) => set(fd.key, e.target.value)} />
             ) : fd.type === "select" ? (
@@ -383,14 +434,22 @@ function FormPage({ title, backLabel, fields, initial, busy, onCancel, onSave }:
                 <span style={{ fontSize: 13 }}>{fd.hint || "Enabled"}</span>
               </div>
             ) : fd.type === "json" ? (
-              <input
-                type="text"
-                placeholder="Comma separated values"
-                value={Array.isArray(form[fd.key]) ? form[fd.key].join(", ") : (form[fd.key] || "")}
-                onChange={(e) => set(fd.key, e.target.value)}
-              />
+              fd.file ? (
+                <FileField value={Array.isArray(form[fd.key]) ? form[fd.key].join(", ") : (form[fd.key] || "")} onValue={(v) => set(fd.key, v)} />
+              ) : (
+                <input
+                  type="text"
+                  placeholder="Comma separated values"
+                  value={Array.isArray(form[fd.key]) ? form[fd.key].join(", ") : (form[fd.key] || "")}
+                  onChange={(e) => set(fd.key, e.target.value)}
+                />
+              )
             ) : (
-              <input type="text" value={form[fd.key] || ""} onChange={(e) => set(fd.key, e.target.value)} />
+              fd.file ? (
+                <FileField value={form[fd.key] || ""} onValue={(v) => set(fd.key, v)} />
+              ) : (
+                <input type="text" value={form[fd.key] || ""} onChange={(e) => set(fd.key, e.target.value)} />
+              )
             )}
             {fd.hint && fd.type !== "checkbox" && <div className="hint">{fd.hint}</div>}
           </div>
@@ -439,11 +498,11 @@ const PROPERTY_FIELDS: FieldDef[] = [
 const SERVICE_FIELDS: FieldDef[] = [
   { key: "title", label: "Title", required: true, full: true },
   { key: "slug", label: "Slug", required: true, full: true },
-  { key: "icon", label: "Icon URL", full: true },
-  { key: "banner_image", label: "Banner image URL", full: true },
+  { key: "icon", label: "Icon URL", full: true, file: true },
+  { key: "banner_image", label: "Banner image URL", full: true, file: true },
   { key: "description", label: "Description", type: "textarea", full: true },
   { key: "rich_content", label: "Rich content (HTML)", type: "textarea", full: true },
-  { key: "gallery", label: "Gallery URLs", type: "json", full: true },
+  { key: "gallery", label: "Gallery URLs", type: "json", full: true, file: true },
   { key: "seo_title", label: "SEO title", full: true },
   { key: "seo_description", label: "SEO description", full: true },
   { key: "published", label: "Published", type: "checkbox", hint: "Visible on the public site" },
@@ -456,7 +515,7 @@ const AGENT_FIELDS: FieldDef[] = [
   { key: "phone", label: "Phone" },
   { key: "email", label: "Email", full: true },
   { key: "brn_number", label: "BRN number" },
-  { key: "img", label: "Profile image URL", full: true },
+  { key: "img", label: "Profile image URL", full: true, file: true },
   { key: "languages", label: "Languages", type: "json", full: true },
   { key: "specialties", label: "Specialties", type: "json", full: true },
   { key: "bio", label: "Bio", type: "textarea", full: true },
@@ -469,7 +528,7 @@ const DEVELOPER_FIELDS: FieldDef[] = [
   { key: "region", label: "Region" },
   { key: "founded", label: "Founded", type: "number" },
   { key: "deliveries", label: "Deliveries", type: "number" },
-  { key: "img", label: "Logo URL", full: true },
+  { key: "img", label: "Logo URL", full: true, file: true },
   { key: "description", label: "Description", type: "textarea", full: true },
   { key: "published", label: "Published", type: "checkbox", hint: "Visible on the public site" },
 ];
@@ -486,7 +545,7 @@ const TESTIMONIAL_FIELDS: FieldDef[] = [
   { key: "role", label: "Role", full: true },
   { key: "content", label: "Content", type: "textarea", full: true },
   { key: "rating", label: "Rating (1–5)", type: "number" },
-  { key: "img", label: "Photo URL", full: true },
+  { key: "img", label: "Photo URL", full: true, file: true },
   { key: "published", label: "Published", type: "checkbox", hint: "Visible on the public site" },
 ];
 
@@ -499,7 +558,7 @@ const FAQ_FIELDS: FieldDef[] = [
 ];
 
 const MEDIA_FIELDS: FieldDef[] = [
-  { key: "url", label: "URL", required: true, full: true },
+  { key: "url", label: "URL", required: true, full: true, file: true },
   { key: "kind", label: "Kind", type: "select", options: ["image", "video", "floorplan", "brochure"] },
   { key: "alt", label: "Alt text", full: true },
 ];
@@ -528,9 +587,9 @@ const PROJECT_FIELDS: FieldDef[] = [
   { key: "display_address", label: "Display address", full: true },
   { key: "building_type", label: "Building types (comma-separated)", type: "json", full: true },
   { key: "about", label: "About (HTML)", type: "textarea", full: true },
-  { key: "images", label: "Image URLs (comma-separated)", type: "json", full: true },
+  { key: "images", label: "Image URLs (comma-separated)", type: "json", full: true, file: true },
   { key: "amenities", label: "Amenities (comma-separated)", type: "json", full: true },
-  { key: "banner_image", label: "Banner image URL", full: true },
+  { key: "banner_image", label: "Banner image URL", full: true, file: true },
   { key: "published", label: "Published", type: "checkbox", hint: "Visible on the public site" },
 ];
 
@@ -1903,15 +1962,15 @@ function ProjectDetailsManager({ openSlug, onBack }: { openSlug?: string | null;
           <div className="app-field"><label>Payment plan text (e.g. 80/20)</label><input value={form.payment_plan_text} onChange={(e) => setForm({ ...form, payment_plan_text: e.target.value })} /></div>
           <div className="app-field full">
             <label>Gallery images (one URL per line)</label>
-            <textarea rows={6} value={form.gallery} onChange={(e) => setForm({ ...form, gallery: e.target.value })} />
+            <FileField textarea value={form.gallery} onValue={(v) => setForm({ ...form, gallery: v })} />
           </div>
           <div className="app-field full">
             <label>Amenities (one per line: Name|Image URL)</label>
-            <textarea rows={5} value={form.amenities} onChange={(e) => setForm({ ...form, amenities: e.target.value })} />
+            <FileField textarea value={form.amenities} onValue={(v) => setForm({ ...form, amenities: v })} />
           </div>
           <div className="app-field full">
             <label>Floor plans (one per line: Title|Image URL)</label>
-            <textarea rows={4} value={form.floorplans} onChange={(e) => setForm({ ...form, floorplans: e.target.value })} />
+            <FileField textarea value={form.floorplans} onValue={(v) => setForm({ ...form, floorplans: v })} />
           </div>
           <div className="app-field full"><label>USP heading</label><input value={form.usp_heading} onChange={(e) => setForm({ ...form, usp_heading: e.target.value })} /></div>
           <div className="app-field full"><label>USP title</label><input value={form.usp_title} onChange={(e) => setForm({ ...form, usp_title: e.target.value })} /></div>
@@ -1919,16 +1978,16 @@ function ProjectDetailsManager({ openSlug, onBack }: { openSlug?: string | null;
             <label>USP description (HTML allowed)</label>
             <textarea rows={5} value={form.usp_description} onChange={(e) => setForm({ ...form, usp_description: e.target.value })} />
           </div>
-          <div className="app-field full"><label>USP image URL</label><input value={form.usp_image} onChange={(e) => setForm({ ...form, usp_image: e.target.value })} /></div>
+          <div className="app-field full"><label>USP image URL</label><FileField value={form.usp_image} onValue={(v) => setForm({ ...form, usp_image: v })} /></div>
           <div className="app-field full"><label>Location heading</label><input value={form.loc_heading} onChange={(e) => setForm({ ...form, loc_heading: e.target.value })} /></div>
           <div className="app-field full"><label>Location title</label><input value={form.loc_title} onChange={(e) => setForm({ ...form, loc_title: e.target.value })} /></div>
           <div className="app-field full">
             <label>Location description (HTML allowed)</label>
             <textarea rows={5} value={form.loc_description} onChange={(e) => setForm({ ...form, loc_description: e.target.value })} />
           </div>
-          <div className="app-field full"><label>Location image URL</label><input value={form.loc_image} onChange={(e) => setForm({ ...form, loc_image: e.target.value })} /></div>
+          <div className="app-field full"><label>Location image URL</label><FileField value={form.loc_image} onValue={(v) => setForm({ ...form, loc_image: v })} /></div>
           <div className="app-field full"><label>Brochure PDF URL</label><input value={form.brochure_pdf} onChange={(e) => setForm({ ...form, brochure_pdf: e.target.value })} /></div>
-          <div className="app-field full"><label>Brochure cover image URL</label><input value={form.brochure_cover} onChange={(e) => setForm({ ...form, brochure_cover: e.target.value })} /></div>
+          <div className="app-field full"><label>Brochure cover image URL</label><FileField value={form.brochure_cover} onValue={(v) => setForm({ ...form, brochure_cover: v })} /></div>
           <div className="app-field full">
             <label>FAQ (one per line: Question|Answer)</label>
             <textarea rows={6} value={form.faqs} onChange={(e) => setForm({ ...form, faqs: e.target.value })} />
