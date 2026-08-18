@@ -141,6 +141,12 @@ if (!isset($model)) {
         if ($p) $model = ['kind' => 'project', 'data' => ['hits' => [$p], 'nbHits' => 1, 'page' => 0, 'nbPages' => 1, 'hitsPerPage' => 1, 'content' => null], 'route' => $routeBase];
     }
 
+    // DB property detail fallback (dbPropertyByRoute port — parity with Next page.tsx)
+    if (!$model && preg_match('#^/(buy|let)/#', $routeBase)) {
+        $dbp = db_property_by_route($routeBase);
+        if ($dbp) $model = ['kind' => 'property', 'data' => $dbp['data'], 'route' => $routeBase];
+    }
+
     // DB-only fallbacks (no DB in fallback mode — corpus covers content pages)
     if (!$model && preg_match('#^/buy|^/let#', $routeBase)) {
         $base = base_listing_rel($routeBase);

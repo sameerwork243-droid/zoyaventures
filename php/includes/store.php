@@ -453,6 +453,155 @@ function get_property_data(string $route): ?array
     return (is_array($inner) && ($inner['status'] ?? null) === true && !empty($inner['data']['id'])) ? $inner['data'] : null;
 }
 
+/* ------------------------------ DB property bridge (property-bridge.ts port) ------------------------------ */
+
+function db_department(string $type): string
+{
+    $map = [
+        'apartment' => 'apartments',
+        'apartments' => 'apartments',
+        'villa' => 'villas',
+        'villas' => 'villas',
+        'townhouse' => 'townhouses',
+        'townhouses' => 'townhouses',
+        'penthouse' => 'penthouses',
+        'penthouses' => 'penthouses',
+        'studio' => 'studios',
+        'studios' => 'studios',
+        'duplex' => 'duplexes',
+        'duplexes' => 'duplexes',
+        'mansion' => 'mansions',
+        'mansions' => 'mansions',
+        'commercial-property' => 'commercial-properties',
+        'office' => 'commercial-properties',
+        'retail' => 'commercial-properties',
+        'plot' => 'plots',
+        'land' => 'plots',
+    ];
+    return $map[strtolower($type)] ?? $type;
+}
+
+function db_negotiator(array $p): array
+{
+    $name = trim((string) ($p['agent_name'] ?? ''));
+    if ($name === '') {
+        return ['name' => 'Zoya Ventures Real Estate', 'phone' => '+971 568 308 221', 'email' => 'zoyaventure15@gmail.com'];
+    }
+    return [
+        'name' => $name,
+        'url' => (string) ($p['agent_img'] ?? ''),
+        'designation' => (string) ($p['agent_role'] ?? 'Sales Associate'),
+        'brn_number' => (string) ($p['agent_brn'] ?? ''),
+        'phone' => (string) ($p['agent_phone'] ?? '') ?: '+971 568 308 221',
+        'email' => (string) ($p['agent_email'] ?? '') ?: 'zoyaventure15@gmail.com',
+    ];
+}
+
+/** A properties row shaped like a listing hit (dbHit port). */
+function db_hit(array $p): array
+{
+    $thumb = (string) ($p['thumb'] ?? '');
+    $id = (int) ($p['id'] ?? 0);
+    $sqft = (int) ($p['area_sqft'] ?? 0);
+    $img = fn ($u) => ['340x252' => $u, '464x312' => $u, '696x520' => $u];
+    $placeholder = '/images/property-placeholder.svg';
+    $type = (string) ($p['property_type'] ?? '');
+    return [
+        'id' => $id,
+        'slug' => (string) ($p['slug'] ?? 'property-' . $id),
+        'crm_id' => 'PE-' . $id,
+        'title' => (string) ($p['title'] ?? ''),
+        'price' => (int) ($p['price'] ?? 0),
+        'price_qualifier' => (string) ($p['price_qualifier'] ?? 'AED'),
+        'bedroom' => (int) ($p['bedroom'] ?? 0),
+        'bathroom' => (int) ($p['bathroom'] ?? 0),
+        'floorarea_min' => $sqft ?: null,
+        'floorarea_max' => $sqft ?: null,
+        'display_address' => (string) ($p['display_address'] ?? $p['location'] ?? ''),
+        'address_full' => !empty($p['community']) ? ['area' => (string) $p['community']] : null,
+        'department' => db_department($type),
+        'building_type' => $type,
+        'building' => array_values(array_filter([$type])),
+        'description' => (string) ($p['introtext'] ?? ''),
+        'long_description' => (string) ($p['long_description'] ?? ''),
+        'introtext' => (string) ($p['introtext'] ?? ''),
+        'images' => $thumb !== '' ? [$img($thumb)] : [$img($placeholder)],
+        'imageCount' => 1,
+        'search_type' => (string) ($p['transaction_type'] ?? '') === 'rent' ? 'rental' : 'sale',
+        'crm_negotiator_id' => db_negotiator($p),
+        'status' => (string) ($p['status'] ?? 'ready'),
+        'completion_year' => isset($p['year_built']) && $p['year_built'] !== null && $p['year_built'] !== '' ? (int) $p['year_built'] : null,
+        'furnished' => (string) ($p['furnished'] ?? ''),
+    ];
+}
+
+/** Detail-page shape (images + amenities) for a property row (detailFromRow port). */
+function db_property_detail(array $p): array
+{
+    $media = db_rows('SELECT * FROM property_media WHERE property_id = ? ORDER BY sort_order, id', [(int) $p['id']]);
+    $images = [];
+    foreach ($media as $m2) {
+        if (($m2['kind'] ?? '') === 'image') {
+            $url = (string) ($m2['url'] ?? '');
+            $images[] = ['url' => $url, 'srcUrl' => $url];
+        }
+    }
+    if (!$images) $images = [['url' => '/images/property-placeholder.svg', 'srcUrl' => '/images/property-placeholder.svg']];
+    $amenityNames = array_map(fn ($a) => (string) $a['name'], db_rows(
+        'SELECT a.name FROM property_amenities pa JOIN amenities a ON a.id = pa.amenity_id WHERE pa.property_id = ? ORDER BY a.name',
+        [(int) $p['id']]
+    ));
+
+    $hit = db_hit($p);
+    $hit['images'] = $images;
+    $hit['amenities'] = $amenityNames;
+    $hit['status'] = (string) ($p['completion_status'] ?? '') ?: 'Ready';
+    $hit['furnishing'] = (string) ($p['furnished'] ?? '') ?: 'Unfurnished';
+    return $hit;
+}
+
+/** Resolve a route like /buy/my-apartment42/ to a DB property detail (dbPropertyByRoute port). */
+function db_property_by_route(string $route): ?array
+{
+    if (!db_enabled()) return null;
+    if (!preg_match('#^/(buy|let)/([^/]+?)/?$#', $route, $m)) return null;
+    $kind = $m[1];
+    $part = $m[2];
+    $txn = $kind === 'let' ? 'rent' : 'buy';
+
+    $sel = "SELECT p.*, ag.name AS agent_name, ag.img AS agent_img, ag.role AS agent_role,
+            ag.brn_number AS agent_brn, ag.phone AS agent_phone, ag.email AS agent_email
+            FROM properties p
+            LEFT JOIN agents ag ON ag.id = p.agent_id
+            WHERE p.published = 1 AND p.transaction_type = ?";
+
+    // The card link is `{slug}{id}` concatenated, so a slug ending in digits is
+    // ambiguous (e.g. slug "dsav-2" + id 27 -> "dsav-227"). Try progressive
+    // splits, longest id first, until a row matches.
+    $p = null;
+    if (preg_match('/(\d+)$/', $part, $dm)) {
+        $digits = $dm[1];
+        $len = strlen($digits);
+        for ($idLen = $len; $idLen >= 0; $idLen--) {
+            $id = $idLen > 0 ? (int) substr($digits, $len - $idLen) : null;
+            $slug = $idLen < $len ? substr($part, 0, strlen($part) - $idLen) : $part;
+            if ($id !== null && $id > 0 && $id <= 2147483647) {
+                $p = db_row($sel . ' AND p.id = ?', [$txn, $id]);
+                if ($p) break;
+            }
+            if ($slug !== '') {
+                $p = db_row($sel . ' AND p.slug = ?', [$txn, $slug]);
+                if ($p) break;
+            }
+        }
+    } else {
+        $p = db_row($sel . ' AND p.slug = ?', [$txn, $part]);
+    }
+    if (!$p) return null;
+
+    return ['kind' => $kind, 'data' => db_property_detail($p)];
+}
+
 /** Dedupe hits by crm_id/id/slug (dedupeBySlug semantics + key-based merge dedupe). */
 function dedupe_hits(array $list): array
 {

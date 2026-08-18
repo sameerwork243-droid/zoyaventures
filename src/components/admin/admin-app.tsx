@@ -362,7 +362,7 @@ function ResourceManager({ endpoint, title, fields, columns, onDetails }: { endp
                   {items.map((row) => {
                     const url = rowUrl(endpoint, row);
                     return (
-                      <tr key={row.id} className={url ? "app-row-click" : ""} data-url={url || undefined} data-fallback={endpoint === "agents" ? "/team/" : undefined} onClick={(e) => onRowOpen(e, url)}>
+                      <tr key={row.id} className={url ? "app-row-click" : ""} data-url={url || undefined} data-fallback={endpoint === "agents" ? "/team/" : endpoint === "communities" ? "/buy/properties-for-sale/" : undefined} onClick={(e) => onRowOpen(e, url)}>
                         {columns.map((c) => <td key={c.key}>{c.render(row)}</td>)}
                         <td>
                           <div className="row-actions">
@@ -665,7 +665,7 @@ function rowUrl(endpoint: string, row: any): string {
     case "developers":
       return row.slug ? `/new-projects/developed-by-${row.slug}/` : "";
     case "communities":
-      return row.slug ? `/new-projects/in-${row.slug}/` : "";
+      return row.slug ? `/buy/properties-for-sale/in-${row.slug}/` : "";
   }
   return "";
 }

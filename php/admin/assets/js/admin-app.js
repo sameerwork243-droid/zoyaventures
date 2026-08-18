@@ -114,7 +114,7 @@
       case "services": return row.slug ? "/property-services/" + row.slug + "/" : "";
       case "agents": return row.slug ? "/team/" + row.slug + "/" : "";
       case "developers": return row.slug ? "/new-projects/developed-by-" + row.slug + "/" : "";
-      case "communities": return row.slug ? "/new-projects/in-" + row.slug + "/" : "";
+      case "communities": return row.slug ? "/buy/properties-for-sale/in-" + row.slug + "/" : "";
     }
     return "";
   }
@@ -257,7 +257,7 @@
     h += "<th></th></tr></thead><tbody>";
     items.forEach(function (row) {
       var u = endpoint ? rowUrl(endpoint, row) : "";
-      var fb = endpoint === "agents" ? "/team/" : "";
+      var fb = endpoint === "agents" ? "/team/" : endpoint === "communities" ? "/buy/properties-for-sale/" : "";
       h += '<tr' + (u ? ' class="app-row-click" data-url="' + esc(u) + '"' : "") +
         (u && fb ? ' data-fallback="' + esc(fb) + '"' : "") + ">";
       cols.forEach(function (c) { h += "<td>" + renderCell(row, c) + "</td>"; });
