@@ -193,7 +193,6 @@ $nav = [
         ['key' => 'overview', 'label' => 'Dashboard', 'icon' => 'home'],
         ['key' => 'properties', 'label' => 'Properties', 'icon' => 'building'],
         ['key' => 'projects', 'label' => 'Projects', 'icon' => 'building'],
-        ['key' => 'project-details', 'label' => 'Project Details', 'icon' => 'home'],
         ['key' => 'services', 'label' => 'Services', 'icon' => 'briefcase'],
     ]],
     ['label' => 'CRM', 'items' => [
@@ -286,7 +285,6 @@ $loadingCard = '<div class="app-card"><p class="app-empty">Loading&hellip;</p></
         <?php echo $panel('overview', $loadingCard); ?>
         <?php echo $panel('properties', $loadingCard); ?>
         <?php echo $panel('projects', $loadingCard); ?>
-        <?php echo $panel('project-details', $loadingCard); ?>
         <?php echo $panel('services', $loadingCard); ?>
         <?php echo $panel('inquiries', $loadingCard); ?>
         <?php echo $panel('viewings', $loadingCard); ?>

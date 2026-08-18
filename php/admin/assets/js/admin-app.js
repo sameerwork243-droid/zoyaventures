@@ -1444,9 +1444,12 @@
     ], "Contact details shown on the public site.");
   }
 
-  /* ------------------------------ Project Details ------------------------------ */
+  /* ------------------------------ Projects (list + rich detail editor) ------------------------------ */
 
-  function initProjectDetails(panel) {
+  function initProjects(panel) {
+    var fields = (BOOT.schemas.fields || {}).projects || [];
+    var cols = (BOOT.schemas.columns || {}).projects || [];
+    var items = null, q = "", editing = null, mode = "list", slug = "";
     var card = document.createElement("div");
     card.className = "app-card";
     panel.appendChild(card);
@@ -1455,43 +1458,122 @@
       return (arr || []).map(pick).filter(Boolean).join("\n");
     }
 
-    function load() {
-      card.innerHTML = '<p class="app-empty">Loading…</p>';
-      api("/api/admin/project-details").then(function (res) {
-        var list = res.data.items || [];
-        var head = '<div class="app-card-head"><div><h2>Project Details</h2><p class="app-card-sub">' + list.length + ' projects with rich detail pages</p></div></div>';
-        card.innerHTML = head + (list.length === 0 ? '<p class="app-empty">No project details yet.</p>' :
-          '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Project</th><th>Developer</th><th>Location</th><th>Completion</th><th>Updated</th><th></th></tr></thead><tbody>' +
-          list.map(function (row) {
-            return '<tr><td><strong>' + esc(row.title || row.slug) + '</strong><div style="font-size:12px;color:#9399a4">' + esc(row.slug) + "</div></td>" +
-              "<td>" + esc(row.developer || "—") + "</td>" +
-              "<td>" + esc(row.display_address || "—") + "</td>" +
-              "<td>" + esc(row.completion_year || "—") + "</td>" +
-              "<td>" + esc(fmtDate(row.updated_at)) + "</td>" +
-              '<td><div class="row-actions">' +
-              '<button type="button" class="app-btn ghost sm" data-edit="' + esc(row.slug) + '">Edit</button>' +
-              '<a class="app-btn ghost sm" href="/new-projects/' + esc(row.slug) + '/" target="_blank">View</a>' +
-              "</div></td></tr>";
-          }).join("") + "</tbody></table></div>");
-        $$("[data-edit]", card).forEach(function (b) {
-          b.addEventListener("click", function () {
-            openEdit(b.getAttribute("data-edit"));
-          });
-        });
-      }).catch(function () {
-        card.innerHTML = '<p class="app-empty">Could not load projects.</p>';
+    function load(query) {
+      mode = "list";
+      var url = "/api/admin/projects" + (query ? "?q=" + encodeURIComponent(query) : "");
+      api(url).then(function (res) {
+        items = res.data.items || [];
+        q = query || "";
+        render();
+      }).catch(function () { items = []; q = query || ""; render(); });
+    }
+
+    function remove(row) {
+      if (!window.confirm('Delete "' + (row.title || row.id) + '"?')) return;
+      api("/api/admin/projects/" + row.id, { method: "DELETE" }).then(function () {
+        showToast("Deleted");
+        load(q);
       });
     }
 
-    function openEdit(slug) {
-      api("/api/admin/project-details?slug=" + encodeURIComponent(slug)).then(function (res) {
-        if (!res.ok) { showToast(res.data.error || "Could not load project"); return; }
-        var data = res.data.item && res.data.item.data ? res.data.item.data : {};
-        editForm(slug, data);
-      }).catch(function () { showToast("Could not load project"); });
+    function save(state, saveBtn) {
+      saveBtn.disabled = true;
+      var body = {};
+      fields.forEach(function (fd) { body[fd.key] = state[fd.key]; });
+      var url = "/api/admin/projects" + (editing ? "/" + editing.id : "");
+      var method = editing ? "PUT" : "POST";
+      api(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }).then(function (res) {
+        saveBtn.disabled = false;
+        if (!res.ok) { showToast(res.data.error || "Save failed"); return; }
+        showToast(editing ? "Saved" : "Created");
+        editing = null;
+        load(q);
+      });
     }
 
-    function editForm(slug, data) {
+    function render() {
+      if (mode === "edit" || mode === "create") {
+        card.innerHTML = "";
+        formPageCard(card, mode === "edit" ? "Edit " + (editing && editing.title ? editing.title : "Project") : "New Project", "Projects", fields, editing || {}, save, function () {
+          editing = null;
+          mode = "list";
+          render();
+        });
+        return;
+      }
+      if (mode === "details") {
+        openDetails(slug);
+        return;
+      }
+      var head = '<div class="app-card-head"><div><h2>Projects</h2><p class="app-card-sub">' + (items ? items.length : 0) + " records</p></div>" +
+        '<div style="display:flex;gap:10px">' +
+        '<input class="app-search" placeholder="Search…" value="' + esc(q) + '" data-search>' +
+        '<button type="button" class="app-btn" data-add>+ Add</button></div></div>';
+      var body = items === null ? '<p class="app-empty">Loading…</p>' :
+        items.length === 0 ? '<p class="app-empty">No records found.</p>' : projectTable(items);
+      card.innerHTML = head + body;
+      var inp = $("[data-search]", card);
+      if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") load(inp.value); });
+      var add = $("[data-add]", card);
+      if (add) add.addEventListener("click", function () { mode = "create"; render(); });
+      $$("[data-details]", card).forEach(function (b) {
+        b.addEventListener("click", function () {
+          slug = b.getAttribute("data-details");
+          mode = "details";
+          render();
+        });
+      });
+      $$("[data-edit]", card).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var id = Number(b.getAttribute("data-edit"));
+          items.forEach(function (r) { if (Number(r.id) === id) editing = r; });
+          mode = "edit";
+          render();
+        });
+      });
+      $$("[data-del]", card).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var id = Number(b.getAttribute("data-del"));
+          items.forEach(function (r) { if (Number(r.id) === id) remove(r); });
+        });
+      });
+    }
+
+    function projectTable(list) {
+      var h = '<div style="overflow-x:auto"><table class="app-table"><thead><tr>';
+      cols.forEach(function (c) { h += "<th>" + esc(c.label) + "</th>"; });
+      h += "<th></th></tr></thead><tbody>";
+      list.forEach(function (row) {
+        h += "<tr>";
+        cols.forEach(function (c) {
+          h += "<td>" + (c.key === "title"
+            ? "<strong>" + esc(row.title || "") + '</strong><div style="font-size:12px;color:#9399a4">' + esc(row.slug || "") + "</div>"
+            : renderCell(row, c)) + "</td>";
+        });
+        h += '<td><div class="row-actions">' +
+          (row.slug ? '<button type="button" class="app-btn ghost sm" data-details="' + esc(row.slug) + '">Details</button>' : "") +
+          '<button type="button" class="app-btn ghost sm" data-edit="' + row.id + '">Edit</button>' +
+          (row.slug ? '<a class="app-btn ghost sm" href="/new-projects/' + esc(row.slug) + '/" target="_blank">View</a>' : "") +
+          '<button type="button" class="app-btn danger sm" data-del="' + row.id + '">Delete</button>' +
+          "</div></td></tr>";
+      });
+      h += "</tbody></table></div>";
+      return h;
+    }
+
+    function openDetails(s) {
+      api("/api/admin/project-details?slug=" + encodeURIComponent(s)).then(function (res) {
+        if (!res.ok) { showToast(res.data.error || "Could not load project"); mode = "list"; render(); return; }
+        var data = res.data.item && res.data.item.data ? res.data.item.data : {};
+        detailForm(s, data);
+      }).catch(function () { showToast("Could not load project"); mode = "list"; render(); });
+    }
+
+    function detailForm(slug, data) {
       card.innerHTML = "";
       var back = document.createElement("div");
       back.className = "app-card-head";
@@ -1503,8 +1585,8 @@
       var bb = document.createElement("button");
       bb.type = "button";
       bb.className = "app-btn ghost sm form-page-back";
-      bb.textContent = "← Back to Project Details";
-      bb.addEventListener("click", load);
+      bb.textContent = "← Back to Projects";
+      bb.addEventListener("click", function () { mode = "list"; load(q); });
       back.appendChild(h2);
       back.appendChild(sub);
       back.appendChild(bb);
@@ -1608,7 +1690,7 @@
       });
     }
 
-    load();
+    load("");
   }
 
   /* ------------------------------ More (about / team / careers / contact) ------------------------------ */
@@ -1668,13 +1750,12 @@
         case "faqs": initResource(panel, "faqs", "FAQs"); break;
         case "media": initResource(panel, "media", "Media library"); break;
         case "jobs": initResource(panel, "jobs", "Careers"); break;
-        case "projects": initResource(panel, "projects", "Projects"); break;
+        case "projects": initProjects(panel); break;
         case "categories": initCategories(panel, "categories", "Categories"); break;
         case "amenities": initCategories(panel, "amenities", "Amenities"); break;
         case "homepage": initHomepage(panel); break;
         case "about": initAbout(panel); break;
         case "contact": initContact(panel); break;
-        case "project-details": initProjectDetails(panel); break;
         case "more": initMore(panel); break;
       }
     });

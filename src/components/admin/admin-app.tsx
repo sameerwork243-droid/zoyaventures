@@ -11,6 +11,7 @@ type FieldDef = { key: string; label: string; type?: FieldType; options?: string
 
 export function AdminApp({ user }: { user: User }) {
   const [tab, setTab] = useState("overview");
+  const [pdSlug, setPdSlug] = useState<string | null>(null);
 
   const sections: PortalNavSection[] = [
     {
@@ -22,7 +23,6 @@ export function AdminApp({ user }: { user: User }) {
         { key: "overview", label: "Dashboard", icon: "home" },
         { key: "properties", label: "Properties", icon: "building" },
         { key: "projects", label: "Projects", icon: "building" },
-        { key: "project-details", label: "Project Details", icon: "file" },
         { key: "services", label: "Services", icon: "briefcase" },
       ],
     },
@@ -60,8 +60,11 @@ export function AdminApp({ user }: { user: User }) {
     <PortalShell user={user} title="Admin Panel" sections={sections} active={tab} onNav={setTab}>
       {tab === "overview" && <StatsOverview />}
       {tab === "properties" && <PropertiesManager />}
-      {tab === "projects" && <ResourceManager endpoint="projects" title="New Projects" fields={PROJECT_FIELDS} columns={projectColumns} />}
-      {tab === "project-details" && <ProjectDetailsManager />}
+      {tab === "projects" && (pdSlug ? (
+        <ProjectDetailsManager openSlug={pdSlug} onBack={() => setPdSlug(null)} />
+      ) : (
+        <ResourceManager endpoint="projects" title="New Projects" fields={PROJECT_FIELDS} columns={projectColumns} onDetails={(row) => setPdSlug(row.slug)} />
+      ))}
       {tab === "services" && <ResourceManager endpoint="services" title="Services" fields={SERVICE_FIELDS} columns={serviceColumns} />}
       {tab === "users" && <UsersManager />}
       {tab === "inquiries" && <InquiriesManager />}
@@ -222,7 +225,7 @@ function StatsOverview() {
 
 type Column = { key: string; label: string; render: (row: any) => React.ReactNode };
 
-function ResourceManager({ endpoint, title, fields, columns }: { endpoint: string; title: string; fields: FieldDef[]; columns: Column[] }) {
+function ResourceManager({ endpoint, title, fields, columns, onDetails }: { endpoint: string; title: string; fields: FieldDef[]; columns: Column[]; onDetails?: (row: any) => void }) {
   const [items, setItems] = useState<any[] | null>(null);
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<any | null>(null);
@@ -310,6 +313,7 @@ function ResourceManager({ endpoint, title, fields, columns }: { endpoint: strin
                       {columns.map((c) => <td key={c.key}>{c.render(row)}</td>)}
                       <td>
                         <div className="row-actions">
+                          {onDetails && <button type="button" className="app-btn ghost sm" onClick={() => onDetails(row)}>Details</button>}
                           <button type="button" className="app-btn ghost sm" onClick={() => { setEditing(row); }}>Edit</button>
                           <button type="button" className="app-btn danger sm" onClick={() => remove(row)}>Delete</button>
                         </div>
@@ -1732,7 +1736,7 @@ function singular(title: string): string {
 
 /* ===================== Project details (curated detail pages) ===================== */
 
-function ProjectDetailsManager() {
+function ProjectDetailsManager({ openSlug, onBack }: { openSlug?: string | null; onBack?: () => void }) {
   const [items, setItems] = useState<any[] | null>(null);
   const [editing, setEditing] = useState<any | null>(null);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -1746,7 +1750,40 @@ function ProjectDetailsManager() {
       .then((d) => setItems(d.items || []))
       .catch(() => setItems([]));
   }, []);
-  useEffect(() => load(), [load]);
+
+  useEffect(() => {
+    if (openSlug) {
+      fetch(`/api/admin/project-details?slug=${encodeURIComponent(openSlug)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          const data = d.item?.data || {};
+          setRaw(data);
+          setForm({
+            about: String(data.about || ""),
+            display_price: String(data.display_price || ""),
+            completion_year: String(data.completion_year || ""),
+            payment_plan_text: String(data.payment_plan_text || ""),
+            gallery: toLines(data.media_images, (i) => i?.url),
+            amenities: toLines(data.amenities, (a) => (a?.image?.url ? `${a.text}|${a.image.url}` : String(a.text || ""))),
+            floorplans: toLines(data.floor_plans, (p) => (p?.media?.url ? `${p.title}|${p.media.url}` : String(p.title || ""))),
+            usp_heading: String(data.characteristics_module?.heading || ""),
+            usp_title: String(data.characteristics_module?.title || ""),
+            usp_description: String(data.characteristics_module?.description || ""),
+            usp_image: String(data.characteristics_module?.image?.url || ""),
+            loc_heading: String(data.location_tile?.heading || ""),
+            loc_title: String(data.location_tile?.title || ""),
+            loc_description: String(data.location_tile?.description || ""),
+            loc_image: String(data.location_tile?.image?.url || ""),
+            brochure_pdf: String(data.brochure?.file?.url || ""),
+            brochure_cover: String(data.brochure?.image?.url || ""),
+            faqs: toLines(data.more_info, (f) => `${f.question}|${String(f.answer || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()}`),
+          });
+          setEditing({ slug: openSlug, title: data.title || openSlug });
+        });
+    } else {
+      load();
+    }
+  }, [openSlug]);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -1839,6 +1876,10 @@ function ProjectDetailsManager() {
     showToast("Saved");
     setEditing(null);
     setBusy(false);
+    if (openSlug && onBack) {
+      onBack();
+      return;
+    }
     load();
   }
 
@@ -1850,7 +1891,7 @@ function ProjectDetailsManager() {
             <h2>{editing.title || editing.slug}</h2>
             <p className="app-card-sub">{editing.slug} — saved fields drive the public project page. Fields left in the raw import keep their scraped values.</p>
           </div>
-          <button type="button" className="app-btn ghost sm" onClick={() => setEditing(null)}>← Back to Project Details</button>
+          <button type="button" className="app-btn ghost sm" onClick={() => (openSlug && onBack ? onBack() : setEditing(null))}>{openSlug && onBack ? "← Back to Projects" : "← Back to Project Details"}</button>
         </div>
         <form className="app-form-grid" onSubmit={save}>
           <div className="app-field full">
@@ -1893,7 +1934,7 @@ function ProjectDetailsManager() {
             <textarea rows={6} value={form.faqs} onChange={(e) => setForm({ ...form, faqs: e.target.value })} />
           </div>
           <div className="app-field full">
-            <button type="button" className="app-btn ghost" onClick={() => setEditing(null)}>Cancel</button>
+            <button type="button" className="app-btn ghost" onClick={() => (openSlug && onBack ? onBack() : setEditing(null))}>Cancel</button>
             <button type="submit" className="app-btn" disabled={busy}>{busy ? "Saving…" : "Save"}</button>
           </div>
         </form>
