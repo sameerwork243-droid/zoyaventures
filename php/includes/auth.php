@@ -90,7 +90,7 @@ function get_auth_user(): ?array
         return null;
     }
     $u = db_row(
-        "SELECT u.id, u.email, u.name, u.phone, u.avatar, r.name AS role, u.last_login_at, u.created_at
+        "SELECT u.id, u.email, u.name, u.first_name, u.surname, u.phone, u.avatar, r.name AS role, u.last_login_at, u.created_at
          FROM users u JOIN roles r ON r.id = u.role_id
          WHERE u.id = ? AND u.is_active = 1",
         [$s['user_id']]
@@ -100,6 +100,8 @@ function get_auth_user(): ?array
         'id' => (int) $u['id'],
         'email' => (string) $u['email'],
         'name' => (string) $u['name'],
+        'first_name' => (string) ($u['first_name'] ?? ''),
+        'surname' => (string) ($u['surname'] ?? ''),
         'phone' => (string) ($u['phone'] ?? ''),
         'avatar' => (string) ($u['avatar'] ?? ''),
         'role' => (string) $u['role'],

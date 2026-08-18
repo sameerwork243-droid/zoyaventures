@@ -55,6 +55,11 @@ if (preg_match('#^(.*?)/page/(\d+)$#', $route, $m)) {
 
 if (str_starts_with($route, '/api/')) {
     $api = substr($route, 5);
+    // /api/admin/{endpoint}/{id} → dispatch to admin/{endpoint}.php with ?id=
+    if (preg_match('#^admin/([a-z0-9-]+)/(\d+)$#', $api, $m)) {
+        $_GET['id'] = $m[2];
+        $api = 'admin/' . $m[1];
+    }
     $apiFile = __DIR__ . '/api/' . $api . '.php';
     if (is_file($apiFile)) {
         require $apiFile;
@@ -87,14 +92,8 @@ switch ($route) {
     case '/admin':
         require __DIR__ . '/admin/index.php';
         exit;
-    case '/list-your-property':
-        require __DIR__ . '/pages/list-your-property.php';
-        exit;
     case '/sitemap':
         require __DIR__ . '/pages/sitemap.php';
-        exit;
-    case '/book-a-viewing':
-        require __DIR__ . '/pages/book-a-viewing.php';
         exit;
 }
 
@@ -136,6 +135,10 @@ if (!isset($model)) {
             $p = project_by_slug($last);
             if ($p) $model = ['kind' => 'project', 'data' => ['hits' => [$p], 'nbHits' => 1, 'page' => 0, 'nbPages' => 1, 'hitsPerPage' => 1, 'content' => null], 'route' => $routeBase];
         }
+    } elseif (!$model && preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)) {
+        $last = (string) end(array_values(array_filter(explode('/', $routeBase))));
+        $p = project_by_slug($last);
+        if ($p) $model = ['kind' => 'project', 'data' => ['hits' => [$p], 'nbHits' => 1, 'page' => 0, 'nbPages' => 1, 'hitsPerPage' => 1, 'content' => null], 'route' => $routeBase];
     }
 
     // DB-only fallbacks (no DB in fallback mode — corpus covers content pages)

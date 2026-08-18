@@ -599,7 +599,7 @@
 
   document.addEventListener("submit", function (e) {
     var form = e.target;
-    if (!form.matches || !form.matches('[data-enquiry-form="contact"], [data-enquiry-form="listing"]')) return;
+    if (!form.matches || !form.matches('[data-enquiry-form="contact"], [data-enquiry-form="listing"], [data-enquiry-form="project"]')) return;
     e.preventDefault();
     var kind = form.getAttribute("data-enquiry-form");
     var nameEl = form.querySelector('input[name="name"]');
@@ -677,6 +677,18 @@
           property_address: val(addrEl),
           message: val(msgEl),
         }),
+      };
+    } else if (kind === "project") {
+      var projTitle = (form.getAttribute("data-project-title") || "").trim();
+      if (!val(nameEl)) { setErr("Please enter your full name."); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val(emailEl))) { setErr("Please enter a valid email address."); return; }
+      payload = {
+        kind: "project",
+        name: val(nameEl),
+        email: val(emailEl),
+        phone: ((dialEl ? dialEl.value : "+971") + " " + val(phoneEl)).trim(),
+        message: "Register interest: " + projTitle,
+        property_ref: projTitle,
       };
     } else {
       payload = {

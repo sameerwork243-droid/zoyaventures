@@ -35,7 +35,7 @@
     "typescript": "^5"
   },
   "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
-  "main": "server.js",
+  "main": "server.cjs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sameerwork243-droid/zoyaventures.git"
@@ -43,7 +43,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/sameerwork243-droid/zoyaventures/issues"
   },

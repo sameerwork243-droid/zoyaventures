@@ -1,6 +1,5 @@
 <?php
-// 404.php — not found page
-// TODO(phase6+): match the original app's 404 markup exactly (from catch-all page)
+// 404.php — not found page (port of the Gatsby 404 page markup)
 
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/head.php';
@@ -13,13 +12,14 @@ $page_title = 'Page Not Found';
 <body>
 <?php require __DIR__ . '/../includes/header.php'; ?>
 <main>
-  <section class="section-p">
-    <div class="container">
-      <h1>Page Not Found</h1>
-      <p>The page you are looking for does not exist.</p>
-      <a class="button button-orange" href="/"><span>Back to Home</span></a>
+  <div class="notfound-page container">
+    <h1>Oops! Page Not Found.</h1>
+    <p class="description">The page you are looking for cannot be found. Please check the URL or try using our search bar to find what you&rsquo;re looking for.</p>
+    <div class="cta-section">
+      <a class="button button-orange" href="/"><span>Go to Home</span></a>
+      <a class="button button-gray" href="/contact/"><span>Contact Us</span></a>
     </div>
-  </section>
+  </div>
 </main>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
 <?php render_site_footer_scripts(); ?>

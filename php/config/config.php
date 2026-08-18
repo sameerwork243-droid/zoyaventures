@@ -17,8 +17,8 @@ define('APP_GTM_ID', 'GTM-PGNHTGZ5');
 define('APP_COPYRIGHT_YEAR', '2024');
 
 define('SESSION_COOKIE', 'provident_session');
-define('SESSION_TTL', 7 * 24 * 3600);      // 7 days
-define('REMEMBER_TTL', 30 * 24 * 3600);    // 30 days
+define('SESSION_TTL', 7 * 24 * 3600 * 1000);      // 7 days (ms — matches SESSION_TTL_MS)
+define('REMEMBER_TTL', 30 * 24 * 3600 * 1000);    // 30 days (ms — matches REMEMBER_TTL_MS)
 
 define('LISTING_PER_PAGE', 9);
 

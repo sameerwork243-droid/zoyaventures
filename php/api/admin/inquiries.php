@@ -1,6 +1,6 @@
 <?php
-// api/admin/inquiries.php — GET/PATCH/DELETE (port of src/app/api/admin/inquiries/route.ts)
-// ?id= targets a single inquiry. TODO(phase10): status transitions + filtering
+// api/admin/inquiries.php — GET/PATCH/DELETE with kind filter + user join
+// (port of src/app/api/admin/inquiries/route.ts)
 
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/auth.php';
@@ -8,22 +8,35 @@ require_once __DIR__ . '/../../includes/auth.php';
 require_admin();
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $id = (int) ($_GET['id'] ?? 0);
+$body = $method !== 'GET' ? json_body() : [];
+if (!$id && isset($body['id'])) $id = (int) $body['id'];
 
 if ($method === 'GET') {
-    if ($id > 0) {
-        $row = db_row("SELECT * FROM inquiries WHERE id = ?", [$id]);
-        if (!$row) json_response(['error' => 'Not found'], 404);
-        json_response(['inquiry' => $row]);
+    $kind = trim((string) ($_GET['kind'] ?? ''));
+    if ($kind !== '') {
+        $rows = db_rows(
+            "SELECT i.*, u.name AS user_name, u.email AS user_email
+             FROM inquiries i LEFT JOIN users u ON u.id = i.user_id
+             WHERE i.kind = ? ORDER BY i.created_at DESC, i.id DESC",
+            [$kind]
+        );
+    } else {
+        $rows = db_rows(
+            "SELECT i.*, u.name AS user_name, u.email AS user_email
+             FROM inquiries i LEFT JOIN users u ON u.id = i.user_id
+             ORDER BY i.created_at DESC, i.id DESC"
+        );
     }
-    $rows = db_rows("SELECT * FROM inquiries ORDER BY created_at DESC");
-    json_response(['inquiries' => $rows]);
+    json_response(['items' => $rows ?: []]);
 }
-if ($method === 'PATCH' || $method === 'PUT') {
-    $body = json_body();
-    db_run("UPDATE inquiries SET status = ? WHERE id = ?", [(string) ($body['status'] ?? 'new'), $id]);
+if ($method === 'PATCH') {
+    $status = trim((string) ($body['status'] ?? ''));
+    if (!$id || $status === '') json_response(['error' => 'id and status are required'], 400);
+    db_run("UPDATE inquiries SET status = ? WHERE id = ?", [$status, $id]);
     json_response(['ok' => true]);
 }
 if ($method === 'DELETE') {
+    if (!$id) json_response(['error' => 'Missing id'], 400);
     db_run("DELETE FROM inquiries WHERE id = ?", [$id]);
     json_response(['ok' => true]);
 }

@@ -164,6 +164,11 @@ function get_page_data(string $route): ?array
         'properties/' . $rel . '.json',
         'properties/' . $rel,
     ];
+    // /new-projects/* are project pages; the properties/ snapshots are stale
+    // scrapes (property-details responses) and must not shadow them.
+    if (str_starts_with($route, '/new-projects')) {
+        $candidates = array_values(array_filter($candidates, fn ($c) => !str_starts_with($c, 'properties/')));
+    }
     foreach ($candidates as $c) {
         $j = load_json($c);
         if ($j) return $j;

@@ -10,7 +10,7 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($method === 'GET') {
     $rows = db_rows("SELECT * FROM saved_properties WHERE user_id = ? ORDER BY created_at DESC", [$user['id']]);
-    json_response(['saved' => $rows]);
+    json_response(['items' => $rows]);
 }
 if ($method === 'POST') {
     $body = json_body();

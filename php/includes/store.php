@@ -264,7 +264,22 @@ function project_by_slug(string $slug): ?array
 {
     $j = load_json('projects/new-projects/' . $slug . '.json');
     $d = $j['result']['serverData']['data'] ?? null;
-    return (is_array($d) && isset($d['hits'][0])) ? $d['hits'][0] : null;
+    if (is_array($d) && isset($d['hits'][0])) return $d['hits'][0];
+    // Files are named in-{area}.json; the hit slug is independent of the
+    // filename, so fall back to a corpus scan.
+    foreach (project_corpus() as $h) {
+        if (rtrim((string) ($h['slug'] ?? ''), '.') === $slug) return $h;
+    }
+    return null;
+}
+
+function project_detail_by_slug(string $slug): ?array
+{
+    if (!db_enabled()) return null;
+    $row = db_row('SELECT data FROM project_details WHERE slug = ? LIMIT 1', [$slug]);
+    if (!$row) return null;
+    $j = json_decode((string) $row['data'], true);
+    return is_array($j) ? $j : null;
 }
 
 function projects_by_developer(string $dev): array

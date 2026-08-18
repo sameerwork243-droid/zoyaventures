@@ -1,6 +1,6 @@
 <?php
-// api/user/account.php — GET/PATCH (port of src/app/api/user/account/route.ts)
-// TODO(phase8): full port — GET returns user profile, PATCH updates profile fields
+// api/user/account.php — GET/DELETE (port of src/app/api/user/account/route.ts)
+// DELETE removes the account permanently (cascade wipes sessions/saved/viewings/prefs).
 
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/auth.php';
@@ -11,12 +11,18 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method === 'GET') {
     json_response(['user' => $user]);
 }
-if ($method === 'PATCH') {
+if ($method === 'DELETE') {
     $body = json_body();
-    // TODO(phase8): validate + persist editable fields (name, phone, avatar, address...)
-    $name = trim((string) ($body['name'] ?? $user['name']));
-    $phone = trim((string) ($body['phone'] ?? $user['phone']));
-    db_run("UPDATE users SET name = ?, phone = ?, updated_at = ? WHERE id = ?", [$name, $phone, now_iso(), $user['id']]);
-    json_response(['user' => get_auth_user()]);
+    $reason = trim((string) ($body['reason'] ?? ''));
+    db_run("INSERT INTO account_deletion_logs (user_id, reason, created_at) VALUES (?, ?, ?)", [$user['id'], $reason, now_iso()]);
+    db_run("DELETE FROM users WHERE id = ?", [$user['id']]);
+    setcookie(SESSION_COOKIE_NAME, '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => session_secure(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    json_response(['ok' => true]);
 }
 json_response(['error' => 'Method not allowed'], 405);
