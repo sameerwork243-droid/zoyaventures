@@ -107,6 +107,36 @@
     return title;
   }
 
+  function rowUrl(endpoint, row) {
+    switch (endpoint) {
+      case "properties": return "/" + (row.transaction_type || "buy") + "/" + row.slug + row.id + "/";
+      case "projects": return row.slug ? "/new-projects/" + row.slug + "/" : "";
+      case "services": return row.slug ? "/property-services/" + row.slug + "/" : "";
+      case "agents": return row.slug ? "/team/" + row.slug + "/" : "";
+      case "developers": return row.slug ? "/new-projects/developed-by-" + row.slug + "/" : "";
+      case "communities": return row.slug ? "/new-projects/in-" + row.slug + "/" : "";
+    }
+    return "";
+  }
+
+  function wireRowClicks(root) {
+    var tb = $("tbody", root);
+    if (!tb) return;
+    tb.addEventListener("click", function (e) {
+      var interactive = e.target.closest ? e.target.closest("button, a, input, select, textarea") : null;
+      if (interactive) return;
+      var tr = e.target.closest ? e.target.closest("tr") : null;
+      if (!tr) return;
+      var url = tr.getAttribute("data-url");
+      var fb = tr.getAttribute("data-fallback");
+      if (!url) return;
+      if (!fb) { window.open(url, "_blank"); return; }
+      fetch(url, { method: "GET", credentials: "same-origin" })
+        .then(function (r) { window.open(r.ok ? url : fb, "_blank"); })
+        .catch(function () { window.open(fb, "_blank"); });
+    });
+  }
+
   function parseListingPayload(raw) {
     try {
       var d = JSON.parse(raw);
@@ -221,12 +251,15 @@
     }
   }
 
-  function resourceTable(items, cols) {
+  function resourceTable(items, cols, endpoint) {
     var h = '<div style="overflow-x:auto"><table class="app-table"><thead><tr>';
     cols.forEach(function (c) { h += "<th>" + esc(c.label) + "</th>"; });
     h += "<th></th></tr></thead><tbody>";
     items.forEach(function (row) {
-      h += "<tr>";
+      var u = endpoint ? rowUrl(endpoint, row) : "";
+      var fb = endpoint === "agents" ? "/team/" : "";
+      h += '<tr' + (u ? ' class="app-row-click" data-url="' + esc(u) + '"' : "") +
+        (u && fb ? ' data-fallback="' + esc(fb) + '"' : "") + ">";
       cols.forEach(function (c) { h += "<td>" + renderCell(row, c) + "</td>"; });
       h += '<td><div class="row-actions">' +
         '<button type="button" class="app-btn ghost sm" data-edit="' + row.id + '">Edit</button>' +
@@ -424,8 +457,9 @@
         '<input class="app-search" placeholder="Search…" value="' + esc(q) + '" data-search>' +
         '<button type="button" class="app-btn" data-add>+ Add</button></div></div>';
       var body = items === null ? '<p class="app-empty">Loading…</p>' :
-        items.length === 0 ? '<p class="app-empty">No records found.</p>' : resourceTable(items, cols);
+        items.length === 0 ? '<p class="app-empty">No records found.</p>' : resourceTable(items, cols, endpoint);
       card.innerHTML = head + body;
+      wireRowClicks(card);
       var inp = $("[data-search]", card);
       if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") load(inp.value); });
       var add = $("[data-add]", card);
@@ -446,6 +480,50 @@
     }
 
     load(q);
+    return { reload: function () { load(q); } };
+  }
+
+  /* ------------------------------ Blog posts (read-only) ------------------------------ */
+
+  function initBlogs(panel) {
+    var items = null, q = "";
+    var card = document.createElement("div");
+    card.className = "app-card";
+    panel.appendChild(card);
+
+    function load(query) {
+      var url = "/api/admin/blogs" + (query ? "?q=" + encodeURIComponent(query) : "");
+      api(url).then(function (res) {
+        items = res.data.items || [];
+        q = query;
+        render();
+      }).catch(function () { items = []; q = query; render(); });
+    }
+
+    function render() {
+      var head = '<div class="app-card-head"><div><h2>Blog Posts</h2><p class="app-card-sub">' + (items ? items.length : 0) + " records</p></div>" +
+        '<input class="app-search" placeholder="Search…" value="' + esc(q) + '" data-search></div>';
+      var body = items === null ? '<p class="app-empty">Loading…</p>' :
+        items.length === 0 ? '<p class="app-empty">No blog posts found.</p>' :
+        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Post</th><th>Category</th><th>Date</th><th>Published</th><th></th></tr></thead><tbody>' +
+        items.map(function (row) {
+          var pub = Number(row.published) === 1
+            ? '<span class="app-badge active">published</span>'
+            : '<span class="app-badge inactive">draft</span>';
+          return '<tr class="app-row-click" data-url="/blog/' + esc(row.slug) + '/">' +
+            "<td><strong>" + esc(row.title) + "</strong></td>" +
+            "<td>" + esc(row.category) + "</td>" +
+            "<td>" + esc(row.date) + "</td>" +
+            "<td>" + pub + "</td>" +
+            '<td><div class="row-actions"><a class="app-btn ghost sm" href="/blog/' + esc(row.slug) + '/" target="_blank" rel="noopener">View</a></div></td></tr>';
+        }).join("") + "</tbody></table></div>";
+      card.innerHTML = head + body;
+      wireRowClicks(card);
+      var inp = $("[data-search]", card);
+      if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") load(inp.value); });
+    }
+
+    load("");
     return { reload: function () { load(q); } };
   }
 
@@ -538,13 +616,12 @@
           var path = "/" + esc(p.transaction_type || "buy") + "/" + esc(p.slug) + esc(p.id) + "/";
           var statusBadge = '<span class="app-badge ' + (Number(p.published) === 1 ? "active" : "inactive") + '">' + (Number(p.published) === 1 ? "published" : "draft") + "</span>";
           if (Number(p.featured) === 1) statusBadge += ' <span class="app-badge" style="background:#fff3e0;color:#b26a00">featured</span>';
-          h += "<tr><td><strong>" + esc(p.title) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + path + "</div></td>" +
+          h += '<tr class="app-row-click" data-url="' + esc(path) + '"><td><strong>' + esc(p.title) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + path + "</div></td>" +
             "<td>" + esc(p.property_type) + "</td><td>" + fmtPrice(p.price) + "</td>" +
             "<td>" + esc(p.bedroom) + " bd / " + esc(p.bathroom) + " ba</td>" +
             "<td>" + esc(p.image_count || 0) + " img &middot; " + esc(p.amenity_count || 0) + " am.</td>" +
             "<td>" + statusBadge + "</td>" +
             '<td><div class="row-actions">' +
-            '<a class="app-btn ghost sm" href="' + path + '" target="_blank">View</a>' +
             '<button type="button" class="app-btn ghost sm" data-edit="' + p.id + '">Edit</button>' +
             '<button type="button" class="app-btn danger sm" data-del="' + p.id + '">Delete</button>' +
             "</div></td></tr>";
@@ -562,6 +639,7 @@
       if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") load(inp.value); });
       var add = $("[data-add]", card);
       if (add) add.addEventListener("click", function () { openPropertyForm(null); });
+      wireRowClicks(card);
       $$("[data-edit]", card).forEach(function (b) {
         b.addEventListener("click", function () {
           var id = Number(b.getAttribute("data-edit"));
@@ -1212,13 +1290,12 @@
       }).join("") + "</div>";
       card.innerHTML = head + tabs + (items === null ? '<p class="app-empty">Loading…</p>' :
         items.length === 0 ? '<p class="app-empty">No inquiries.</p>' :
-        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Kind</th><th>Message</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' +
+        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Kind</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>' +
         items.map(function (i) {
-          return "<tr><td><strong>" + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
+          return '<tr class="app-row-click" data-open="' + i.id + '"><td><strong>' + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
             "<td>" + esc(i.kind) + "</td><td>" + esc(String(i.message || "").slice(0, 50)) + "</td>" +
             '<td><span class="app-badge ' + esc(i.status) + '">' + esc(i.status) + "</span></td>" +
-            "<td>" + esc(fmtDate(i.created_at)) + "</td>" +
-            '<td><button type="button" class="app-btn ghost sm" data-open="' + i.id + '">View</button></td></tr>';
+            "<td>" + esc(fmtDate(i.created_at)) + "</td></tr>";
         }).join("") + "</tbody></table></div>");
       $$("[data-kind]", card).forEach(function (b) {
         b.addEventListener("click", function () { tab = b.getAttribute("data-kind"); open = null; load(); });
@@ -1298,15 +1375,14 @@
       var head = '<div class="app-card-head"><div><h2>Listings</h2><p class="app-card-sub">' + (items ? items.length : 0) + ' property submissions</p></div></div>';
       card.innerHTML = head + (items === null ? '<p class="app-empty">Loading…</p>' :
         items.length === 0 ? '<p class="app-empty">No property listings yet. Submissions from the "List Your Property" form appear here.</p>' :
-        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Property</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' +
+        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Property</th><th>Status</th><th>Date</th></tr></thead><tbody>' +
         items.map(function (i) {
           var payload = parseListingPayload(String(i.message || ""));
           var prop = payload ? (payload.community || payload.property_type || "Listing") : (i.property_slug || i.property_ref || "Listing");
-          return "<tr><td><strong>" + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
+          return '<tr class="app-row-click" data-open="' + i.id + '"><td><strong>' + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
             "<td>" + esc(prop) + "</td>" +
             '<td><span class="app-badge ' + esc(i.status) + '">' + esc(i.status) + "</span></td>" +
-            "<td>" + esc(fmtDate(i.created_at)) + "</td>" +
-            '<td><button type="button" class="app-btn ghost sm" data-open="' + i.id + '">View</button></td></tr>';
+            "<td>" + esc(fmtDate(i.created_at)) + "</td></tr>";
         }).join("") + "</tbody></table></div>");
       $$("[data-open]", card).forEach(function (b) {
         b.addEventListener("click", function () {
@@ -1399,7 +1475,7 @@
       }
       var head = '<div class="app-card-head"><div><h2>' + esc(title) + '</h2><p class="app-card-sub">' + (items ? items.length : 0) + " entries</p></div>" +
         '<button type="button" class="app-btn" data-add>+ Add</button></div>';
-      card.innerHTML = head + (items === null ? '<p class="app-empty">Loading…</p>' : items.length === 0 ? '<p class="app-empty">No records.</p>' : resourceTable(items, CAT_COLS));
+      card.innerHTML = head + (items === null ? '<p class="app-empty">Loading…</p>' : items.length === 0 ? '<p class="app-empty">No records.</p>' : resourceTable(items, CAT_COLS, ""));
       var add = $("[data-add]", card);
       if (add) add.addEventListener("click", function () { creating = true; render(); });
       $$("[data-edit]", card).forEach(function (b) {
@@ -1572,6 +1648,7 @@
       var body = items === null ? '<p class="app-empty">Loading…</p>' :
         items.length === 0 ? '<p class="app-empty">No records found.</p>' : projectTable(items);
       card.innerHTML = head + body;
+      wireRowClicks(card);
       var inp = $("[data-search]", card);
       if (inp) inp.addEventListener("keydown", function (e) { if (e.key === "Enter") load(inp.value); });
       var add = $("[data-add]", card);
@@ -1604,7 +1681,8 @@
       cols.forEach(function (c) { h += "<th>" + esc(c.label) + "</th>"; });
       h += "<th></th></tr></thead><tbody>";
       list.forEach(function (row) {
-        h += "<tr>";
+        var u = row.slug ? "/new-projects/" + row.slug + "/" : "";
+        h += '<tr' + (u ? ' class="app-row-click" data-url="' + esc(u) + '"' : "") + ">";
         cols.forEach(function (c) {
           h += "<td>" + (c.key === "title"
             ? "<strong>" + esc(row.title || "") + '</strong><div style="font-size:12px;color:#9399a4">' + esc(row.slug || "") + "</div>"
@@ -1613,7 +1691,6 @@
         h += '<td><div class="row-actions">' +
           (row.slug ? '<button type="button" class="app-btn ghost sm" data-details="' + esc(row.slug) + '">Details</button>' : "") +
           '<button type="button" class="app-btn ghost sm" data-edit="' + row.id + '">Edit</button>' +
-          (row.slug ? '<a class="app-btn ghost sm" href="/new-projects/' + esc(row.slug) + '/" target="_blank">View</a>' : "") +
           '<button type="button" class="app-btn danger sm" data-del="' + row.id + '">Delete</button>' +
           "</div></td></tr>";
       });
@@ -1805,6 +1882,7 @@
         case "testimonials": initResource(panel, "testimonials", "Testimonials"); break;
         case "faqs": initResource(panel, "faqs", "FAQs"); break;
         case "media": initResource(panel, "media", "Media library"); break;
+        case "blogs": initBlogs(panel); break;
         case "jobs": initResource(panel, "jobs", "Careers"); break;
         case "projects": initProjects(panel); break;
         case "categories": initCategories(panel, "categories", "Categories"); break;

@@ -49,7 +49,8 @@ export function AdminApp({ user }: { user: User }) {
       items: [
         { key: "testimonials", label: "Testimonials", icon: "star" },
         { key: "faqs", label: "FAQs", icon: "question" },
-        { key: "media", label: "Blogs", icon: "image" },
+        { key: "blogs", label: "Blogs", icon: "document" },
+        { key: "media", label: "Media", icon: "image" },
         { key: "homepage", label: "Homepage Content", icon: "grid" },
         { key: "more", label: "More", icon: "menu" },
       ],
@@ -77,9 +78,59 @@ export function AdminApp({ user }: { user: User }) {
       {tab === "testimonials" && <ResourceManager endpoint="testimonials" title="Testimonials" fields={TESTIMONIAL_FIELDS} columns={testimonialColumns} />}
       {tab === "faqs" && <ResourceManager endpoint="faqs" title="FAQs" fields={FAQ_FIELDS} columns={faqColumns} />}
       {tab === "media" && <ResourceManager endpoint="media" title="Media Library" fields={MEDIA_FIELDS} columns={mediaColumns} />}
+      {tab === "blogs" && <BlogsManager />}
       {tab === "homepage" && <KVManager endpoint="homepage" title="Homepage Content" defaults={HOMEPAGE_KEYS} />}
       {tab === "more" && <MoreManager />}
     </PortalShell>
+  );
+}
+
+/* ===================== Blogs (read-only list of existing posts) ===================== */
+
+function BlogsManager() {
+  const [items, setItems] = useState<any[] | null>(null);
+  const [q, setQ] = useState("");
+  function load(query: string) {
+    fetch(`/api/admin/blogs${query ? `?q=${encodeURIComponent(query)}` : ""}`)
+      .then((r) => r.json())
+      .then((d) => setItems(d.items || []))
+      .catch(() => setItems([]));
+  }
+  useEffect(() => {
+    load("");
+  }, []);
+  return (
+    <div className="app-card">
+      <div className="app-card-head">
+        <div>
+          <h2>Blog Posts</h2>
+          <p className="app-card-sub">{items?.length ?? 0} records</p>
+        </div>
+        <input className="app-search" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && load(q)} />
+      </div>
+      {items === null ? (
+        <p className="app-empty">Loading…</p>
+      ) : items.length === 0 ? (
+        <p className="app-empty">No blog posts found.</p>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table className="app-table">
+            <thead><tr><th>Post</th><th>Category</th><th>Date</th><th>Published</th><th></th></tr></thead>
+            <tbody>
+              {items.map((row) => (
+                <tr key={row.slug} className="app-row-click" data-url={`/blog/${row.slug}/`} onClick={(e) => onRowOpen(e, `/blog/${row.slug}/`)}>
+                  <td><strong>{row.title}</strong></td>
+                  <td>{row.category}</td>
+                  <td>{row.date}</td>
+                  <td><span className={"app-badge " + (Number(row.published) ? "active" : "inactive")}>{Number(row.published) ? "published" : "draft"}</span></td>
+                  <td><div className="row-actions"><a className="app-btn ghost sm" href={`/blog/${row.slug}/`} target="_blank" rel="noopener">View</a></div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -308,18 +359,21 @@ function ResourceManager({ endpoint, title, fields, columns, onDetails }: { endp
               <table className="app-table">
                 <thead><tr>{columns.map((c) => <th key={c.key}>{c.label}</th>)}<th></th></tr></thead>
                 <tbody>
-                  {items.map((row) => (
-                    <tr key={row.id}>
-                      {columns.map((c) => <td key={c.key}>{c.render(row)}</td>)}
-                      <td>
-                        <div className="row-actions">
-                          {onDetails && <button type="button" className="app-btn ghost sm" onClick={() => onDetails(row)}>Details</button>}
-                          <button type="button" className="app-btn ghost sm" onClick={() => { setEditing(row); }}>Edit</button>
-                          <button type="button" className="app-btn danger sm" onClick={() => remove(row)}>Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {items.map((row) => {
+                    const url = rowUrl(endpoint, row);
+                    return (
+                      <tr key={row.id} className={url ? "app-row-click" : ""} data-url={url || undefined} data-fallback={endpoint === "agents" ? "/team/" : undefined} onClick={(e) => onRowOpen(e, url)}>
+                        {columns.map((c) => <td key={c.key}>{c.render(row)}</td>)}
+                        <td>
+                          <div className="row-actions">
+                            {onDetails && <button type="button" className="app-btn ghost sm" onClick={() => onDetails(row)}>Details</button>}
+                            <button type="button" className="app-btn ghost sm" onClick={() => { setEditing(row); }}>Edit</button>
+                            <button type="button" className="app-btn danger sm" onClick={() => remove(row)}>Delete</button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -598,6 +652,39 @@ const ABOUT_KEYS = ["hero_title", "intro"];
 const CONTACT_KEYS = ["country", "phone", "email", "whatsapp", "address", "office_hours"];
 const HOMEPAGE_KEYS = ["hero_title", "hero_subtitle", "announcement_bar", "stats_heading", "featured_heading"];
 
+function rowUrl(endpoint: string, row: any): string {
+  switch (endpoint) {
+    case "properties":
+      return `/${row.transaction_type || "buy"}/${row.slug}${row.id}/`;
+    case "projects":
+      return row.slug ? `/new-projects/${row.slug}/` : "";
+    case "services":
+      return row.slug ? `/property-services/${row.slug}/` : "";
+    case "agents":
+      return row.slug ? `/team/${row.slug}/` : "";
+    case "developers":
+      return row.slug ? `/new-projects/developed-by-${row.slug}/` : "";
+    case "communities":
+      return row.slug ? `/new-projects/in-${row.slug}/` : "";
+  }
+  return "";
+}
+
+function onRowOpen(e: React.MouseEvent<HTMLElement>, url: string) {
+  if (!url) return;
+  const target = e.target as HTMLElement;
+  if (target.closest("button, a, input, select, textarea")) return;
+  const tr = target.closest("tr");
+  const fb = tr?.getAttribute("data-fallback");
+  if (!fb) {
+    window.open(url, "_blank");
+    return;
+  }
+  fetch(url, { method: "GET", credentials: "same-origin" })
+    .then((r) => window.open(r.ok ? url : fb, "_blank"))
+    .catch(() => window.open(fb, "_blank"));
+}
+
 function coerceJsonFields(form: Record<string, any>, fields: FieldDef[]): Record<string, any> {
   const out: Record<string, any> = {};
   for (const fd of fields) {
@@ -683,7 +770,7 @@ function PropertiesManager() {
                 </thead>
                 <tbody>
                   {items.map((row) => (
-                    <tr key={row.id}>
+                    <tr key={row.id} className="app-row-click" onClick={(e) => onRowOpen(e, rowUrl("properties", row))}>
                       <td>
                         <strong>{row.title}</strong>
                         <div style={{ fontSize: 12, color: "#9399a4" }}>/{row.transaction_type}/{row.slug}{row.id}/</div>
@@ -700,7 +787,6 @@ function PropertiesManager() {
                       </td>
                       <td>
                         <div className="row-actions">
-                          <a className="app-btn ghost sm" href={`/${row.transaction_type}/${row.slug}${row.id}/`} target="_blank">View</a>
                           <button type="button" className="app-btn ghost sm" onClick={() => openEdit(row)}>Edit</button>
                           <button type="button" className="app-btn danger sm" onClick={() => remove(row)}>Delete</button>
                         </div>
@@ -1288,7 +1374,7 @@ function InquiriesManager() {
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table className="app-table">
-            <thead><tr><th>Contact</th><th>Kind</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <thead><tr><th>Contact</th><th>Kind</th><th>Status</th><th>Date</th></tr></thead>
             <tbody>
               {items.map((row) => (
                 <tr key={row.id} className="app-row-click" onClick={() => setOpen(row)}>
@@ -1296,7 +1382,6 @@ function InquiriesManager() {
                   <td>{row.kind}</td>
                   <td><span className="app-badge">{row.status}</span></td>
                   <td>{fmtDate(row.created_at)}</td>
-                  <td><button type="button" className="app-btn sm" onClick={(e) => { e.stopPropagation(); setOpen(row); }}>View</button></td>
                 </tr>
               ))}
             </tbody>
@@ -1393,7 +1478,7 @@ function ListingsManager() {
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table className="app-table">
-            <thead><tr><th>Owner</th><th>Property</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <thead><tr><th>Owner</th><th>Property</th><th>Status</th><th>Date</th></tr></thead>
             <tbody>
               {items.map((row) => {
                 const p = parseListingPayload(String(row.message || ""));
@@ -1403,7 +1488,6 @@ function ListingsManager() {
                     <td>{p ? `${p.transaction || ""} ${p.property_type || ""}${p.community ? " · " + p.community : ""}` : row.property_slug || "Property"}</td>
                     <td><span className="app-badge">{row.status}</span></td>
                     <td>{fmtDate(row.created_at)}</td>
-                    <td><button type="button" className="app-btn sm" onClick={(e) => { e.stopPropagation(); setOpen(row); }}>View</button></td>
                   </tr>
                 );
               })}
@@ -1483,7 +1567,7 @@ function ViewingsManager() {
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table className="app-table">
-            <thead><tr><th>Customer</th><th>Property</th><th>Date / time</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Customer</th><th>Property</th><th>Date / time</th><th>Status</th></tr></thead>
             <tbody>
               {items.map((row) => (
                 <tr key={row.id} className="app-row-click" onClick={() => setOpen(row)}>
@@ -1491,7 +1575,6 @@ function ViewingsManager() {
                   <td>{row.property_slug || row.property_ref || "General"}</td>
                   <td>{row.preferred_date}<div style={{ fontSize: 12, color: "#9399a4" }}>{row.time_slot}</div></td>
                   <td><span className="app-badge">{row.status}</span></td>
-                  <td><button type="button" className="app-btn sm" onClick={(e) => { e.stopPropagation(); setOpen(row); }}>View</button></td>
                 </tr>
               ))}
             </tbody>
@@ -2021,7 +2104,7 @@ function ProjectDetailsManager({ openSlug, onBack }: { openSlug?: string | null;
           </thead>
           <tbody>
             {items.map((row) => (
-              <tr key={row.slug}>
+              <tr key={row.slug} className="app-row-click" onClick={(e) => onRowOpen(e, rowUrl("projects", row))}>
                 <td><strong>{row.title || row.slug}</strong><div style={{ fontSize: 12, color: "#9399a4" }}>{row.slug}</div></td>
                 <td>{row.developer || "—"}</td>
                 <td>{row.display_address || "—"}</td>
@@ -2029,7 +2112,6 @@ function ProjectDetailsManager({ openSlug, onBack }: { openSlug?: string | null;
                 <td>{fmtDate(row.updated_at)}</td>
                 <td>
                   <button type="button" className="app-btn ghost sm" onClick={() => openEdit(row)}>Edit</button>
-                  <a className="app-btn ghost sm" href={`/new-projects/${row.slug}/`} target="_blank" style={{ marginLeft: 4 }}>View</a>
                 </td>
               </tr>
             ))}
