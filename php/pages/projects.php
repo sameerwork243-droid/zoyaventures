@@ -20,7 +20,7 @@ $isDetail = count($hits) <= 1 && isset($hits[0]) && (str_starts_with($last, 'in-
 
 function project_dev_slug(?string $developer): string
 {
-    return strtolower(preg_replace('/[^a-z0-9]+/', '-', (string) $developer) ?? '');
+    return preg_replace('/[^a-z0-9]+/', '-', strtolower((string) $developer)) ?? '';
 }
 
 function project_beds(array $h): string

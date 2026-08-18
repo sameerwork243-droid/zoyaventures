@@ -101,6 +101,40 @@ switch ($route) {
 
 if (preg_match('#^/new-projects/developed-by-([a-z0-9-]+)$#', $routeBase, $m)) {
     $hub = developer_hub_data($m[1]);
+
+    // DB merge (parity with Next page.tsx): replace hub hits with DB projects matching the developer
+    $db = db_projects();
+    if (count($db)) {
+        $extra = array_values(array_filter($db, fn ($h) => db_dev_slug_key($h['developer'] ?? '') === $m[1]));
+        if (count($extra)) {
+            $hub['hits'] = $extra;
+            $hub['nbHits'] = count($extra);
+            $hub['nbPages'] = max(1, (int) ceil(count($extra) / ($hub['hitsPerPage'] ?? 20)));
+        }
+    }
+
+    // Developer rows drive hub existence: when the table has rows and the slug
+    // is absent, the hub does not exist (parity with Next's notFound).
+    $devRows = db_rows('SELECT * FROM developers ORDER BY name ASC');
+    if (count($devRows)) {
+        $dev = null;
+        foreach ($devRows as $d) {
+            if ((string) ($d['slug'] ?? '') === $m[1]) {
+                $dev = $d;
+                break;
+            }
+        }
+        if (!$dev) {
+            http_response_code(404);
+            require __DIR__ . '/pages/404.php';
+            exit;
+        }
+        $name = (string) ($dev['name'] ?? '');
+        if ($name !== (string) ($hub['hits'][0]['developer'] ?? '')) {
+            $hub['hits'] = array_map(fn ($h) => array_merge($h, ['developer' => $name]), $hub['hits']);
+        }
+    }
+
     if (!count($hub['hits'])) {
         http_response_code(404);
         require __DIR__ . '/pages/404.php';
@@ -110,6 +144,25 @@ if (preg_match('#^/new-projects/developed-by-([a-z0-9-]+)$#', $routeBase, $m)) {
     $isHub = true;
 } elseif (preg_match('#^/new-projects/type-([a-z0-9-]+)$#', $routeBase, $m)) {
     $hub = type_hub_data($m[1]);
+
+    // DB merge (parity with Next page.tsx): replace hub hits with DB projects of the type
+    $db = db_projects();
+    if (count($db)) {
+        $extra = array_values(array_filter($db, function ($h) use ($m) {
+            $bt = $h['building_type'] ?? [];
+            if (!is_array($bt)) $bt = [$bt];
+            foreach ($bt as $b) {
+                if (db_type_slug_key($b) === $m[1]) return true;
+            }
+            return false;
+        }));
+        if (count($extra)) {
+            $hub['hits'] = $extra;
+            $hub['nbHits'] = count($extra);
+            $hub['nbPages'] = max(1, (int) ceil(count($extra) / ($hub['hitsPerPage'] ?? 20)));
+        }
+    }
+
     if (!count($hub['hits'])) {
         http_response_code(404);
         require __DIR__ . '/pages/404.php';

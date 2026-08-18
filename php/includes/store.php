@@ -284,18 +284,18 @@ function project_detail_by_slug(string $slug): ?array
 
 function projects_by_developer(string $dev): array
 {
-    $key = strtolower(preg_replace('/[^a-z0-9-]+/', '-', $dev) ?? '');
-    return array_values(array_filter(project_corpus(), fn ($h) => strtolower(preg_replace('/[^a-z0-9-]+/', '-', (string) ($h['developer'] ?? '')) ?? '') === $key));
+    $key = preg_replace('/[^a-z0-9-]+/', '-', strtolower($dev)) ?? '';
+    return array_values(array_filter(project_corpus(), fn ($h) => (preg_replace('/[^a-z0-9-]+/', '-', strtolower((string) ($h['developer'] ?? ''))) ?? '') === $key));
 }
 
 function projects_by_type(string $t): array
 {
-    $key = strtolower(preg_replace('/[^a-z0-9]+/', '', $t) ?? '');
+    $key = preg_replace('/[^a-z0-9]+/', '', strtolower($t)) ?? '';
     return array_values(array_filter(project_corpus(), function ($h) use ($key) {
         $bt = $h['building_type'] ?? [];
         if (!is_array($bt)) $bt = [$bt];
         foreach ($bt as $b) {
-            $k = strtolower(preg_replace('/[^a-z0-9]+/', '', (string) $b) ?? '');
+            $k = preg_replace('/[^a-z0-9]+/', '', strtolower((string) $b)) ?? '';
             if ($k === $key) return true;
         }
         return false;
@@ -326,6 +326,63 @@ function type_hub_data(string $t): array
         'hitsPerPage' => count($hits) ?: 1,
         'content' => ['title' => 'Off-Plan ' . strtoupper(substr($t, 0, 1)) . substr($t, 1) . ' Projects in Dubai'],
     ];
+}
+
+/* ------------------------------ project DB bridge (content-bridge.ts port) ------------------------------ */
+
+function db_json_arr(mixed $v): array
+{
+    if ($v === null || $v === '') return [];
+    $p = json_decode((string) $v, true);
+    if (is_array($p)) return array_map('strval', $p);
+    return array_values(array_filter(array_map('trim', explode(',', (string) $v))));
+}
+
+function db_dev_slug_key(mixed $s): string
+{
+    return preg_replace('/[^a-z0-9-]+/', '-', strtolower((string) $s)) ?? '';
+}
+
+function db_type_slug_key(mixed $s): string
+{
+    return preg_replace('/[^a-z0-9]+/', '', strtolower((string) $s)) ?? '';
+}
+
+/** Published projects from the database, shaped like scraped new-projects hits (dbProjects port). */
+function db_projects(): array
+{
+    if (!db_enabled()) return [];
+    $items = db_rows("SELECT * FROM projects WHERE published = 1 ORDER BY id DESC");
+    $out = [];
+    foreach ($items as $p) {
+        $images = [];
+        foreach (db_json_arr($p['images'] ?? '') as $u) {
+            $images[] = ['340x252' => $u, '464x312' => $u, '696x520' => $u];
+        }
+        $banner = (string) ($p['banner_image'] ?? '');
+        $out[] = [
+            'id' => (int) ($p['id'] ?? 0),
+            'slug' => (string) ($p['slug'] ?? ''),
+            'title' => (string) ($p['title'] ?? ''),
+            'status' => (string) ($p['status'] ?? 'ready'),
+            'price' => (int) ($p['price'] ?? 0),
+            'currency' => (string) ($p['currency'] ?? 'AED'),
+            'community' => (string) ($p['community'] ?? ''),
+            'developer' => (string) ($p['developer'] ?? ''),
+            'building_type' => db_json_arr($p['building_type'] ?? ''),
+            'department' => (string) ($p['department'] ?? ''),
+            'min_bedrooms' => (int) ($p['bedrooms_min'] ?? 0),
+            'max_bedrooms' => (int) ($p['bedrooms_max'] ?? 0),
+            'display_address' => (string) ($p['display_address'] ?? ''),
+            'about' => (string) ($p['about'] ?? ''),
+            'images' => $images,
+            'amenities' => db_json_arr($p['amenities'] ?? ''),
+            'banner_image' => $banner !== '' ? [['376x' => $banner, '744x' => $banner, '1650x' => $banner]] : [],
+            'completion_year' => isset($p['completion_year']) && $p['completion_year'] !== null && $p['completion_year'] !== '' ? (int) $p['completion_year'] : null,
+            'publish' => (int) ($p['published'] ?? 1) === 1,
+        ];
+    }
+    return $out;
 }
 
 /* ------------------------------ misc corpus helpers ------------------------------ */
