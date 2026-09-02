@@ -1,6 +1,8 @@
 # .htaccess — clean URLs → index.php front controller (shared hosting, Apache)
 
-Options -Indexes
+# -MultiViews: cPanel enables it by default; it content-negotiates index.php
+# for every URL and loops with mod_rewrite (AH00124: 10 internal redirects).
+Options -Indexes -MultiViews +FollowSymLinks
 DirectoryIndex index.php
 
 # Protect sensitive files
@@ -26,7 +28,10 @@ DirectoryIndex index.php
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Everything else → front controller
+  # Everything else → front controller (never rewrite index.php itself)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/index\.php
   RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]
 </IfModule>
 

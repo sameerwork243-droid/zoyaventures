@@ -59,19 +59,41 @@
     /* ---------- FloorPlanPicker ---------- */
     var img = document.querySelector("[data-floorplan-img]");
     if (img) {
+      var FP_PLACEHOLDER = "/images/floorplan-placeholder.svg";
       var fpWrap = img.closest(".floorplans-container");
       if (fpWrap) {
-        fpWrap.querySelectorAll("[data-floorplan-sel]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            fpWrap.querySelectorAll(".floorplan-item-wrap").forEach(function (b) {
-              b.classList.remove("selected");
-            });
-            btn.classList.add("selected");
-            var media = btn.getAttribute("data-floorplan-media");
-            if (media) img.src = media;
-            var t = btn.querySelector(".title");
-            if (t && t.textContent) img.alt = t.textContent;
+        var dlLink = fpWrap.querySelector("[data-floorplan-download]");
+        function selectPlan(item) {
+          fpWrap.querySelectorAll(".floorplan-item-wrap").forEach(function (b) {
+            b.classList.remove("selected");
           });
+          item.classList.add("selected");
+          var media = item.getAttribute("data-floorplan-media");
+          img.src = media ? media : FP_PLACEHOLDER;
+          var t = item.querySelector(".title");
+          if (t && t.textContent) img.alt = t.textContent;
+          if (dlLink) {
+            if (media) {
+              dlLink.href = media;
+              dlLink.style.display = "";
+            } else {
+              dlLink.style.display = "none";
+            }
+          }
+        }
+        fpWrap.querySelectorAll(".floorplan-item-wrap").forEach(function (item) {
+          item.addEventListener("click", function () { selectPlan(item); });
+          item.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectPlan(item); }
+          });
+        });
+        // keep the download link in sync when the image is swapped by other code
+        img.addEventListener("load", function () {
+          var sel = fpWrap.querySelector(".floorplan-item-wrap.selected");
+          if (sel && dlLink) {
+            var m = sel.getAttribute("data-floorplan-media");
+            dlLink.style.display = m ? "" : "none";
+          }
         });
       }
     }

@@ -51,6 +51,7 @@ $F = [
         ['key' => 'building_type', 'label' => 'Building types (comma-separated)', 'type' => 'json', 'full' => true],
         ['key' => 'about', 'label' => 'About (HTML)', 'type' => 'textarea', 'full' => true],
         ['key' => 'images', 'label' => 'Image URLs (comma-separated)', 'type' => 'json', 'full' => true, 'file' => true],
+        ['key' => 'floor_plans', 'label' => 'Floor plans', 'type' => 'floorplans', 'full' => true],
         ['key' => 'amenities', 'label' => 'Amenities (comma-separated)', 'type' => 'json', 'full' => true],
         ['key' => 'banner_image', 'label' => 'Banner image URL', 'full' => true, 'file' => true],
         ['key' => 'published', 'label' => 'Published', 'type' => 'checkbox', 'hint' => 'Visible on the public site'],
@@ -309,10 +310,10 @@ $loadingCard = '<div class="app-card"><p class="app-empty">Loading&hellip;</p></
     <footer class="portal-footer">
       <div class="portal-footer-inner">
         <div class="portal-copy">
-          &copy; 2024, Zoya Ventures Real Estate
+          &copy; 2026, Zoya Ventures Real Estate
           <a href="/privacy-policy/">Privacy Policy</a>
         </div>
-        <div class="portal-siteby">Site by <span>Starberry</span></div>
+        <div class="portal-siteby">Site by <a rel="nofollow" href="https://hifimarketing.co" target="_blank">hifi</a></div>
       </div>
     </footer>
   </div>

@@ -95,6 +95,9 @@ switch ($route) {
     case '/sitemap':
         require __DIR__ . '/pages/sitemap.php';
         exit;
+    case '/book-a-viewing':
+        require __DIR__ . '/pages/book-a-viewing.php';
+        exit;
 }
 
 /* ------------------------------ project hubs ------------------------------ */
@@ -135,24 +138,48 @@ if (preg_match('#^/new-projects/developed-by-([a-z0-9-]+)$#', $routeBase, $m)) {
         }
     }
 
-    if (!count($hub['hits'])) {
-        http_response_code(404);
-        require __DIR__ . '/pages/404.php';
-        exit;
-    }
+    // Empty hubs render the standard listing with a no-results message.
     $model = ['kind' => 'project', 'data' => $hub, 'route' => $routeBase];
     $isHub = true;
-} elseif (preg_match('#^/new-projects/type-([a-z0-9-]+)$#', $routeBase, $m)) {
-    $hub = type_hub_data($m[1]);
+} elseif (preg_match('#^/new-projects/in-([a-z0-9-]+)$#', $routeBase, $m)) {
+    // Area hub: projects in a community/area (empty hubs render no-results).
+    $hits = projects_by_area($m[1]);
+    $hub = [
+        'hits' => $hits,
+        'nbHits' => count($hits),
+        'page' => 0,
+        'nbPages' => 1,
+        'hitsPerPage' => count($hits) ?: 1,
+        'content' => ['title' => 'New Projects in ' . str_replace('-', ' ', $m[1])],
+    ];
+    $model = ['kind' => 'project', 'data' => $hub, 'route' => $routeBase];
+    $isHub = true;
+} elseif (preg_match('#^/new-projects/(type|completion)-([a-z0-9-]+)$#', $routeBase, $m)) {
+    $isCompletion = $m[1] === 'completion';
+    $key = preg_replace('/[^a-z0-9]+/', '', strtolower($m[2]));
+    $hits = $isCompletion ? projects_by_completion($key) : projects_by_type($key);
+    $hub = [
+        'hits' => $hits,
+        'nbHits' => count($hits),
+        'page' => 0,
+        'nbPages' => 1,
+        'hitsPerPage' => count($hits) ?: 1,
+        'content' => ['title' => $isCompletion
+            ? ($key === 'ready' ? 'Ready New Projects in Dubai' : 'Under-Construction Projects in Dubai')
+            : 'Off-Plan ' . strtoupper(substr($key, 0, 1)) . substr($key, 1) . ' Projects in Dubai'],
+    ];
 
-    // DB merge (parity with Next page.tsx): replace hub hits with DB projects of the type
+    // DB merge: replace hub hits with curated DB projects of the same type/status.
     $db = db_projects();
     if (count($db)) {
-        $extra = array_values(array_filter($db, function ($h) use ($m) {
+        $extra = array_values(array_filter($db, function ($h) use ($key, $isCompletion) {
+            if ($isCompletion) {
+                return type_hub_slug_matches($key, $h);
+            }
             $bt = $h['building_type'] ?? [];
             if (!is_array($bt)) $bt = [$bt];
             foreach ($bt as $b) {
-                if (db_type_slug_key($b) === $m[1]) return true;
+                if (type_slug_matches($key, preg_replace('/[^a-z0-9]+/', '', strtolower((string) $b)) ?? '')) return true;
             }
             return false;
         }));
@@ -163,11 +190,7 @@ if (preg_match('#^/new-projects/developed-by-([a-z0-9-]+)$#', $routeBase, $m)) {
         }
     }
 
-    if (!count($hub['hits'])) {
-        http_response_code(404);
-        require __DIR__ . '/pages/404.php';
-        exit;
-    }
+    // Empty hubs render the standard listing with a no-results message.
     $model = ['kind' => 'project', 'data' => $hub, 'route' => $routeBase];
     $isHub = true;
 } else {
@@ -191,6 +214,12 @@ if (!isset($model)) {
     } elseif (!$model && preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)) {
         $last = (string) end(array_values(array_filter(explode('/', $routeBase))));
         $p = project_by_slug($last);
+        // Admin-created projects live only in the DB projects table.
+        if (!$p && db_enabled()) {
+            foreach (db_projects() as $dbh) {
+                if ((string) ($dbh['slug'] ?? '') === $last) { $p = $dbh; break; }
+            }
+        }
         if ($p) $model = ['kind' => 'project', 'data' => ['hits' => [$p], 'nbHits' => 1, 'page' => 0, 'nbPages' => 1, 'hitsPerPage' => 1, 'content' => null], 'route' => $routeBase];
     }
 
@@ -218,6 +247,22 @@ if (!isset($model)) {
         exit;
     }
 
+    // Hide projects that have no rich detail record anywhere they are listed.
+    if ($model['kind'] === 'project' && !empty($model['data']['hits'])) {
+        $kept = [];
+        foreach ($model['data']['hits'] as $h) {
+            if (is_array($h) && project_has_detail($h)) $kept[] = $h;
+        }
+        $model['data']['hits'] = $kept;
+        $model['data']['nbHits'] = count($kept);
+        if (!$kept && preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)
+            && !preg_match('#^/new-projects/(developed-by|type)-#', $routeBase)) {
+            http_response_code(404);
+            require __DIR__ . '/pages/404.php';
+            exit;
+        }
+    }
+
     /* --------------------------- listing merge + filters --------------------------- */
 
     if ($model['kind'] === 'listing') {
@@ -234,10 +279,17 @@ if (!isset($model)) {
         }
 
         $merged = [];
+        // DB properties first (admin-added listings, newest on top) when db_enabled()
+        if (db_enabled()) {
+            $txn = $kind === 'let' ? 'rent' : 'buy';
+            foreach (db_rows("SELECT * FROM properties WHERE published = 1 AND transaction_type = ? ORDER BY id DESC", [$txn]) as $p) {
+                $h = db_hit($p);
+                if (match_hit($h, $filters)) $merged[] = $h;
+            }
+        }
         foreach (corpus($kind) as $h) {
             if (match_hit($h, $filters)) $merged[] = $h;
         }
-        // DB properties (phase 10+) appended here when db_enabled()
         foreach ($model['data']['hits'] ?? [] as $h) {
             if (match_hit($h, $filters)) $merged[] = $h;
         }
@@ -254,7 +306,9 @@ if (!isset($model)) {
 
 /* --------------------------- render --------------------------- */
 
-$transparent = $route === '/' || (str_starts_with($route, '/new-projects/') && $route !== '/new-projects/');
+$transparent = $route === '/'
+    || (str_starts_with($route, '/new-projects/') && $route !== '/new-projects/'
+        && !preg_match('#^/new-projects/(developed-by|type)-#', $route));
 
 switch ($model['kind']) {
     case 'listing':

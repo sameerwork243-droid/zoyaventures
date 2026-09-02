@@ -26,18 +26,18 @@ function render_head(): void
 <title><?= esc($title) ?></title>
 <meta name="description" content="<?= esc($page_description) ?>">
 <meta name="robots" content="index, follow">
-<link rel="icon" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" href="/lloo.png">
 <link rel="canonical" href="<?= esc($canonical) ?>">
 <meta property="og:title" content="Leading Real Estate Agency in Dubai, UAE">
 <meta property="og:site_name" content="Zoya Ventures Real Estate">
 <meta property="og:image" content="<?= esc($og_image) ?>">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="/assets/css/provident.css">
-<link rel="stylesheet" href="/assets/css/header-styles.css">
-<link rel="stylesheet" href="/assets/css/developer-styles.css">
-<link rel="stylesheet" href="/assets/css/app-styles.css">
-<link rel="stylesheet" href="/assets/css/portal.css">
-<link rel="stylesheet" href="/assets/css/app-shell.css">
+<link rel="stylesheet" href="/assets/css/provident.css?v=<?= APP_ASSET_VER ?>">
+<link rel="stylesheet" href="/assets/css/header-styles.css?v=<?= APP_ASSET_VER ?>">
+<link rel="stylesheet" href="/assets/css/developer-styles-v5.css?v=<?= APP_ASSET_VER ?>">
+<link rel="stylesheet" href="/assets/css/app-styles.css?v=<?= APP_ASSET_VER ?>">
+<link rel="stylesheet" href="/assets/css/portal.css?v=<?= APP_ASSET_VER ?>">
+<link rel="stylesheet" href="/assets/css/app-shell.css?v=<?= APP_ASSET_VER ?>">
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PGNHTGZ5');</script>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGNHTGZ5" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <?php
@@ -46,9 +46,9 @@ function render_head(): void
 function render_site_footer_scripts(): void
 {
     ?>
-<script src="/assets/js/main.js" defer></script>
-<script src="/assets/js/listing-ui.js" defer></script>
-<script src="/assets/js/property.js" defer></script>
-<script src="/assets/js/content-ui.js" defer></script>
+<script src="/assets/js/main.js?v=<?= APP_ASSET_VER ?>" defer></script>
+<script src="/assets/js/listing-ui.js?v=<?= APP_ASSET_VER ?>" defer></script>
+<script src="/assets/js/property.js?v=<?= APP_ASSET_VER ?>" defer></script>
+<script src="/assets/js/content-ui-v4.js?v=<?= APP_ASSET_VER ?>" defer></script>
     <?php
 }

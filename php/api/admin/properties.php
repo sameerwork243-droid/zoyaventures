@@ -45,7 +45,7 @@ $body = json_body();
 
 if ($method === 'POST' || $method === 'PUT') {
     $cols = [
-        'title', 'slug', 'transaction_type', 'property_type', 'category', 'status',
+        'title', 'transaction_type', 'property_type', 'category', 'status',
         'price', 'price_qualifier', 'community', 'developer', 'agent_id', 'location',
         'display_address', 'latitude', 'longitude', 'bedroom', 'bathroom', 'area_sqft',
         'plot_size', 'parking', 'furnished', 'completion_status', 'year_built',
@@ -100,6 +100,13 @@ if ($method === 'POST' || $method === 'PUT') {
         $id = (int) $res['lastId'];
     } else {
         if (!$id) json_response(['error' => 'Missing id'], 400);
+        $slug = trim((string) ($body['slug'] ?? ''));
+        if ($slug !== '') {
+            $dup = db_row("SELECT id FROM properties WHERE slug = ? AND id <> ?", [$slug, $id]);
+            if ($dup) json_response(['error' => 'Slug already in use'], 400);
+            $set[] = 'slug = ?';
+            $params[] = $slug;
+        }
         $set[] = 'updated_at = ?';
         $params[] = now_iso();
         $params[] = $id;

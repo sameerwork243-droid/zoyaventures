@@ -232,7 +232,7 @@ $header_btn = $header_t ? 'button-white-outline' : 'button-white';
             </svg>
           </a>
         <?php else: ?>
-          <a href="/login" class="button list-prop-btn <?= $header_btn ?>" aria-label="Login">
+          <a href="/login/" class="button list-prop-btn <?= $header_btn ?>" aria-label="Login">
             <svg class="user-icon user-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path fill="none" d="M2 13.3333C3.55719 11.6817 5.67134 10.6667 8 10.6667C10.3287 10.6667 12.4428 11.6817 14 13.3333M11 5C11 6.65685 9.65685 8 8 8C6.34315 8 5 6.65685 5 5C5 3.34315 6.34315 2 8 2C9.65685 2 11 3.34315 11 5Z" stroke="#07234B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -256,6 +256,11 @@ $header_btn = $header_t ? 'button-white-outline' : 'button-white';
       <a class="nav-menu nav-menu-icon-wrap" aria-label="Search Properties" href="/buy/properties-for-sale/">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none" class="search-icon menu-icon">
           <path d="M14.5 14L11.0355 10.5355M11.0355 10.5355C11.9404 9.63071 12.5 8.38071 12.5 7C12.5 4.23858 10.2614 2 7.5 2C4.73858 2 2.5 4.23858 2.5 7C2.5 9.76142 4.73858 12 7.5 12C8.88071 12 10.1307 11.4404 11.0355 10.5355Z" stroke="<?= $header_t ? '#fff' : '#07234B' ?>" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="<?= $header_user ? (in_array($header_user['role'], ['admin', 'agent'], true) ? '/admin' : '/dashboard') : '/login/' ?>" class="nav-menu nav-menu-icon-wrap" aria-label="<?= $header_user ? 'My Account' : 'Login' ?>">
+        <svg class="user-icon menu-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16" fill="none">
+          <path fill="none" d="M2 13.3333C3.55719 11.6817 5.67134 10.6667 8 10.6667C10.3287 10.6667 12.4428 11.6817 14 13.3333M11 5C11 6.65685 9.65685 8 8 8C6.34315 8 5 6.65685 5 5C5 3.34315 6.34315 2 8 2C9.65685 2 11 3.34315 11 5Z" stroke="<?= $header_t ? '#fff' : '#07234B' ?>" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
       <button class="nav-menu nav-menu-icon-wrap js-mobile-drawer-open" type="button">
@@ -282,6 +287,11 @@ $header_btn = $header_t ? 'button-white-outline' : 'button-white';
         </button>
       </div>
       <div class="mobile-drawer-body">
+        <?php if ($header_user): $href = in_array($header_user['role'], ['admin', 'agent'], true) ? '/admin' : '/dashboard'; ?>
+          <a class="button list-prop-btn button-orange js-mobile-drawer-close mobile-drawer-login" href="<?= $href ?>">My Account</a>
+        <?php else: ?>
+          <a class="button list-prop-btn button-orange js-mobile-drawer-close mobile-drawer-login" href="/login/">Login / Sign Up</a>
+        <?php endif; ?>
         <?php foreach ($MENUS as $i => $m): ?>
           <?php if (!empty($m['plain'])): ?>
             <a class="mobile-nav-item js-mobile-drawer-close" href="<?= esc($m['href']) ?>"><?= esc($m['label']) ?></a>

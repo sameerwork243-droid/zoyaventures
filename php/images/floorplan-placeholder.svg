@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Floor plan available on request">
+  <rect width="800" height="600" fill="#f4f8fb"/>
+  <g fill="none" stroke="#07234B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.45">
+    <rect x="250" y="150" width="300" height="270" rx="12"/>
+    <path d="M250 280h130v140"/>
+    <path d="M420 150v130h130"/>
+    <path d="M380 280h170"/>
+    <path d="M310 200h60"/>
+  </g>
+  <text x="400" y="487" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="26" font-weight="700" fill="#07234B" opacity="0.8">Floor plan available on request</text>
+  <text x="400" y="520" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="17" font-weight="400" fill="#35373C" opacity="0.65">Contact us and we will share the full plan</text>
+</svg>

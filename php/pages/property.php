@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../includes/render/property-gallery.php';
 require_once __DIR__ . '/../includes/render/property-enquiry-form.php';
 require_once __DIR__ . '/../includes/render/property-card.php';
+require_once __DIR__ . '/../includes/render/modules.php';
 require_once __DIR__ . '/../includes/render/listing-ui.php';
 require_once __DIR__ . '/../includes/render/read-more.php';
 require_once __DIR__ . '/../includes/render/rich.php';
@@ -63,7 +64,7 @@ function key_info(string $label, string $value): string
 <?php require __DIR__ . '/../includes/header.php'; ?>
 <main>
 
-<div>
+<div class="property-detail-page page-layout property-detail-layout">
   <div class="property-breadcrumb-wrap">
     <div class="breadcrumbs-wrap">
       <div class="breadcrumbs-container container">
@@ -260,6 +261,7 @@ function key_info(string $label, string $value): string
                       <p class="orn-no">BRN No: <?= esc((string) $neg['brn_number']) ?></p>
                     <?php endif; ?>
                   </a>
+                  <p class="phone"><a href="<?= esc('tel:' . preg_replace('/\s+/', '', (string) $phone)) ?>"><?= esc((string) $phone) ?></a></p>
                 </div>
                 <div class="d-flex d-md-none team-icon-only">
                   <a href="<?= esc('tel:' . preg_replace('/\s+/', '', (string) $phone)) ?>" class="ph">

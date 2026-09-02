@@ -27,6 +27,10 @@ function address_of(array $hit): string
 
 function prop_link(array $hit): string
 {
+    $dept = strtolower((string) ($hit['department'] ?? ''));
+    if ($dept === 'new_developments' && !empty($hit['slug'])) {
+        return '/new-projects/' . $hit['slug'] . '/';
+    }
     $t = strtolower((string) ($hit['search_type'] ?? ''));
     $base = (str_contains($t, 'rent') || str_contains($t, 'letting')) ? '/let/' : '/buy/';
     return $base . ($hit['slug'] ?? '') . ($hit['id'] ?? '') . '/';
@@ -45,10 +49,11 @@ function wa_link_property(array $hit): string
     $phone = $neg['phone'] ?? '+971 568 308 221';
     $ref = (string) ($hit['crm_id'] ?? '');
     $type = $hit['building'][0] ?? $hit['building_type'] ?? '';
+    if (is_array($type)) $type = $type['name'] ?? $type[0] ?? '';
     $price = !empty($hit['price']) ? 'AED ' . number_format((int) $hit['price'], 0, '.', ',') : '';
     $loc = address_of($hit);
     $link = prop_link($hit);
-    $text = "Hello Zoya Ventures,\n\nI would like to know more about this property:\n\n• Reference: $ref\n• Type: $type\n• Price: $price\n• Location: $loc\n• Link: https://providentestate.com$link\n\nModifying this message will prevent it from being sent to the agent.";
+    $text = "Hello Zoya Ventures,\n\nI would like to know more about this property:\n\n• Reference: $ref\n• Type: $type\n• Price: $price\n• Location: $loc\n• Link: " . site_base_url() . $link . "\n\nModifying this message will prevent it from being sent to the agent.";
     $searchType = strtolower((string) ($hit['search_type'] ?? ''));
     $kind = (str_contains($searchType, 'rent') || str_contains($searchType, 'letting')) ? 'secondaryrent' : 'secondarysale';
     $params = [
@@ -58,7 +63,7 @@ function wa_link_property(array $hit): string
         'utm_source' => 'Browser Direct',
         'gclid' => '"',
         'type' => $kind,
-        'referrer_url' => 'https://providentestate.com' . $link,
+        'referrer_url' => site_base_url() . $link,
         'event_type' => 'Whatsapp Click',
         'utm_platform' => '"',
     ];
@@ -239,6 +244,32 @@ function area_label(string $slug): string
 
 /* ------------------------------ project corpus ------------------------------ */
 
+/** Slugs that have a rich detail record (DB project_details + curated JSON files). */
+function curated_project_slugs(): array
+{
+    static $set = null;
+    if ($set !== null) return $set;
+    $set = [];
+    if (db_enabled()) {
+        foreach (db_rows('SELECT slug FROM project_details') as $r) {
+            $s = rtrim(strtolower((string) ($r['slug'] ?? '')), '.');
+            if ($s !== '') $set[$s] = true;
+        }
+    }
+    foreach (glob(APP_RAW_DIR . '/projects-detail/*.json') ?: [] as $f) {
+        $s = rtrim(strtolower(basename((string) $f, '.json')), '.');
+        if ($s !== '') $set[$s] = true;
+    }
+    return $set;
+}
+
+/** Is this hit backed by a detail record? Projects without one are hidden site-wide. */
+function project_has_detail(array $h): bool
+{
+    $slug = rtrim(strtolower((string) ($h['slug'] ?? '')), '.');
+    return $slug !== '' && isset(curated_project_slugs()[$slug]);
+}
+
 function project_corpus(): array
 {
     static $cache = null;
@@ -251,7 +282,7 @@ function project_corpus(): array
             $d = $j['result']['serverData']['data'] ?? null;
             if (is_array($d) && !empty($d['hits'])) {
                 foreach ($d['hits'] as $h) {
-                    if (($h['publish'] ?? true) !== false) $out[] = $h;
+                    if (($h['publish'] ?? true) !== false && project_has_detail($h)) $out[] = $h;
                 }
             }
         }
@@ -292,14 +323,58 @@ function projects_by_type(string $t): array
 {
     $key = preg_replace('/[^a-z0-9]+/', '', strtolower($t)) ?? '';
     return array_values(array_filter(project_corpus(), function ($h) use ($key) {
-        $bt = $h['building_type'] ?? [];
-        if (!is_array($bt)) $bt = [$bt];
-        foreach ($bt as $b) {
-            $k = preg_replace('/[^a-z0-9]+/', '', strtolower((string) $b)) ?? '';
-            if ($k === $key) return true;
-        }
-        return false;
+        return type_hub_slug_matches($key, $h);
     }));
+}
+
+/** Area slug for a project hit (community, else first display-address segment). */
+function project_area_slug_of(array $h): string
+{
+    $c = trim((string) ($h['community'] ?? ''));
+    if ($c === '') {
+        $parts = array_values(array_filter(array_map('trim', explode(',', (string) ($h['display_address'] ?? '')))));
+        $c = (string) ($parts[0] ?? '');
+    }
+    return preg_replace('/[^a-z0-9]+/', '-', strtolower($c)) ?? '';
+}
+
+/** Plural/singular tolerant match between a URL type slug and a building-type key. */
+function type_slug_matches(string $urlKey, string $typeKey): bool
+{
+    if ($urlKey === '' || $typeKey === '') return false;
+    if ($urlKey === $typeKey) return true;
+    if (rtrim($urlKey, 's') === $typeKey) return true;
+    if ($urlKey === rtrim($typeKey, 's')) return true;
+    if ($urlKey === $typeKey . 's') return true;
+    if ($typeKey === $urlKey . 's') return true;
+    return false;
+}
+
+/** Completion-style hub filter (completion-ready / completion-under-construction). */
+function projects_by_completion(string $slug): array
+{
+    $key = preg_replace('/[^a-z0-9]+/', '', strtolower($slug)) ?? '';
+    return array_values(array_filter(project_corpus(), fn ($h) => type_hub_slug_matches($key, $h)));
+}
+
+/** Type-hub URL slugs also cover completion-style filters (under-construction, ready). */
+function type_hub_slug_matches(string $urlKey, array $h): bool
+{
+    $urlKey = preg_replace('/[^a-z0-9]+/', '', strtolower($urlKey)) ?? '';
+    $bt = $h['building_type'] ?? [];
+    if (!is_array($bt)) $bt = [$bt];
+    foreach ($bt as $b) {
+        $k = preg_replace('/[^a-z0-9]+/', '', strtolower((string) $b)) ?? '';
+        if (type_slug_matches($urlKey, $k)) return true;
+    }
+    $st = strtolower((string) ($h['status'] ?? ''));
+    if (in_array($urlKey, ['underconstruction'], true)) {
+        if (in_array($st, ['pending', 'under-construction', 'underconstruction', 'offplan', 'off-plan', 'launching', 'coming-soon', ''], true)) return true;
+    }
+    if (in_array($urlKey, ['ready', 'completed'], true)) {
+        if (in_array($st, ['ready', 'completed', 'complete'], true)) return true;
+    }
+    return false;
 }
 
 function developer_hub_data(string $dev): array
@@ -355,6 +430,9 @@ function db_projects(): array
     $items = db_rows("SELECT * FROM projects WHERE published = 1 ORDER BY id DESC");
     $out = [];
     foreach ($items as $p) {
+        // Public surfaces only list projects backed by a rich detail record.
+        $probe = ['slug' => (string) ($p['slug'] ?? '')];
+        if (!project_has_detail($probe)) continue;
         $images = [];
         foreach (db_json_arr($p['images'] ?? '') as $u) {
             $images[] = ['340x252' => $u, '464x312' => $u, '696x520' => $u];
@@ -433,8 +511,10 @@ function project_hits(int $limit = 6): array
                 $d = $j['result']['serverData']['data'] ?? null;
                 if (is_array($d) && !empty($d['hits'])) {
                     foreach ($d['hits'] as $h) {
-                        if (($h['publish'] ?? true) !== false) $out[] = $h;
-                        if (count($out) >= $limit) return array_slice($out, 0, $limit);
+                        if (($h['publish'] ?? true) !== false && project_has_detail($h)) {
+                            $out[] = $h;
+                            if (count($out) >= $limit) return array_slice($out, 0, $limit);
+                        }
                     }
                 }
             }
@@ -559,6 +639,15 @@ function db_hit(array $p): array
 {
     $thumb = (string) ($p['thumb'] ?? '');
     $id = (int) ($p['id'] ?? 0);
+    if ($thumb === '' && $id > 0 && db_enabled()) {
+        $first = db_rows('SELECT url FROM property_media WHERE property_id = ? AND kind = ? ORDER BY is_featured DESC, sort_order, id LIMIT 1', [$id, 'image']);
+        if ($first) {
+            $thumb = (string) ($first[0]['url'] ?? '');
+            if (str_starts_with($thumb, CDN_BASE)) {
+                $thumb = cft($thumb, 464, 312);
+            }
+        }
+    }
     $sqft = (int) ($p['area_sqft'] ?? 0);
     $img = fn ($u) => ['340x252' => $u, '464x312' => $u, '696x520' => $u];
     $placeholder = '/images/property-placeholder.svg';
@@ -657,6 +746,22 @@ function db_property_by_route(string $route): ?array
     if (!$p) return null;
 
     return ['kind' => $kind, 'data' => db_property_detail($p)];
+}
+
+/** Resolve a property by reference (crm ref like PS-05062611 or numeric id). */
+function db_property_by_ref(string $ref): ?array
+{
+    if (!db_enabled() || $ref === '') return null;
+    $p = db_row(
+        "SELECT p.*, ag.name AS agent_name, ag.img AS agent_img, ag.role AS agent_role,
+                ag.brn_number AS agent_brn, ag.phone AS agent_phone, ag.email AS agent_email
+         FROM properties p
+         LEFT JOIN agents ag ON ag.id = p.agent_id
+         WHERE p.published = 1 AND (CONCAT('PE-', p.id) = ? OR CAST(p.id AS CHAR) = ?)",
+        [$ref, $ref]
+    );
+    if (!$p) return null;
+    return ['kind' => (string) ($p['transaction_type'] ?? '') === 'rent' ? 'let' : 'buy', 'data' => db_property_detail($p)];
 }
 
 /** Dedupe hits by crm_id/id/slug (dedupeBySlug semantics + key-based merge dedupe). */

@@ -27,6 +27,12 @@ function esc(?string $s): string
     return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function site_base_url(): string
+{
+    $host = $_SERVER['HTTP_HOST'] ?? 'blowdryonwheels-com.wp-arenastaging.com';
+    return 'https://' . $host;
+}
+
 function to_slug(string $s): string
 {
     $s = strtolower($s);
@@ -118,6 +124,7 @@ function cft(?string $url, int $w = 340, int $h = 252): string
     if ($local) return $local;
     if (str_contains($url, CDN_BASE)) return $url;
     if (!preg_match('#/i/(.+)$#', $url, $m)) return $url;
+    if (strpos($m[1], '/') === false) return CDN_BASE . '/i/' . $m[1];
     return cf_path($m[1], "{$w}x{$h}");
 }
 
@@ -129,7 +136,19 @@ function cfw(?string $url, int $w = 744): string
     if ($local) return $local;
     if (str_contains($url, CDN_BASE)) return $url;
     if (!preg_match('#/i/(.+)$#', $url, $m)) return $url;
+    if (strpos($m[1], '/') === false) return CDN_BASE . '/i/' . $m[1];
     return cf_path($m[1], "{$w}x");
+}
+
+/** Raw cloudfront /i/ URL (no transform) — root-level keys 403 on /x/ transforms. */
+function cf_original(?string $url): string
+{
+    if (!$url) return '';
+    if (str_contains($url, CDN_BASE)) return $url;
+    if (preg_match('#https?://ggfx-providentestate\.s3\.eu-west-2\.amazonaws\.com(/.*)#', $url, $m)) {
+        return CDN_BASE . $m[1];
+    }
+    return $url;
 }
 
 /** Legacy cf() helper from ref.ts (passthrough). */
@@ -201,7 +220,7 @@ function classify(?array $j, string $route): ?array
             return ['kind' => 'property', 'data' => $d, 'route' => $route];
         }
     }
-    foreach (['strapiPage', 'strapiBlog', 'strapiTeam', 'strapiAreaGuide', 'strapiCareer', 'strapiEvent', 'strapiDeveloper'] as $key) {
+    foreach (['strapiPage', 'strapiBlog', 'strapiTeam', 'strapiAreaGuide', 'strapiCareer', 'strapiEvent', 'strapiDeveloper', 'strapiOffice'] as $key) {
         if (in_array($key, $keys, true)) return ['kind' => 'page', 'data' => $data[$key], 'route' => $route];
     }
     return null;
@@ -251,8 +270,19 @@ function json_response(mixed $payload, int $status = 200): never
 
 function json_body(): array
 {
+    if (isset($_POST['json']) && is_string($_POST['json']) && $_POST['json'] !== '') {
+        $j = json_decode($_POST['json'], true);
+        if (is_array($j)) return $j;
+    }
     $raw = file_get_contents('php://input');
     if ($raw === false || $raw === '') return [];
+    if (preg_match('/(?:^|&)json=/', $raw)) {
+        parse_str($raw, $fields);
+        if (isset($fields['json']) && is_string($fields['json']) && $fields['json'] !== '') {
+            $j = json_decode($fields['json'], true);
+            if (is_array($j)) return $j;
+        }
+    }
     $j = json_decode($raw, true);
     return is_array($j) ? $j : [];
 }

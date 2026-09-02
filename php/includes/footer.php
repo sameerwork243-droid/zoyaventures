@@ -8,7 +8,7 @@ $FOOTER_COLS = [
     ['title' => 'buy', 'links' => [
         ['Properties for Sale', '/buy/properties-for-sale/'],
         ['Guide to Buying', '/property-buying-dubai-guide/'],
-        ['Signature Collection', 'https://providentestate.com/#singnature'],
+        ['Signature Collection', '/#singnature'],
         ['Mortgages', '/property-services/mortgages/'],
         ['Property Management', '/property-services/property-management/'],
         ['Legal Services', '/property-services/conveyancing/'],
@@ -184,9 +184,9 @@ function footer_settings_selects(): void
             <p class="">ORN No:<span class="orn-no">1933</span></p>
           </div>
           <div class="copyright-section">
-            <p>PROVIDENT® is a registered trademark since 2008</p>
+            <p>Zoya Ventures® is a registered trademark since 2008</p>
           </div>
-          <p class="site-by">Site by <a rel="nofollow" href="https://www.starberry.tv" target="_blank" class="site-by-name">Starberry</a></p>
+          <p class="site-by">Site by <a rel="nofollow" href="https://hifimarketing.co" target="_blank" class="site-by-name">hifi</a></p>
         </div>
       </div>
     </div>

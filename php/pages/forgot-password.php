@@ -30,8 +30,8 @@ $page_title = 'Reset Password';
   </div>
   <footer class="portal-footer">
     <div class="portal-footer-inner">
-      <div class="portal-copy">© 2024, Zoya Ventures Real Estate <a href="/privacy-policy/">Privacy Policy</a></div>
-      <div class="portal-siteby">Site by <span>Starberry</span></div>
+      <div class="portal-copy">© 2026, Zoya Ventures Real Estate <a href="/privacy-policy/">Privacy Policy</a></div>
+      <div class="portal-siteby">Site by <a rel="nofollow" href="https://hifimarketing.co" target="_blank">hifi</a></div>
     </div>
   </footer>
 </div>

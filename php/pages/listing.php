@@ -127,7 +127,7 @@ $bedOptions_ = listing_bed_options($routeBase);
 $sizeOptions_ = listing_size_options($routeBase);
 $amenityOptions_ = listing_amenity_options($routeBase);
 
-$togBtnClass = 'tog-btn  btn btn-primary';
+$togBtnClass = 'tog-btn btn btn-primary filter-dropdown-toggle';
 ?><!DOCTYPE html>
 <html lang="en">
 <head><?php render_head(); ?></head>

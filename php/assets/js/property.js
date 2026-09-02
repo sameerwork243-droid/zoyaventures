@@ -87,8 +87,8 @@
       shareBtn.addEventListener("click", function () {
         var data = { title: shareBtn.getAttribute("data-share-title") || document.title, url: window.location.href };
         var done = function () {
-          shareMsg.style.display = "";
-          setTimeout(function () { shareMsg.style.display = "none"; }, 2500);
+          if (shareMsg) shareMsg.style.display = "";
+          setTimeout(function () { if (shareMsg) shareMsg.style.display = "none"; }, 2500);
         };
         if (navigator.share) {
           navigator.share(data).catch(function () {});
@@ -116,7 +116,6 @@
   document.addEventListener("submit", function (e) {
     var form = e.target;
     if (!form.matches || !form.matches("[data-enquiry-form]")) return;
-    if (!form.hasAttribute("data-property-slug")) return;
     e.preventDefault();
     var nameEl = form.querySelector("#bav-name");
     var emailEl = form.querySelector("#bav-email");
@@ -148,8 +147,8 @@
 
     fetch("/api/inquiries", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "json=" + encodeURIComponent(JSON.stringify({
         kind: "viewing",
         name: (nameEl.value || "").trim(),
         email: (emailEl.value || "").trim(),
@@ -157,7 +156,7 @@
         message: (msgEl.value || "").trim(),
         property_ref: form.getAttribute("data-property-ref") || "",
         property_slug: form.getAttribute("data-property-slug") || "",
-      }),
+      })),
     })
       .then(function (res) {
         return res.json().catch(function () { return null; }).then(function (d) {
@@ -181,6 +180,117 @@
         busy = false;
         submitBtn.disabled = false;
         submitBtn.querySelector("span").textContent = "Request Information";
+      });
+  });
+
+  /* ---------- BookViewingForm (book-a-viewing page) ---------- */
+
+  document.addEventListener("submit", function (e) {
+    var form = e.target;
+    if (!form.matches || !form.matches("[data-bv-form]")) return;
+    e.preventDefault();
+    var nameEl = form.querySelector("#bv-name");
+    var emailEl = form.querySelector("#bv-email");
+    var phoneEl = form.querySelector("#bv-phone");
+    var dialEl = form.querySelector(".bv-country");
+    var dateEl = form.querySelector("#bv-date");
+    var timeEl = form.querySelector("#bv-time");
+    var langEl = form.querySelector("#bv-language");
+    var msgEl = form.querySelector("#bv-message");
+    var mortgageEl = form.querySelector("#bv-mortgage");
+    var submitBtn = form.querySelector(".bv-submit");
+    var failEl = form.querySelector(".bv-fail");
+    var successEl = form.querySelector(".bv-success");
+    var busy = false;
+
+    function setErr(msg) {
+      if (failEl) {
+        failEl.style.display = "";
+        failEl.textContent = msg;
+      }
+    }
+
+    function fieldError(sel, msg) {
+      var wrap = form.querySelector(sel + ", [data-err-for='" + sel + "']");
+      if (!wrap) return;
+      var err = wrap.parentNode.querySelector(".bv-error");
+      if (err) err.remove();
+      err = document.createElement("span");
+      err.className = "bv-error";
+      err.textContent = msg;
+      wrap.parentNode.insertBefore(err, wrap.nextSibling);
+    }
+
+    var name = (nameEl ? nameEl.value : "").trim();
+    var email = (emailEl ? emailEl.value : "").trim();
+    var phone = (phoneEl ? phoneEl.value : "").trim();
+    var date = dateEl ? dateEl.value : "";
+    var time = timeEl ? timeEl.value : "";
+    var ok = true;
+
+    if (name.length < 2) { fieldError("#bv-name", "Please enter your full name"); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fieldError("#bv-email", "Please enter a valid email address"); ok = false; }
+    if (phone.replace(/\D/g, "").length < 7) { fieldError("#bv-phone", "Please enter a valid phone number"); ok = false; }
+    if (!date) { fieldError("#bv-date", "Please select a viewing date"); ok = false; }
+    else {
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      var pick = new Date(date + "T00:00:00");
+      if (pick < today) { fieldError("#bv-date", "Please select today or a future date"); ok = false; }
+    }
+    if (!time) { fieldError("#bv-time", "Please select a viewing time"); ok = false; }
+    if (!ok) return;
+    if (busy) return;
+    busy = true;
+    if (submitBtn) submitBtn.disabled = true;
+    if (failEl) failEl.style.display = "none";
+
+    var title = form.getAttribute("data-property-title") || form.getAttribute("data-property-ref") || "";
+    var fmtDate = date
+      ? new Date(date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })
+      : "";
+    var message = "";
+    if (title) message += "Viewing request for \"" + title + "\"\n";
+    message += "Preferred date: " + fmtDate + "\n"
+      + "Preferred time: " + time + "\n"
+      + "Preferred language: " + (langEl ? langEl.value : "") + "\n"
+      + "Interested in mortgage advice: " + (mortgageEl && mortgageEl.checked ? "Yes" : "No");
+    var notes = (msgEl ? msgEl.value : "").trim();
+    if (notes) message += "\nMessage: " + notes;
+
+    fetch("/api/inquiries", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "json=" + encodeURIComponent(JSON.stringify({
+        kind: "viewing",
+        name: name,
+        email: email,
+        phone: ((dialEl ? dialEl.value : "+971") + " " + phone).trim(),
+        message: message,
+        property_ref: form.getAttribute("data-property-ref") || "",
+        property_slug: form.getAttribute("data-property-slug") || "",
+      })),
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return null; }).then(function (d) {
+          if (!res.ok) {
+            setErr((d && d.error) || "Something went wrong. Please try again.");
+            return;
+          }
+          if (successEl) successEl.style.display = "";
+          if (form) form.style.display = "none";
+        });
+      })
+      .catch(function () {
+        setErr("Something went wrong. Please try again.");
+      })
+      .finally(function () {
+        busy = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          var s = submitBtn.querySelector("span");
+          if (s) s.textContent = "Submit Details";
+        }
       });
   });
 
@@ -225,18 +335,18 @@
     var saved = wrap.classList.contains("saved");
     fetch("/api/user/saved", {
       method: saved ? "DELETE" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "json=" + encodeURIComponent(JSON.stringify({
         property_ref: wrap.getAttribute("data-save-ref") || "",
         property_slug: wrap.getAttribute("data-save-slug") || "",
         title: wrap.getAttribute("data-save-title") || "",
         price: parseInt(wrap.getAttribute("data-save-price") || "0", 10) || 0,
         thumb: wrap.getAttribute("data-save-thumb") || "",
-      }),
+      })),
     })
       .then(function (res) {
         if (res.status === 401) {
-          window.location.href = "/login";
+          window.location.href = "/login/";
           return;
         }
         return res.json().catch(function () { return {}; }).then(function (d) {

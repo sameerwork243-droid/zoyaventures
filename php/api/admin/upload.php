@@ -32,6 +32,10 @@ if (!isset($allowed[$mime])) {
 $name = bin2hex(random_bytes(16)) . '.' . $allowed[$mime];
 $dir = __DIR__ . '/../../uploads/images';
 if (!is_dir($dir)) mkdir($dir, 0755, true);
+@chmod($dir, 0755);
+if (!is_writable($dir)) {
+    json_response(['error' => 'Upload directory not writable'], 500);
+}
 if (!move_uploaded_file($f['tmp_name'], $dir . '/' . $name)) {
     json_response(['error' => 'Could not store file'], 500);
 }

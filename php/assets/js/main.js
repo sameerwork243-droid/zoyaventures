@@ -48,4 +48,24 @@
       if (panel) panel.hidden = expanded;
     });
   });
+
+  /* Footer link-column accordions (mobile only) */
+  document.querySelectorAll(".js-footer-accordion-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var expanded = btn.getAttribute("aria-expanded") === "true";
+      var panel = btn.closest(".accordion-item")
+        ? btn.closest(".accordion-item").querySelector(".accordion-collapse")
+        : null;
+      if (!panel) return;
+      if (expanded) {
+        panel.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        btn.classList.add("collapsed");
+      } else {
+        panel.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+        btn.classList.remove("collapsed");
+      }
+    });
+  });
 })();

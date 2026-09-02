@@ -87,6 +87,36 @@
 }
 
 /* ==========================================================================
+   Scrolled state on pages that start with a transparent header:
+   main.js removes .header-transparent past 10px -> header turns solid white,
+   but the brand text / mobile icons carry INLINE white colors from PHP and
+   the CTAs use .button-white-outline, so they vanish on the white bar.
+   Flip every one of them back to dark once the transparent class is gone.
+   ========================================================================== */
+.header-wrap:not(.header-transparent) .site-brand .site-brand-top {
+  color: #111827 !important;
+}
+.header-wrap:not(.header-transparent) .site-brand .site-brand-bottom {
+  color: #07234b !important;
+}
+.header-wrap:not(.header-transparent) .menu-icon path,
+.header-wrap:not(.header-transparent) .menu-icon circle {
+  stroke: #07234b !important;
+}
+.header-wrap:not(.header-transparent) .nav-menu-section .list-prop-btn.button-white-outline {
+  background: linear-gradient(86deg, #d75718, #ee7133) !important;
+  border: 1.5px solid transparent !important;
+  box-sizing: border-box;
+  color: #fff !important;
+}
+.header-wrap:not(.header-transparent) .nav-menu-section .list-prop-btn.button-white-outline:hover {
+  filter: brightness(1.06);
+}
+.header-wrap:not(.header-transparent) .nav-menu-section .list-prop-btn.button-white-outline svg path {
+  stroke: #fff !important;
+}
+
+/* ==========================================================================
    Mobile drawer (hamburger menu) — ported from the live site's burger menu
    ========================================================================== */
 .mobile-drawer-overlay {
@@ -258,4 +288,43 @@
   height: 48px;
   justify-content: center;
   width: 100%;
+}
+
+.mobile-drawer-footer .list-prop-btn + .list-prop-btn {
+  margin-top: 10px;
+}
+
+.mobile-drawer-body .mobile-drawer-login {
+  align-items: center;
+  background: linear-gradient(86deg, #d75718, #ee7133);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #fff;
+  display: flex;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  height: 48px;
+  justify-content: center;
+  margin: 14px 0 4px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.mobile-drawer-body .mobile-drawer-login:hover {
+  filter: brightness(1.06);
+}
+
+.mobile-drawer-footer .button-white-outline {
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid #07234b;
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #07234b;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  justify-content: center;
+  text-decoration: none;
 }

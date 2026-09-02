@@ -52,6 +52,6 @@ $page_title = 'Sign In';
   </div>
 </div>
 <?php render_site_footer_scripts(); ?>
-<script src="/assets/js/auth.js" defer></script>
+<script src="/assets/js/auth.js?v=<?= APP_ASSET_VER ?>" defer></script>
 </body>
 </html>

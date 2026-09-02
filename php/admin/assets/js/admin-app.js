@@ -43,6 +43,10 @@
   function api(url, opts) {
     var o = opts || {};
     o.credentials = "same-origin";
+    if (typeof o.body === "string" && o.headers && o.headers["Content-Type"] === "application/json") {
+      o.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8";
+      o.body = "json=" + encodeURIComponent(o.body);
+    }
     return fetch(url, o).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) {
         return { ok: r.ok, status: r.status, data: d };
@@ -130,10 +134,10 @@
       var url = tr.getAttribute("data-url");
       var fb = tr.getAttribute("data-fallback");
       if (!url) return;
-      if (!fb) { window.open(url, "_blank"); return; }
+      if (!fb) { window.location.href = url; return; }
       fetch(url, { method: "GET", credentials: "same-origin" })
-        .then(function (r) { window.open(r.ok ? url : fb, "_blank"); })
-        .catch(function () { window.open(fb, "_blank"); });
+        .then(function (r) { window.location.href = r.ok ? url : fb; })
+        .catch(function () { window.location.href = fb; });
     });
   }
 
@@ -296,8 +300,12 @@
       } else if (fd.type === "number") {
         control = document.createElement("input");
         control.type = "number";
+        control.min = "0";
         control.value = state[fd.key];
-        control.addEventListener("input", function () { state[fd.key] = control.value; });
+        control.addEventListener("input", function () {
+          if (control.value !== "" && Number(control.value) < 0) control.value = "0";
+          state[fd.key] = control.value;
+        });
       } else if (fd.type === "select") {
         control = document.createElement("select");
         var empty = document.createElement("option");
@@ -333,6 +341,18 @@
         control.placeholder = "Comma separated values";
         control.value = Array.isArray(state[fd.key]) ? state[fd.key].join(", ") : (state[fd.key] || "");
         control.addEventListener("input", function () { state[fd.key] = control.value; });
+      } else if (fd.type === "floorplans") {
+        var plans = Array.isArray(state[fd.key])
+          ? state[fd.key]
+          : [];
+        state[fd.key] = plans;
+        control = buildFloorPlansEditor(plans);
+        wrap.appendChild(control);
+        if (fd.hint && fd.type !== "checkbox") {
+          // hint already rendered by generic path below; skip for repeater
+        }
+        form.appendChild(wrap);
+        return;
       } else {
         control = document.createElement("input");
         control.type = "text";
@@ -373,6 +393,122 @@
     });
     container.appendChild(form);
     return { state: state, form: form, saveBtn: save };
+  }
+
+  /* ------------------------------ Floor plans repeater (projects) ------------------------------ */
+
+  function buildFloorPlansEditor(plans) {
+    var box = document.createElement("div");
+    box.style.cssText = "border:1px solid #e1e8ed;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fbfdff";
+
+    function normalize(p) {
+      var media = p && p.media !== undefined ? p.media : (p && p.url) || "";
+      if (media && typeof media === "object") media = media.url || "";
+      return { title: (p && p.title) || "", size: (p && p.size) || "", media: media || "" };
+    }
+    if (!plans.length && plans._touched !== true) {
+      // keep empty by default; user adds rows explicitly
+    }
+
+    function rerender() {
+      Array.prototype.forEach.call(box.querySelectorAll("[data-fp-row]"), function (n) { n.remove(); });
+      plans.forEach(function (raw, i) {
+        var p = normalize(raw);
+        plans[i] = p;
+        var row = document.createElement("div");
+        row.setAttribute("data-fp-row", "1");
+        row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px dashed #d7e0ea;border-radius:6px;padding:8px";
+
+        var title = document.createElement("input");
+        title.type = "text";
+        title.placeholder = "Floor plan name (e.g. 1 Bedroom)";
+        title.value = p.title;
+        title.style.cssText = "flex:2;min-width:150px";
+        title.addEventListener("input", function () { plans[i].title = title.value; });
+        row.appendChild(title);
+
+        var size = document.createElement("input");
+        size.type = "text";
+        size.placeholder = "Size (e.g. 546 sq ft)";
+        size.value = p.size;
+        size.style.cssText = "flex:1;min-width:120px";
+        size.addEventListener("input", function () { plans[i].size = size.value; });
+        row.appendChild(size);
+
+        var thumb = document.createElement("img");
+        thumb.alt = "";
+        thumb.style.cssText = "width:56px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #e1e8ed" ;
+        if (p.media) thumb.src = p.media;
+        else thumb.style.display = "none";
+        row.appendChild(thumb);
+
+        var fileName = document.createElement("span");
+        fileName.style.cssText = "color:#35373c;font-size:12px;flex:1;min-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+        fileName.textContent = p.media || "No image";
+        fileName.title = p.media || "";
+        row.appendChild(fileName);
+
+        var upBtn = document.createElement("button");
+        upBtn.type = "button";
+        upBtn.className = "app-btn ghost sm";
+        upBtn.textContent = p.media ? "Replace image" : "+ Image";
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.style.display = "none";
+        fileInput.addEventListener("change", function () {
+          var f = fileInput.files && fileInput.files[0];
+          if (!f) return;
+          var fd = new FormData();
+          fd.append("file", f);
+          upBtn.disabled = true;
+          upBtn.textContent = "Uploading…";
+          api("/api/admin/upload", { method: "POST", body: fd }).then(function (res) {
+            upBtn.disabled = false;
+            if (res.ok && res.data.url) {
+              plans[i].media = res.data.url;
+              thumb.src = res.data.url;
+              thumb.style.display = "";
+              fileName.textContent = res.data.url;
+              fileName.title = res.data.url;
+              upBtn.textContent = "Replace image";
+            } else {
+              window.alert((res.data && res.data.error) || "Upload failed");
+            }
+            fileInput.value = "";
+          }).catch(function () {
+            upBtn.disabled = false;
+            upBtn.textContent = p.media ? "Replace image" : "+ Image";
+            window.alert("Upload failed");
+          });
+        });
+        upBtn.addEventListener("click", function () { fileInput.click(); });
+        row.appendChild(upBtn);
+        row.appendChild(fileInput);
+
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "app-btn danger sm";
+        del.textContent = "✕";
+        del.addEventListener("click", function () { plans.splice(i, 1); rerender(); });
+        row.appendChild(del);
+
+        box.appendChild(row);
+      });
+    }
+
+    var add = document.createElement("button");
+    add.type = "button";
+    add.className = "app-btn ghost sm";
+    add.textContent = "+ Add floor plan";
+    add.addEventListener("click", function () {
+      plans.push({ title: "", size: "", media: "" });
+      rerender();
+    });
+
+    rerender();
+    box.appendChild(add);
+    return box;
   }
 
   function formPageCard(container, title, backLabel, fields, initial, onSave, onCancel) {
@@ -679,6 +815,16 @@
     var amenityList = [], selectedAmenities = (initial && initial.amenities) ? initial.amenities.slice() : [];
     var uploading = { done: 0, total: 0 };
 
+    var NEW_DEFAULTS = {
+      transaction_type: "buy",
+      status: "ready",
+      price_qualifier: "AED",
+      furnished: "Unfurnished",
+      completion_status: "Ready",
+      featured: 1,
+      published: 1
+    };
+
     var FIELDS = [
       { key: "title", label: "Title", required: true, full: true, hint: "e.g. 2 Bedroom Apartment in Dubai Marina" },
       { key: "slug", label: "Slug (optional — auto-generated from title)", full: true },
@@ -714,7 +860,7 @@
     wrap.className = "app-form-grid";
 
     FIELDS.forEach(function (fd) {
-      var val = initial ? initial[fd.key] : "";
+      var val = initial ? initial[fd.key] : (Object.prototype.hasOwnProperty.call(NEW_DEFAULTS, fd.key) ? NEW_DEFAULTS[fd.key] : "");
       form[fd.key] = fd.type === "checkbox" ? Boolean(Number(val)) : (val === undefined || val === null ? "" : val);
       var f = document.createElement("div");
       f.className = "app-field" + (fd.full ? " full" : "");
@@ -730,8 +876,12 @@
       } else if (fd.type === "number") {
         control = document.createElement("input");
         control.type = "number";
+        control.min = "0";
         control.value = form[fd.key];
-        control.addEventListener("input", function () { form[fd.key] = control.value; });
+        control.addEventListener("input", function () {
+          if (control.value !== "" && Number(control.value) < 0) control.value = "0";
+          form[fd.key] = control.value;
+        });
       } else if (fd.type === "select") {
         control = document.createElement("select");
         var empty = document.createElement("option");
@@ -786,12 +936,29 @@
     hint.textContent = "Shown as the negotiator on the public property page";
     agentField.appendChild(selWrap);
     agentField.appendChild(hint);
+    var agentDetails = document.createElement("div");
+    agentDetails.className = "agent-details";
+    agentDetails.style.cssText = "display:none;margin-top:10px;border:1px solid #e1e8ed;border-radius:8px;padding:12px 14px;background:#fafbfc";
+    agentField.appendChild(agentDetails);
     var selectedAgentId = initial ? (Number(initial.agent_id) || null) : null;
     var selectedAgentObj = null;
+
+    function renderAgentDetails() {
+      if (!selectedAgentObj) { agentDetails.style.display = "none"; agentDetails.innerHTML = ""; return; }
+      var a = selectedAgentObj;
+      var rows = "";
+      if (a.role) rows += '<div class="agent-details-row" style="display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:13px"><span style="color:#6b7280">Role</span><strong>' + esc(a.role) + "</strong></div>";
+      if (a.brn_number) rows += '<div class="agent-details-row" style="display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:13px"><span style="color:#6b7280">BRN number</span><strong>' + esc(a.brn_number) + "</strong></div>";
+      if (a.phone) rows += '<div class="agent-details-row" style="display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:13px"><span style="color:#6b7280">WhatsApp</span><strong>' + esc(a.phone) + "</strong></div>";
+      if (a.email) rows += '<div class="agent-details-row" style="display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:13px"><span style="color:#6b7280">Email</span><strong>' + esc(a.email) + "</strong></div>";
+      agentDetails.style.display = "block";
+      agentDetails.innerHTML = '<div class="agent-details-name" style="font-weight:600;margin-bottom:6px">' + esc(a.name) + "</div>" + rows;
+    }
 
     function renderAgentPicker() {
       var found = selectedAgentId ? agents.filter(function (a) { return Number(a.id) === selectedAgentId; })[0] : null;
       selectedAgentObj = found || null;
+      renderAgentDetails();
       var txt = found ? found.name : (isEdit && selectedAgentId ? "Agent " + selectedAgentId : "Select an agent…");
       current.innerHTML = found
         ? '<span class="agent-select-placeholder" style="display:flex;align-items:center;gap:8px"><span class="agent-select-avatar">' + esc((found.name || "A")[0].toUpperCase()) + '</span>' + esc(found.name) + "</span>"
@@ -923,26 +1090,30 @@
     }
 
     function doUpload(input, kind) {
-      var file = input.files[0];
-      if (!file) return;
-      uploading.total += 1;
-      mediaHint.textContent = "Uploading " + uploading.done + "/" + uploading.total + "…";
-      var fd = new FormData();
-      fd.append("file", file);
-      api("/api/admin/upload", { method: "POST", body: fd }).then(function (res) {
-        uploading.done += 1;
-        if (res.ok) {
-          media.push({ kind: kind, url: res.data.url });
-          renderMedia();
-        } else {
-          window.alert(res.data.error || "Upload failed");
-        }
-        if (uploading.total > 0 && uploading.done >= uploading.total) { uploading = { done: 0, total: 0 }; }
-        mediaHint.textContent = "";
-      }).catch(function () {
-        uploading.done += 1;
-        window.alert("Upload failed");
-        mediaHint.textContent = "";
+      var files = input.files || [];
+      if (files.length === 0) return;
+      uploading.total += files.length;
+      mediaHint.textContent = "Uploading 0/" + files.length + "…";
+      Array.prototype.forEach.call(files, function (file) {
+        var fd = new FormData();
+        fd.append("file", file);
+        api("/api/admin/upload", { method: "POST", body: fd }).then(function (res) {
+          uploading.done += 1;
+          mediaHint.textContent = "Uploading " + uploading.done + "/" + uploading.total + "…";
+          if (res.ok) {
+            media.push({ kind: kind, url: res.data.url });
+            renderMedia();
+          } else {
+            window.alert(res.data.error || "Upload failed");
+          }
+          if (uploading.total > 0 && uploading.done >= uploading.total) { uploading = { done: 0, total: 0 }; }
+          mediaHint.textContent = "";
+        }).catch(function () {
+          uploading.done += 1;
+          if (uploading.total > 0 && uploading.done >= uploading.total) { uploading = { done: 0, total: 0 }; }
+          mediaHint.textContent = "";
+          window.alert("Upload failed");
+        });
       });
     }
 
@@ -953,6 +1124,7 @@
     var imgInput = document.createElement("input");
     imgInput.type = "file";
     imgInput.accept = "image/*";
+    imgInput.multiple = true;
     imgInput.style.display = "none";
     imgInput.addEventListener("change", function () { doUpload(imgInput, "image"); imgInput.value = ""; });
     addImg.addEventListener("click", function () { imgInput.click(); });
@@ -1725,7 +1897,8 @@
       back.appendChild(bb);
       card.appendChild(back);
 
-      var FIELDS = [
+var FIELDS = [
+      { key: "title", label: "Title", required: true, full: true, hint: "e.g. 2 Bedroom Apartment in Dubai Marina" },
         { key: "about", label: "About the project (HTML allowed)", type: "textarea", full: true },
         { key: "display_price", label: "Display price (e.g. 1.96M)", full: true },
         { key: "completion_year", label: "Completion year", full: true },
@@ -1867,6 +2040,7 @@
 
   function mountPanels() {
     $$("[data-admin-panel]").forEach(function (panel) {
+      panel.innerHTML = "";
       var id = panel.getAttribute("data-admin-panel");
       switch (id) {
         case "overview": initStats(panel); break;

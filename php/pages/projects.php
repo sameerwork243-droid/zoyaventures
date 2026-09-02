@@ -307,6 +307,42 @@ function project_tile(array $tile, string $title, string $id = ''): string
     return $out;
 }
 
+/** Fallback image for amenities missing one in the source data: keyword-matched
+ *  against images already used by other projects, with a generic greenery default. */
+function project_amenity_fallback_image(string $text): string
+{
+    $t = strtolower($text);
+    $base = 'https://ggfx-providentestate.s3.eu-west-2.amazonaws.com/i/';
+    $rules = [
+        ['infinity', $base . 'Infinity_Pool_0b195de8ff.jpg'],
+        ['pool', $base . 'Poool_bc852acb3e.jpg'],
+        ['swim', $base . 'Poool_bc852acb3e.jpg'],
+        ['aqua', $base . 'Poool_bc852acb3e.jpg'],
+        ['gym', $base . 'GYM_610ef001d0.jpg'],
+        ['fitness', $base . 'GYM_610ef001d0.jpg'],
+        ['wellness', $base . 'GYM_610ef001d0.jpg'],
+        ['spa', $base . 'GYM_610ef001d0.jpg'],
+        ['yoga', $base . 'GYM_610ef001d0.jpg'],
+        ['padel', $base . 'Gymnasium_and_Padel_Tennis_3461bb484e.jpg'],
+        ['tennis', $base . 'Gymnasium_and_Padel_Tennis_3461bb484e.jpg'],
+        ['football', $base . 'Volleyball_and_Water_Sports_c362e037c8.jpg'],
+        ['volleyball', $base . 'Volleyball_and_Water_Sports_c362e037c8.jpg'],
+        ['sport', $base . 'Volleyball_and_Water_Sports_c362e037c8.jpg'],
+        ['play', $base . 'Kids_Play_Area_c6b94d63e9.jpg'],
+        ['kid', $base . 'Kids_Play_Area_c6b94d63e9.jpg'],
+        ['beach', $base . '40_000_sqm_Beach_Area_805532618b.jpg'],
+        ['park', $base . 'Community_Park_5342145c3d.jpg'],
+        ['garden', $base . 'Community_Park_5342145c3d.jpg'],
+        ['landscap', $base . 'Community_Park_5342145c3d.jpg'],
+        ['trail', $base . 'Community_Park_5342145c3d.jpg'],
+        ['golf', $base . 'Community_Park_5342145c3d.jpg'],
+    ];
+    foreach ($rules as $rule) {
+        if (str_contains($t, $rule[0])) return $rule[1];
+    }
+    return $base . 'Community_Park_5342145c3d.jpg';
+}
+
 function project_amenity_slider(array $items): string
 {
     $cards = '';
@@ -314,6 +350,7 @@ function project_amenity_slider(array $items): string
         if (!is_array($a)) continue;
         $text = (string) ($a['text'] ?? $a['name'] ?? '');
         $img = (string) ($a['image']['url'] ?? '');
+        if ($img === '') $img = project_amenity_fallback_image($text);
         $cards .= '<div class="amenity-card"><div class="img-section">';
         if ($img) $cards .= '<img loading="lazy" src="' . esc($img) . '" alt="' . esc($text) . '" />';
         $cards .= '</div><p class="name">' . esc($text) . '</p></div>';
@@ -331,24 +368,48 @@ function project_amenity_slider(array $items): string
 
 function project_floorplans(array $plans): string
 {
-    $buttons = '';
-    $active = $plans[0] ?? null;
-    foreach ($plans as $i => $p) {
-        $buttons .= '<button type="button" class="floorplan-item-wrap' . ($i === 0 ? ' selected' : '') . '" data-floorplan-sel="' . $i . '" data-floorplan-media="' . esc((string) ($p['media'] ?? '')) . '">'
-            . '<div class="floorplan-item"><div class="content">'
-            . '<p class="title">' . esc((string) ($p['title'] ?? 'Floor Plan')) . '</p>'
-            . (!empty($p['size']) ? '<p class="size">' . esc((string) $p['size']) . '</p>' : '')
-            . '</div><svg class="arrow-right-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div></button>';
+    // Normalize: accept media as string or {url}, drop fully-empty rows.
+    $norm = [];
+    foreach ($plans as $p) {
+        if (!is_array($p)) continue;
+        $media = $p['media'] ?? '';
+        if (is_array($media)) $media = (string) ($media['url'] ?? '');
+        $title = trim((string) ($p['title'] ?? ''));
+        if ($title === '' && trim((string) $media) === '') continue;
+        $norm[] = [
+            'title' => $title !== '' ? $title : 'Floor Plan',
+            'size' => (string) ($p['size'] ?? ''),
+            'media' => trim((string) $media),
+        ];
     }
-    $media = (string) ($active['media'] ?? '');
-    $out = '<div class="floorplans-wrap old section-m"><div class="floorplans-container container" id="floor-plans">';
-    $out .= '<h2 class="title">Floorplans</h2><div class="floorplan-grid">';
-    $out .= '<div class="left-section"><div class="floorplan-section">' . $buttons . '</div>';
-    if ($media) $out .= '<a class="button button-gray" href="' . esc($media) . '" target="_blank" rel="noopener noreferrer">Download Floorplans</a>';
+    if (!count($norm)) return '';
+
+    $fpPlaceholder = '/images/floorplan-placeholder.svg';
+    $active = $norm[0];
+    $activeMedia = $active['media'] !== '' ? $active['media'] : $fpPlaceholder;
+
+    $items = '';
+    foreach ($norm as $i => $p) {
+        $items .= '<div class="floorplan-item-wrap' . ($i === 0 ? ' selected' : '') . '" data-floorplan-i="' . $i . '" data-floorplan-media="' . esc($p['media']) . '" role="button" tabindex="0">'
+            . '<div class="floorplan-item"><div class="content">'
+            . '<p class="title">' . esc($p['title']) . '</p>'
+            . ($p['size'] !== '' ? '<p class="size">' . esc($p['size']) . '</p>' : '')
+            . '</div>'
+            . '<svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="arrow-right-icon"><path d="M9.5 3L14.5 8M14.5 8L9.5 13M14.5 8H2.5" stroke="#07234B" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+            . '</div></div>';
+    }
+
+    $out = '<div class="floorplans-wrap old section-m" id="floor-plans"><div class="floorplans-container container">';
+    $out .= '<h2 class="title">Floorplans</h2>';
+    $out .= '<div class="content-section">';
+    $out .= '<div class="left-section">';
+    $out .= '<div class="floorplan-section">' . $items . '</div>';
+    if ($active['media'] !== '') {
+        $out .= '<a class="button button-gray" href="' . esc($active['media']) . '" target="_blank" rel="noopener noreferrer" data-floorplan-download><span>Download Floorplans</span></a>';
+    }
     $out .= '</div>';
-    $out .= '<div class="img-section img-zoom">';
-    if ($media) $out .= '<img loading="lazy" src="' . esc($media) . '" alt="' . esc((string) ($active['title'] ?? 'Floor plan')) . '" data-floorplan-img />';
-    $out .= '</div></div></div></div>';
+    $out .= '<div class="img-section img-zoom"><img loading="lazy" src="' . esc($activeMedia) . '" alt="' . esc($active['title']) . '" data-floorplan-img /></div>';
+    $out .= '</div></div></div>';
     return $out;
 }
 
@@ -496,19 +557,27 @@ function project_live_detail(array $hit, array $detail, string $route): string
         $out .= '<div id="offplan-video" class="video-banner-container section-l-m container"><video controls preload="metadata"' . ($poster ? ' poster="' . esc($poster) . '"' : '') . '><source src="' . esc($videoUrl) . '" /></video></div>';
     }
 
-    $out .= '<div class="register-interest-module-wrap old section-l-p" id="register-interest"><div class="bg-section"><div class="overlay"></div>';
+    $out .= '<div class="register-interest-module-wrap old section-l-p" id="register-interest"><div class="bg-section">';
     $ads = (string) ($detail['ads_image']['url'] ?? $detail['banner_image']['url'] ?? '');
-    if ($ads) $out .= '<img loading="lazy" src="' . esc($ads) . '" alt="" />';
-    $out .= '</div><div class="register-interest-module-container container"><div class="row">';
-    $out .= '<div class="col-xl-6 col-lg-12"><div class="left-section">';
+    $bgImg = $ads !== '' ? $ads : 'https://d3h330vgpwpjr8.cloudfront.net/x/1600x785/46935f31e573019004ff190069b97438_89abf9a976.webp';
+    $out .= '<img loading="lazy" src="' . esc($bgImg) . '" alt="' . esc($title) . '" />';
+    $out .= '<div class="overlay"></div></div>';
+    $out .= '<div class="register-interest-module-container container">';
+    $out .= '<div class="left-section">';
     $out .= '<h2 class="title">Begin Your Property Journey with Us</h2>';
-    $out .= '<p class="description">Discover more about ' . esc($title) . ' and how it fits your lifestyle and investment goals. Our property specialists are ready to help.</p>';
+    $out .= '<div class="description">';
+    $out .= '<p>Share your details and our team will help you find the best property options tailored to your needs.</p>';
     $out .= '<ul><li>Personalised guidance from our expert team</li><li>Latest availability, prices and payment plans</li><li>Site visits and private viewings</li></ul>';
-    $out .= '<a class="property-cta" href="' . $tel . '">&#127482;&#127480; Request a Call Back Now</a>';
-    $out .= '<a class="button whatsapp-icon-btn button-white-outline" href="' . $whatsapp . '" target="_blank" rel="noopener noreferrer"><span>Chat with us now</span></a>';
+    $out .= '<p class="d-block d-md-flex">';
+    $out .= '<a class="property-cta" href="' . $tel . '">'
+        . '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="phone-icon"><path d="M1.5 4.5C1.5 10.0228 5.97715 14.5 11.5 14.5H13C13.8284 14.5 14.5 13.8284 14.5 13V12.0856C14.5 11.7414 14.2658 11.9414 13.9319 11.358L10.9831 10.6208C10.6904 11.0476 10.3823 11.157 10.2012 11.3984L9.5544 12.2608C9.36668 12.5111 9.04201 12.6218 8.74823 12.5142C6.5436 11.7066 4.79344 9.95641 3.98584 7.75177C3.87823 7.45799 3.98891 6.63332 4.2392 6.4456L5.10161 5.79879C5.34302 5.61773 5.45241 5.30964 5.37922 5.01689L4.64202 2.0681C4.55856 1.73422 4.25857 1.5 3.91442 1.5H3C2.17157 1.5 1.5 2.17157 1.5 3V4.5Z" stroke="#EE7133" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+        . '<span>Request a Call Back Now</span></a>';
+    $out .= '<a href="' . $whatsapp . '" target="_blank" rel="noopener noreferrer" class="button whatsapp-icon-btn button-white-outline"><span>Chat with us now</span></a>';
+    $out .= '</p>';
+    $out .= '</div>';
+    $out .= '</div>';
+    $out .= '<div class="right-section">' . register_interest_form($title) . '</div>';
     $out .= '</div></div>';
-    $out .= '<div class="col-xl-6 col-lg-12">' . register_interest_form($title) . '</div>';
-    $out .= '</div></div></div>';
 
     $out .= project_faq_accordion($faqs, $title);
     $out .= '</div>';
@@ -523,22 +592,39 @@ if ($isDetail && isset($hits[0])) {
     $page_title = is_array($content) && !empty($content['title']) ? (string) $content['title'] : 'Off-Plan Projects in Dubai';
     $count = $model['data']['nbHits'] ?? count($hits);
 
-    $typeLinks = [
-        ['label' => 'All Types', 'href' => '/new-projects/'],
-        ['label' => 'Apartment', 'href' => '/new-projects/type-apartment/'],
-        ['label' => 'Villa', 'href' => '/new-projects/type-villa/'],
-        ['label' => 'Townhouse', 'href' => '/new-projects/type-townhouse/'],
-        ['label' => 'Penthouse', 'href' => '/new-projects/type-penthouse/'],
-    ];
-    $areaLinks = [['label' => 'All Areas', 'href' => '/new-projects/']];
-    foreach (array_slice(communities(), 0, 20) as $c) {
-        $areaLinks[] = ['label' => $c['label'], 'href' => '/new-projects/in-' . $c['slug'] . '/'];
+    // Build filter links ONLY from projects that exist (curated), so no link 404s.
+    $typeKeys = [];
+    foreach (project_corpus() as $h) {
+        $bt = $h['building_type'] ?? [];
+        if (!is_array($bt)) $bt = [$bt];
+        foreach ($bt as $b) {
+            $k = preg_replace('/[^a-z0-9]+/', '', strtolower((string) $b)) ?? '';
+            if ($k !== '') $typeKeys[$k] = true;
+        }
     }
-    $completionLinks = [
-        ['label' => 'All', 'href' => '/new-projects/'],
-        ['label' => 'Ready', 'href' => '/new-projects/completion-ready/'],
-        ['label' => 'Under Construction', 'href' => '/new-projects/completion-under-construction/'],
-    ];
+    ksort($typeKeys);
+    $typeLinks = [['label' => 'All Types', 'href' => '/new-projects/']];
+    foreach (array_keys($typeKeys) as $k) {
+        if (!projects_by_type($k)) continue;
+        $label = strlen($k) > 3 && str_ends_with($k, 's') ? ucfirst(rtrim($k, 's')) : ucfirst($k);
+        $typeLinks[] = ['label' => $label, 'href' => '/new-projects/type-' . $k . '/'];
+    }
+
+    $areaSlugs = [];
+    foreach (project_corpus() as $h) {
+        $a = project_area_slug_of($h);
+        if ($a !== '') $areaSlugs[$a] = true;
+    }
+    ksort($areaSlugs);
+    $areaLinks = [['label' => 'All Areas', 'href' => '/new-projects/']];
+    foreach (array_keys($areaSlugs) as $a) {
+        if (!projects_by_area($a)) continue;
+        $areaLinks[] = ['label' => ucwords(str_replace('-', ' ', $a)), 'href' => '/new-projects/in-' . $a . '/'];
+    }
+
+    $completionLinks = [['label' => 'All', 'href' => '/new-projects/']];
+    if (projects_by_completion('ready')) $completionLinks[] = ['label' => 'Ready', 'href' => '/new-projects/completion-ready/'];
+    if (projects_by_completion('under-construction')) $completionLinks[] = ['label' => 'Under Construction', 'href' => '/new-projects/completion-under-construction/'];
 
     $cards = '';
     if (count($hits)) {
@@ -592,6 +678,6 @@ $page_description = 'Off-plan projects and new developments in Dubai by Zoya Ven
 </main>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
 <?php render_site_footer_scripts(); ?>
-<script src="/assets/js/project-ui.js" defer></script>
+<script src="/assets/js/project-ui.js?v=<?= APP_ASSET_VER ?>" defer></script>
 </body>
 </html>

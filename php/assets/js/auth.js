@@ -13,8 +13,8 @@
   async function submitJSON(url, payload) {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "json=" + encodeURIComponent(JSON.stringify(payload)),
     });
     const data = await res.json().catch(function () { return {}; });
     return { ok: res.ok, data: data };
@@ -37,7 +37,7 @@
           return;
         }
         var role = res.data.user && res.data.user.role;
-        window.location.href = (role === "admin" || role === "agent") ? "/admin" : "/dashboard";
+        window.location.href = (role === "admin" || role === "agent") ? "/admin/" : "/dashboard/";
       } catch (err) {
         showError(errorEl, "Network error. Please try again.");
       } finally {
@@ -72,7 +72,7 @@
           showError(errorEl, res.data.error || "Unable to create your account. Please try again.");
           return;
         }
-        window.location.href = "/dashboard";
+        window.location.href = "/dashboard/";
       } catch (err) {
         showError(errorEl, "Network error. Please try again.");
       } finally {

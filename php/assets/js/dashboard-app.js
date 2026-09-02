@@ -146,8 +146,8 @@
     fetch("/api/user/saved", {
       method: "DELETE",
       credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ property_ref: ref }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "json=" + encodeURIComponent(JSON.stringify({ property_ref: ref })),
     })
       .then(function () {
         showToast(toastEl, "Removed from saved");
@@ -263,8 +263,8 @@
       fetch("/api/user/profile", {
         method: "PUT",
         credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: "json=" + encodeURIComponent(JSON.stringify(data)),
       })
         .then(function (r) {
           return r.json().catch(function () { return {}; }).then(function (d) {
@@ -296,8 +296,8 @@
       fetch("/api/user/notifications", {
         method: "PUT",
         credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preferences: prefs }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: "json=" + encodeURIComponent(JSON.stringify({ preferences: prefs })),
       })
         .then(function (r) {
           return r.json().catch(function () { return {}; }).then(function (d) {
@@ -367,8 +367,8 @@
       fetch("/api/user/password", {
         method: "POST",
         credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ new_password: np, confirm_password: cp }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: "json=" + encodeURIComponent(JSON.stringify({ new_password: np, confirm_password: cp })),
       })
         .then(function (r) {
           return r.json().catch(function () { return {}; }).then(function (d) {
@@ -397,8 +397,8 @@
       fetch("/api/user/account", {
         method: "DELETE",
         credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: reason }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: "json=" + encodeURIComponent(JSON.stringify({ reason: reason })),
       })
         .then(function (r) {
           if (r.ok) { window.location.href = "/"; }

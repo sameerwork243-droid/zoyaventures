@@ -14,6 +14,7 @@ function admin_crud_dispatch(array $config): never
     $cols = $config['cols'];          // column => type ('text'|'int'|'json'|'float')
     $search = $config['search'] ?? []; // columns searched by ?q=
     $labelCol = $config['label'] ?? 'title';
+    $after = $config['after'] ?? null; // fn(method, id) post-save hook
     $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     $id = (int) ($_GET['id'] ?? 0);
 
@@ -71,6 +72,7 @@ function admin_crud_dispatch(array $config): never
             $set[] = 'created_at = ?';
             $params[] = now_iso();
             $res = db_run("INSERT INTO `$table` SET " . implode(', ', $set), $params);
+            if ($after) $after($method, (int) $res['lastId']);
             json_response(['ok' => true, 'id' => $res['lastId']], 201);
         }
         if (!$id) json_response(['error' => 'Missing id'], 400);
@@ -78,6 +80,7 @@ function admin_crud_dispatch(array $config): never
         $params[] = now_iso();
         $params[] = $id;
         db_run("UPDATE `$table` SET " . implode(', ', $set) . " WHERE id = ?", $params);
+        if ($after) $after($method, $id);
         json_response(['ok' => true]);
     }
 

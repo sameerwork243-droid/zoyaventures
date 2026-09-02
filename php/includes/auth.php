@@ -154,7 +154,7 @@ function require_user(): array
 {
     $user = get_auth_user();
     if (!$user) {
-        header('Location: /login');
+        header('Location: /login/');
         exit;
     }
     return $user;
@@ -165,7 +165,7 @@ function require_admin(): array
 {
     $user = require_user();
     if ($user['role'] !== 'admin') {
-        header('Location: /dashboard');
+        header('Location: /dashboard/');
         exit;
     }
     return $user;
@@ -176,7 +176,7 @@ function require_guest(): ?array
 {
     $user = get_auth_user();
     if ($user) {
-        header('Location: ' . (in_array($user['role'], ['admin', 'agent'], true) ? '/admin' : '/dashboard'));
+        header('Location: ' . (in_array($user['role'], ['admin', 'agent'], true) ? '/admin/' : '/dashboard/'));
         exit;
     }
     return null;

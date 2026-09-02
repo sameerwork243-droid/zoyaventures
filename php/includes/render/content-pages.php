@@ -381,6 +381,54 @@ function content_strapi_page(array $page, string $route): string
     return $out;
 }
 
+/** Office / branch contact page (strapiOffice). */
+function content_office_detail(array $office, string $route): string
+{
+    $title = (string) ($office['title'] ?? $office['page_name'] ?? 'Our Office');
+    $bg = (string) ($office['bg_image']['url'] ?? '');
+    $crumbs = route_crumbs($route, $title);
+    $mapQuery = '';
+    if (!empty($office['latitude']) && !empty($office['longitude'])) {
+        $mapQuery = 'https://maps.google.com/maps?q=' . rawurlencode((string) $office['latitude'] . ',' . (string) $office['longitude']) . '&z=15&output=embed';
+    }
+
+    $out = '<div><div class="banner-wrap banner-landing-wrap">';
+    $out .= '<div class="bg-section">';
+    if ($bg) {
+        $out .= '<img loading="eager" draggable="false" src="' . esc(cfw($bg, 1773)) . '" alt="' . esc($title) . '" />';
+    }
+    $out .= '<div class="overlay"></div></div>';
+    $out .= '<div class="breadcrumbs-wrap white-color">' . breadcrumbs_html($crumbs) . '</div>';
+    $out .= '<div><div class="banner-container container"><div class="brand-bx"><h1 class="title">' . esc($title) . '</h1></div></div></div>';
+    $out .= '</div>';
+
+    // Contact info strip
+    $out .= '<div class="office-info-wrap section-p"><div class="container"><div class="office-info-grid">';
+    $cells = [
+        ['Address', (string) ($office['address'] ?? ''), null],
+        ['Phone', (string) ($office['phone'] ?? ''), !empty($office['phone']) ? 'tel:' . preg_replace('/\s+/', '', (string) $office['phone']) : null],
+        ['Email', (string) ($office['email'] ?? ''), !empty($office['email']) ? 'mailto:' . (string) $office['email'] : null],
+        ['Opening Hours', (string) ($office['opening_hours'] ?? ''), null],
+    ];
+    foreach ($cells as [$label, $value, $href]) {
+        if ($value === '') continue;
+        $out .= '<div class="office-info-item"><p class="label">' . esc($label) . '</p>'
+            . ($href ? '<a class="value" href="' . esc($href) . '">' . esc($value) . '</a>' : '<p class="value">' . esc($value) . '</p>')
+            . '</div>';
+    }
+    $out .= '</div>';
+    if ($mapQuery) {
+        $out .= '<div class="office-map-wrap"><iframe src="' . esc($mapQuery) . '" style="border:0;width:100%;height:360px" loading="lazy" title="Office location map"></iframe></div>';
+    }
+    $out .= '</div></div>';
+
+    $mods = is_array($office['modules'] ?? null) ? $office['modules'] : [];
+    $out .= content_modules_loop($mods);
+    $out .= '</div>';
+    return $out;
+}
+
+
 /** Shared module loop: skip communities_listing inside content pages. */
 function content_modules_loop(array $mods): string
 {
@@ -780,6 +828,7 @@ function content_pages_dispatch(array $d, string $route): string
         $isCareer = !empty($d['job_details']['data']['job_details']);
         if ($isCareer) return content_career_detail($d, $route);
     }
+    if ((!empty($d['opening_hours']) || !empty($d['longitude'])) && !empty($d['slug'])) return content_office_detail($d, $route);
     if (!empty($d['designation'])) return content_team_detail($d, $route);
     if (!empty($d['more_info']) && (!empty($d['content']) || !empty($d['banner_image']))) return content_area_guide_detail($d, $route);
     if (!empty($d['images']) && !empty($d['tile_block'])) return content_event_detail($d, $route);

@@ -107,42 +107,16 @@
   will-change: transform;
 }
 
-.slider-arrow {
-  align-items: center;
-  background: #fff;
-  border: 1px solid #e1e8ed;
-  border-radius: 50%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.16);
-  color: #07234b;
-  cursor: pointer;
-  display: flex;
-  font-size: 24px;
-  height: 40px;
-  justify-content: center;
-  line-height: 1;
-  padding: 0 0 2px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  z-index: 3;
+/* ---------- similar-properties: slick slider (overrides the original flex-scroll rules) ---------- */
+
+.similar-properties-slider.slick-slider {
+  display: block;
+  gap: 0;
+  overflow: visible;
+  padding-bottom: 0;
 }
 
-.slider-prev {
-  left: -20px;
-}
-
-.slider-next {
-  right: -20px;
-}
-
-.slider-arrow:disabled {
-  cursor: default;
-  opacity: 0.35;
-}
-
-@media (max-width: 743px) {
-  .slider-arrow {
-    display: none;
-  }
+.similar-properties-slider.slick-slider .property-card-wrapper {
+  max-width: none;
+  width: 100%;
 }

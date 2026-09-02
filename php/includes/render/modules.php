@@ -24,13 +24,12 @@ function slick_shell(string $className, array $slides, int $perView, bool $arrow
     }
     $out .= '</div></div>';
     if ($arrows) {
-        $out .= '<div class="custom-slider-arrows">'
-            . '<button class="button button-white pagination-button button-back" disabled aria-label="Previous">'
-            . '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="arrow-left-icon"><path d="M15.75 19.5 8.25 12l7.5-7.5" stroke="#07234B" stroke-linecap="round" stroke-linejoin="round" /></svg>'
-            . '</button>'
-            . '<button class="button button-white pagination-button button-next"' . ($total <= $perView ? ' disabled' : '') . ' aria-label="Next">'
-            . '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="arrow-right-icon"><path d="M8.25 4.5 15.75 12l-7.5 7.5" stroke="#07234B" stroke-linecap="round" stroke-linejoin="round" /></svg>'
-            . '</button></div>';
+        $out .= '<div class="slick-arrow slick-prev custom-arrow" aria-hidden="true">'
+            . '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#07234B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>'
+            . '</div>'
+            . '<div class="slick-arrow slick-next custom-arrow" aria-hidden="true">'
+            . '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#07234B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>'
+            . '</div>';
     }
     $out .= '</div>';
     return $out;
@@ -40,19 +39,21 @@ function slick_shell(string $className, array $slides, int $perView, bool $arrow
 function faq_list(array $items, ?string $title = null): string
 {
     if (!count($items)) return '';
-    $out = '<div class="faq-section section-p"><div class="faq-container container">';
+    $out = '<div class="faq-section-wrap section-p"><div class="faq-section-container container">';
     if ($title) $out .= '<h2 class="title">' . esc($title) . '</h2>';
-    $out .= '<div class="faq-list">';
-    foreach ($items as $f) {
+    $out .= '<div class="faq-section"><div class="accordion">';
+    foreach ($items as $i => $f) {
+        $open = $i === 0;
         $out .= '<div class="accordion-item">'
-            . '<button class="accordion-button collapsed" aria-expanded="false" type="button">'
-            . '<span>' . esc((string) ($f['question'] ?? '')) . '</span>'
-            . '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#07234B" stroke-linecap="round" /></svg>'
+            . '<h2 class="accordion-header">'
+            . '<button type="button" aria-expanded="' . ($open ? 'true' : 'false') . '" class="accordion-button' . ($open ? '' : ' collapsed') . '">'
+            . esc((string) ($f['question'] ?? ''))
             . '</button>'
-            . '<div class="accordion-collapse collapse"><div class="accordion-body">' . rich((string) ($f['answer'] ?? '')) . '</div></div>'
+            . '</h2>'
+            . '<div class="accordion-collapse collapse' . ($open ? ' show' : '') . '"><div class="accordion-body">' . rich((string) ($f['answer'] ?? '')) . '</div></div>'
             . '</div>';
     }
-    $out .= '</div></div></div>';
+    $out .= '</div></div></div></div>';
     return $out;
 }
 
@@ -69,28 +70,26 @@ function review_stars(int $n = 5): string
 
 /* ------------------------------ global modules ------------------------------ */
 
-/** DeveloperSlider (modules.tsx). */
+/** DeveloperSlider (modules.tsx) — CSS marquee with locally hosted logos. */
 function module_developer_slider(array $m): string
 {
     $h = $m['heading'] ?? '';
     $h = (is_string($h) && !str_contains($h, "\xEF\xBF\xBD")) ? $h : "Partners with Dubai's leading developers";
-    $slides = [];
+    $cards = '';
     foreach ([...dev_logos(), ...dev_logos()] as $d) {
         $file = rawurlencode((string) $d['file']);
-        $slides[] = '<div class="developer-card" tabindex="-1" style="width:100%;display:inline-block">'
-            . '<div class="developer-image img-zoom">'
-            . '<a class="developer-image img-zoom" href="/new-projects/developed-by-' . esc((string) $d['slug']) . '/">'
-            . '<img loading="lazy" draggable="false" src="https://d3h330vgpwpjr8.cloudfront.net/x/296x/' . $file . '" '
-            . 'srcSet="https://d3h330vgpwpjr8.cloudfront.net/x/118x/' . $file . ' 118w, https://d3h330vgpwpjr8.cloudfront.net/x/158x/' . $file . ' 158w, https://d3h330vgpwpjr8.cloudfront.net/x/296x/' . $file . ' 296w" '
-            . 'sizes="100px 158px" alt="' . esc($d['name'] . ' - Zoya Ventures Real Estate') . '" />'
-            . '</a></div></div>';
+        $cards .= '<div class="developer-card">'
+            . '<a class="developer-image" href="/new-projects/developed-by-' . esc((string) $d['slug']) . '/">'
+            . '<img loading="lazy" draggable="false" src="/assets/images/dev-logos/' . $file . '" '
+            . 'alt="' . esc($d['name'] . ' - Zoya Ventures Real Estate') . '" />'
+            . '</a></div>';
     }
     return '<div class="developer-slider-wrap">'
         . '<div class="developer-slider-container container">'
         . '<div class="d-block d-xl-flex align-items-center row">'
         . '<div class="col-xl-2 col-md-12"><p class="heading">' . esc($h) . '</p></div>'
         . '<div class="col-xl-10 col-md-12"><div class="slider-section">'
-        . slick_shell('developer-slider', $slides, 5)
+        . '<div class="developer-marquee"><div class="developer-marquee-track">' . $cards . '</div></div>'
         . '</div></div></div></div></div>';
 }
 
@@ -256,23 +255,41 @@ function module_featured_slider($m)
     $out = '<div class="featured-slider-module-wrap section-m">'
         . '<div class="featured-slider-module-container container">'
         . '<div class="content-section tiv"><h2 class="title"><span>' . esc(($m['title'] ?? '') ?: 'Explore Property in Dubai.') . '</span></h2></div>'
-        . '<div class="featured-slider-tab-section">'
+        . '<div class="featured-slider-tab-section" data-fs-tabs>'
         . '<div class="tab-header-section">'
         . '<div class="custom-tabs tab-header">'
-        . '<button class="tab-button button selected-tab" type="button">For Sale</button>'
-        . '<button class="tab-button button button-white" type="button">For Rent</button>'
-        . '<button class="tab-button button button-white" type="button">Off Plan</button>'
+        . '<button class="tab-button button selected-tab" type="button" data-fs-tab="sale">For Sale</button>'
+        . '<button class="tab-button button button-white" type="button" data-fs-tab="rent">For Rent</button>'
+        . '<button class="tab-button button button-white" type="button" data-fs-tab="offplan">Off Plan</button>'
         . '</div>'
-        . '<div class="cta-section"><a class="button button-orange more-btn" href="/buy/properties-for-sale/">View more</a></div>'
-        . '</div>'
-        . '<div class="tab-body">';
-    $slides = [];
+        . '<div class="cta-section"><a class="button button-orange more-btn" data-fs-more href="/buy/properties-for-sale/" data-fs-href-rent="/let/properties-for-rent/" data-fs-href-offplan="/new-projects/">View more</a></div>'
+        . '</div>';
+
+    $rents = array_slice(rentals(), 0, 6);
+    $offplan = array_slice(project_hits(6), 0, 6);
+
+    $saleSlides = [];
     foreach ($sales as $h) {
-        $slides[] = property_card($h, true, false);
+        $saleSlides[] = property_card($h, false, false);
     }
-    $slides[] = more_box('Explore Thousands of Properties for Sale', 'Browse Through Our Extensive Listings to Find Your Dream Home', '/buy/properties-for-sale/', 'View more');
-    $out .= slick_shell('featured-slider', $slides, 3)
-        . '</div></div></div></div>';
+    $saleSlides[] = more_box('Explore Thousands of Properties for Sale', 'Browse Through Our Extensive Listings to Find Your Dream Home', '/buy/properties-for-sale/', 'View more');
+
+    $rentSlides = [];
+    foreach ($rents as $h) {
+        $rentSlides[] = property_card($h, false, false);
+    }
+    $rentSlides[] = more_box('Explore Thousands of Properties for Rent', 'Browse Through Our Extensive Rental Listings to Find Your Dream Home', '/let/properties-for-rent/', 'View more');
+
+    $offplanSlides = [];
+    foreach ($offplan as $h) {
+        $offplanSlides[] = property_card($h, false, false);
+    }
+    $offplanSlides[] = more_box('Explore Thousands of Off-Plan Projects', "Discover Dubai's Finest Upcoming Developments", '/new-projects/', 'View more');
+
+    $out .= '<div class="tab-body fs-panel" data-fs-panel="sale">' . slick_shell('featured-slider', $saleSlides, 3) . '</div>'
+        . '<div class="tab-body fs-panel" data-fs-panel="rent" style="display:none">' . slick_shell('featured-slider', $rentSlides, 3) . '</div>'
+        . '<div class="tab-body fs-panel" data-fs-panel="offplan" style="display:none">' . slick_shell('featured-slider', $offplanSlides, 3) . '</div>'
+        . '</div></div></div>';
     return $out;
 }
 
@@ -330,7 +347,7 @@ function module_ads_banner($m)
         . '<div class="gradient-overlay">'
         . '<div class="banner-section">';
     if (!empty($b['bg_image']['url'])) {
-        $out .= '<div class="bg-img"><img loading="lazy" draggable="false" src="' . esc(cft($b['bg_image']['url'], 1128, 368))
+        $out .= '<div class="bg-img"><img loading="lazy" draggable="false" src="' . esc(cf_original($b['bg_image']['url']))
             . '" alt="' . esc(($b['title'] ?? '') . ' - Zoya Ventures Real Estate') . '" /></div>';
     }
     $out .= '<div class="content-section"><div class="content">';
@@ -528,7 +545,7 @@ function module_our_services($m)
         $href = !empty($s['cta']) ? cta_href($s['cta']) : '#';
         $label = $s['cta']['cta_label'] ?? ($s['title'] ?? '');
         $u = $s['image']['url'] ?? '';
-        $src = $u ? cft($u, 1128, 752) : $placeholder;
+        $src = $u ? cf_original($u) : $placeholder;
         $card = '<div class="service-item">'
             . '<a class="img-section img-zoom" href="' . esc($href) . '">'
             . '<img loading="lazy" draggable="false" src="' . esc($src) . '" alt="' . esc(((string) $label ?: 'Service') . ' - Zoya Ventures Real Estate') . '" />'
@@ -702,7 +719,7 @@ function module_form_module($m)
         . '</svg></div>'
         . '<div class="cta-content phone-content">'
         . '<p class="cta-label">Phone</p>'
-        . '<a class="cta-value" href="tel:+971568308221"><span role="img" aria-label="United Arab Emirates" style="font-family: &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Noto Color Emoji&quot;, &quot;Twemoji Mozilla&quot;, &quot;EmojiOne Color&quot;, &quot;Segoe UI Symbol&quot;, sans-serif; -webkit-font-smoothing: antialiased; text-transform: none; line-height: 1;">\xF0\x9F\x87\xA6\xF0\x9F\x87\xAA</span> +971 568 308 221</a>'
+        . '<a class="cta-value" href="tel:+971568308221">' . country_flag('AE') . ' +971 568 308 221</a>'
         . '</div></div>'
         . '<div class="divider"></div>'
         . '<div class="cta-item">'
@@ -1212,11 +1229,14 @@ function module_communities_listing()
 
 function module_developer_listing()
 {
-    $devs = developer_hits();
+    $devs = [];
+    foreach (project_corpus() as $h) {
+        $developer = (string) ($h['developer'] ?? '');
+        if ($developer !== '') $devs[$developer] = true;
+    }
+    ksort($devs);
     $items = [];
-    foreach ($devs as $d) {
-        $developer = (string) ($d['developer'] ?? '');
-        if ($developer === '') continue;
+    foreach (array_keys($devs) as $developer) {
         $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($developer));
         $items[] = ['developer' => $developer, 'slug' => $slug];
     }
@@ -1244,6 +1264,7 @@ function module_renderer($m)
             if ($cm === 'reviews_slider') return module_reviews_slider();
             if ($cm === 'dubai_communities') return module_dubai_communities();
             if ($cm === 'contact_module') return module_contact_module($m);
+            if ($cm === 'team_slider') return module_team_listing();
             if ($cm === 'news_slider') return module_news_section($m);
             return '';
         case 'modules.listing-module':
@@ -1277,6 +1298,17 @@ function module_renderer($m)
             return module_partner($m);
         case 'modules.form-module':
             return module_form_module($m);
+        case 'modules.forms':
+            $out = '<div class="contact-form-wrapper  section-p" id="' . esc((string) (($m['choose_form'] ?? '') ?: 'General_Enquiry')) . '">'
+                . '<div class="contact-form-container  container">'
+                . '<div class="content-section">'
+                . '<h3 class="title">' . esc((string) ($m['title'] ?? '')) . '</h3>'
+                . '<div class="description">' . rich($m['description']['data']['description'] ?? null) . '</div>'
+                . '</div>'
+                . '<div class="form-section">'
+                . contact_enquiry_form()
+                . '</div></div></div>';
+            return $out;
         case 'modules.images-slider':
             return module_images_slider($m);
         case 'modules.icon-cards':
