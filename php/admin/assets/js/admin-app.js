@@ -2073,25 +2073,28 @@ var FIELDS = [
     var card = document.createElement("div");
     card.className = "app-card";
     panel.appendChild(card);
+    var contentWrap = document.createElement("div");
+    contentWrap.style.marginTop = "20px";
+    panel.appendChild(contentWrap);
     function render() {
       var head = '<div class="app-card-head"><div><h2>More content</h2></div></div>';
       var tabs = '<div class="app-tabs">' + SUBTABS.map(function (s) {
         return '<button type="button" class="app-tab' + (tab === s ? " active" : "") + '" data-more="' + s + '">' + s + "</button>";
       }).join("") + "</div>";
       card.innerHTML = head + tabs;
+      var h = card.querySelector(".app-card-head");
+      if (h) h.style.marginBottom = "0";
       $$("[data-more]", card).forEach(function (b) {
         b.addEventListener("click", function () { tab = b.getAttribute("data-more"); render(); });
       });
-      var target = document.createElement("div");
-      target.style.marginTop = "28px";
-      card.appendChild(target);
-      if (tab === "about") kvManager(target, "about", "About Us", [
+      contentWrap.innerHTML = "";
+      if (tab === "about") kvManager(contentWrap, "about", "About Us", [
         { key: "hero_title", label: "Main paragraph", type: "textarea", full: true },
         { key: "intro", label: "Intro text (HTML allowed)", type: "textarea", full: true },
       ], "Edit the content shown on the public About page.");
-      else if (tab === "team") initResource(target, "agents", "Team members");
-      else if (tab === "careers") initResource(target, "jobs", "Careers");
-      else if (tab === "contact") kvManager(target, "contact", "Contact Us", [
+      else if (tab === "team") initResource(contentWrap, "agents", "Team members");
+      else if (tab === "careers") initResource(contentWrap, "jobs", "Careers");
+      else if (tab === "contact") kvManager(contentWrap, "contact", "Contact Us", [
         { key: "country", label: "Country", type: "select", options: COUNTRIES },
         { key: "phone", label: "Phone", full: true },
         { key: "email", label: "Email", full: true },

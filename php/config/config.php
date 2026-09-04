@@ -17,7 +17,7 @@ define('APP_GTM_ID', 'GTM-PGNHTGZ5');
 define('APP_COPYRIGHT_YEAR', '2026');
 
 // Bump on every CSS/JS deploy so browsers and the CDN fetch fresh assets.
-define('APP_ASSET_VER', '2026090402');
+define('APP_ASSET_VER', '2026090403');
 
 define('SESSION_COOKIE', 'provident_session');
 define('SESSION_TTL', 7 * 24 * 3600 * 1000);      // 7 days (ms — matches SESSION_TTL_MS)

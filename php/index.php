@@ -203,6 +203,37 @@ if (!isset($model)) {
     $pd = get_page_data($routeBase);
     $model = $pd ? classify($pd, $routeBase) : null;
 
+    // DB services fallback: admin-created services live only in the DB table.
+    if (!$model && db_enabled() && preg_match('#^/property-services/([a-z0-9-]+)$#', $routeBase, $m)) {
+        $svc = db_row('SELECT * FROM services WHERE slug = ? AND published = 1 LIMIT 1', [$m[1]]);
+        if ($svc) {
+            $rich = trim((string) ($svc['rich_content'] ?? ''));
+            $desc = trim((string) ($svc['description'] ?? ''));
+            $html = $rich !== '' ? $rich : ($desc !== '' ? '<p>' . nl2br(esc($desc)) . '</p>' : '');
+            $mods = [];
+            if ($html !== '') {
+                $mods[] = [
+                    'strapi_component' => 'components.rich-text-block',
+                    'id' => 'db-service-' . (int) $svc['id'],
+                    'text' => ['data' => ['text' => $html]],
+                ];
+            }
+            $model = ['kind' => 'page', 'data' => [
+                'page_name' => (string) $svc['title'],
+                'layout' => 'landing_page',
+                'banner' => [
+                    'title' => (string) $svc['title'],
+                    'description' => ['data' => ['description' => $desc]],
+                ],
+                'modules' => $mods,
+                'seo' => [
+                    'title' => (string) ($svc['seo_title'] ?? $svc['title']),
+                    'description' => (string) ($svc['seo_description'] ?? $desc),
+                ],
+            ], 'route' => $routeBase];
+        }
+    }
+
     // Merge DB projects into project LISTINGS so admin-created projects appear.
     // Single-project routes (/new-projects/{slug}) must NOT be merged — their
     // model stays a 1-hit payload so the detail template renders.
