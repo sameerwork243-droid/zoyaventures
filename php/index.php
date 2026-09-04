@@ -203,8 +203,10 @@ if (!isset($model)) {
     $pd = get_page_data($routeBase);
     $model = $pd ? classify($pd, $routeBase) : null;
 
-    // Merge DB projects into project listings so admin-created projects appear.
-    if ($model && $model['kind'] === 'project' && db_enabled()) {
+    // Merge DB projects into project LISTINGS so admin-created projects appear.
+    // Single-project routes (/new-projects/{slug}) must NOT be merged — their
+    // model stays a 1-hit payload so the detail template renders.
+    if ($model && $model['kind'] === 'project' && db_enabled() && !preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)) {
         $db = db_projects();
         if (count($db)) {
             $existing = [];
