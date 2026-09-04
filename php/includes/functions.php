@@ -348,19 +348,54 @@ function apply_logo_watermark(string $imagePath): bool
     $finalH = (int)($logoH * $scale);
     if ($finalW < 1 || $finalH < 1) { imagedestroy($src); return false; }
 
+    $margin = (int)min(30, $sw * 0.03, $sh * 0.03);
+    $lx = max(0, min($margin, $sw - $finalW));
+    $ly = max(0, min($margin, $sh - $finalH));
+    $finalW = min($finalW, $sw - $lx);
+    $finalH = min($finalH, $sh - $ly);
+    if ($finalW < 1 || $finalH < 1) { imagedestroy($src); return false; }
+
     $logo = @imagecreatefrompng($logoPath);
     if (!$logo) { imagedestroy($src); return false; }
     $scaledLogo = imagecreatetruecolor($finalW, $finalH);
+    imagealphablending($scaledLogo, false);
+    imagesavealpha($scaledLogo, true);
+    imagefill($scaledLogo, 0, 0, imagecolorallocatealpha($scaledLogo, 0, 0, 0, 127));
     imagecopyresampled($scaledLogo, $logo, 0, 0, 0, 0, $finalW, $finalH, $logoW, $logoH);
     imagedestroy($logo);
 
-    $margin = (int)min(30, $sw * 0.03, $sh * 0.03);
-    imagecopy($src, $scaledLogo, $margin, $margin, 0, 0, $finalW, $finalH);
+    $opacity = 0.8;
+    for ($x = 0; $x < $finalW; $x++) {
+        for ($y = 0; $y < $finalH; $y++) {
+            $lp = imagecolorat($scaledLogo, $x, $y);
+            $lAlpha = ($lp & 0x7F000000) >> 24;
+            $op = (1 - $lAlpha / 127) * $opacity;
+            if ($op < 0.01) continue;
+            $sp = imagecolorat($src, $lx + $x, $ly + $y);
+            $r = (int) round( ((($lp >> 16) & 0xFF) * $op) + ((($sp >> 16) & 0xFF) * (1 - $op)) );
+            $g = (int) round( ((($lp >> 8) & 0xFF) * $op) + ((($sp >> 8) & 0xFF) * (1 - $op)) );
+            $b = (int) round( ((($lp & 0xFF)) * $op) + ((($sp & 0xFF)) * (1 - $op)) );
+            imagesetpixel($src, $lx + $x, $ly + $y, ($r << 16) | ($g << 8) | $b);
+        }
+    }
     imagedestroy($scaledLogo);
 
     $quality = ($ext === 'jpeg') ? 85 : 9;
-    $result = @$dstFunc($src, $imagePath, $quality);
+    $tmp = $imagePath . '.wm_tmp';
+    $result = @$dstFunc($src, $tmp, $quality);
     imagedestroy($src);
-    if (!$result) { error_log('Watermark: failed to save image'); }
-    return $result;
+    if (!$result || !is_file($tmp)) {
+        @unlink($tmp);
+        error_log('Watermark: failed to save image');
+        return false;
+    }
+    if (!@rename($tmp, $imagePath)) {
+        if (!@copy($tmp, $imagePath) || !is_file($imagePath)) {
+            @unlink($tmp);
+            error_log('Watermark: failed to move processed image into place');
+            return false;
+        }
+        @unlink($tmp);
+    }
+    return true;
 }
