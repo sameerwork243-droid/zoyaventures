@@ -1,0 +1,107 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/hayyan",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "hayyan",
+                        "title": "Hayyan",
+                        "about": "Hayyan is a rare find in the UAE where you and your loved ones spend time in a tranquil environment, uniquely designed for an immersive experience of nature, culture and society in natural landscapes. Hayyan provides the most genuine living experience where people connect to nature in a tranquil habitat in Sharjah — featuring the largest swimmable water lagoon in Sharjah, the largest community park, the most dense green project, allotments for organic edible gardens, a club house and a community mall.",
+                        "price": 2719000,
+                        "display_price": "2.72M",
+                        "currency": "AED",
+                        "developer": "alef-group",
+                        "community": "sharjah",
+                        "display_address": "Sharjah",
+                        "completion_year": "2028",
+                        "status": "under-construction",
+                        "building_type": [
+                            "townhouse"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/hayyan.jpg",
+                                "464x312": "/images/projects/hayyan.jpg",
+                                "696x520": "/images/projects/hayyan.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/hayyan.jpg",
+                                "464x312": "/images/projects/hayyan.jpg",
+                                "696x520": "/images/projects/hayyan.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/hayyan.jpg",
+                        "features": [
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "Indoor swimming pool"
+                            },
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Concierge Service"
+                            },
+                            {
+                                "name": "Near School"
+                            },
+                            {
+                                "name": "Public Parks"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "Indoor swimming pool"
+                            },
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Concierge Service"
+                            },
+                            {
+                                "text": "Near School"
+                            },
+                            {
+                                "text": "Public Parks"
+                            }
+                        ],
+                        "objectID": "zoya-hayyan"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,143 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/seslia-tower",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "seslia-tower",
+                        "title": "Seslia Tower",
+                        "about": "It’s an Island that provides investment services to individuals who seek to maximize their return on investment. With a vision of industrial style in mind, SESLIA Residential Tower was designed to be as functional as possible whilst showcasing the beauty of raw materials and their contrasts to one another. An industrial style approach is used across all of the tower’s public areas that will instantly immerse its visitors in a creative and modern atmosphere.",
+                        "price": 943065,
+                        "display_price": "943K",
+                        "currency": "AED",
+                        "developer": "tiger-group",
+                        "community": "jumeirah-village-triangle",
+                        "display_address": "Jumeirah Village Triangle",
+                        "completion_year": "2025",
+                        "status": "ready",
+                        "building_type": [
+                            "apartment"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/seslia-tower.jpg",
+                                "464x312": "/images/projects/seslia-tower.jpg",
+                                "696x520": "/images/projects/seslia-tower.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/seslia-tower.jpg",
+                                "464x312": "/images/projects/seslia-tower.jpg",
+                                "696x520": "/images/projects/seslia-tower.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/seslia-tower.jpg",
+                        "features": [
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "Public Parks"
+                            },
+                            {
+                                "name": "Barbecue Area"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Concierge Service"
+                            },
+                            {
+                                "name": "Gym"
+                            },
+                            {
+                                "name": "Children's Play Area"
+                            },
+                            {
+                                "name": "Sports field"
+                            },
+                            {
+                                "name": "Yoga classes"
+                            },
+                            {
+                                "name": "Near School"
+                            },
+                            {
+                                "name": "Near Expo"
+                            },
+                            {
+                                "name": "Near Mall"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "Public Parks"
+                            },
+                            {
+                                "text": "Barbecue Area"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Concierge Service"
+                            },
+                            {
+                                "text": "Gym"
+                            },
+                            {
+                                "text": "Children's Play Area"
+                            },
+                            {
+                                "text": "Sports field"
+                            },
+                            {
+                                "text": "Yoga classes"
+                            },
+                            {
+                                "text": "Near School"
+                            },
+                            {
+                                "text": "Near Expo"
+                            },
+                            {
+                                "text": "Near Mall"
+                            }
+                        ],
+                        "objectID": "zoya-seslia-tower"
+                    }
+                ]
+            }
+        }
+    }
+}

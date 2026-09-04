@@ -1,0 +1,155 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/opus",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "opus",
+                        "title": "Opus",
+                        "about": "The Opus is an iconic lifestyle development by Omniyat and designed by world-renowned architect Zaha Hadid, it features a limited number of furnished residences. Comprising of two structures forming a single cube that appears to hover over the ground, the project is also home to ME Hotel by Melia Group of Hotel. Providing an extraordinary degree of personalized and luxurious five-star services for guests and owners alike, the development redefines the art of living in the midst of visual opulence.",
+                        "price": 5124299,
+                        "display_price": "5.12M",
+                        "currency": "AED",
+                        "developer": "omniyat",
+                        "community": "business-bay",
+                        "display_address": "Business Bay",
+                        "completion_year": "2023",
+                        "status": "ready",
+                        "building_type": [
+                            "apartment"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/opus.jpg",
+                                "464x312": "/images/projects/opus.jpg",
+                                "696x520": "/images/projects/opus.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/opus.jpg",
+                                "464x312": "/images/projects/opus.jpg",
+                                "696x520": "/images/projects/opus.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/opus.jpg",
+                        "features": [
+                            {
+                                "name": "Private cinema for residents"
+                            },
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Restaurant"
+                            },
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "Near Golf"
+                            },
+                            {
+                                "name": "Public Parks"
+                            },
+                            {
+                                "name": "Concierge Service"
+                            },
+                            {
+                                "name": "Space to work"
+                            },
+                            {
+                                "name": "Sports field"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Barbecue Area"
+                            },
+                            {
+                                "name": "Gym"
+                            },
+                            {
+                                "name": "Servicing of apartments"
+                            },
+                            {
+                                "name": "SPA"
+                            },
+                            {
+                                "name": "Valet"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "Private cinema for residents"
+                            },
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Restaurant"
+                            },
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "Near Golf"
+                            },
+                            {
+                                "text": "Public Parks"
+                            },
+                            {
+                                "text": "Concierge Service"
+                            },
+                            {
+                                "text": "Space to work"
+                            },
+                            {
+                                "text": "Sports field"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Barbecue Area"
+                            },
+                            {
+                                "text": "Gym"
+                            },
+                            {
+                                "text": "Servicing of apartments"
+                            },
+                            {
+                                "text": "SPA"
+                            },
+                            {
+                                "text": "Valet"
+                            }
+                        ],
+                        "objectID": "zoya-opus"
+                    }
+                ]
+            }
+        }
+    }
+}

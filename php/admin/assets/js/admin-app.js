@@ -28,12 +28,61 @@
     toastEl.__t = setTimeout(function () { toastEl.hidden = true; }, 2200);
   }
 
-  function fmtDate(s) {
-    if (!s) return "";
-    var d = new Date(s);
-    if (isNaN(d.getTime())) return "";
-    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-  }
+   function fmtDate(s) {
+     if (!s) return "";
+     var d = new Date(s);
+     if (isNaN(d.getTime())) return "";
+     return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+   }
+
+   function getMsgSummary(msg) {
+     try {
+       var d = JSON.parse(String(msg || ""));
+       var parts = [];
+       if (d.project) parts.push("Project: " + d.project);
+       if (d.name) parts.push("Name: " + d.name);
+       if (d.email) parts.push("Email: " + d.email);
+       if (d.phone) parts.push("Phone: " + d.phone);
+       if (d.message) parts.push("Message: " + String(d.message).slice(0, 80));
+       return parts.join(" | ") || String(msg).slice(0, 50);
+     } catch (e) {
+       return String(msg || "").replace(/\s+/g, " ").trim().slice(0, 50);
+     }
+   }
+
+   function openInquiryDetail(row) {
+     var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Inquiry #' + row.id + '</title>' +
+       '<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:40px;color:#142121}' +
+       'table{border-collapse:collapse;width:100%;max-width:800px}' +
+       'th,td{padding:10px 14px;border:1px solid #e1e8ed;text-align:left}' +
+       'th{background:#f0f3f8;font-weight:600;width:160px}' +
+       'h1{font-size:20px;margin-bottom:20px}</style></head><body>' +
+       '<h1>Inquiry #' + row.id + ' — ' + esc(row.name) + '</h1>' +
+       '<table><tbody>';
+     var keyVal = [];
+     keyVal.push(["Name", row.name || "—"]);
+     keyVal.push(["Email", row.email || "—"]);
+     keyVal.push(["Phone", row.phone || "—"]);
+     keyVal.push(["Kind", row.kind || "—"]);
+     keyVal.push(["Status", row.status || "—"]);
+     keyVal.push(["Date", fmtDate(row.created_at) || "—"]);
+     var text = String(row.message || "");
+     try {
+       var d = JSON.parse(text);
+       if (d.message) keyVal.push(["Message", d.message]);
+       Object.keys(d).forEach(function (k) {
+         if (k !== "message" && typeof d[k] === "string") keyVal.push([k.charAt(0).toUpperCase() + k.slice(1), d[k]]);
+       });
+     } catch (e) {
+       keyVal.push(["Message", text]);
+     }
+     keyVal.forEach(function (r) {
+       html += '<tr><td>' + esc(r[0]) + '</td><td>' + esc(String(r[1])) + '</td></tr>';
+     });
+     html += '</tbody></table></body></html>';
+     var win = window.open("", "_blank");
+     if (win) { win.document.write(html); win.document.close(); }
+   }
 
   function fmtPrice(p) {
     var n = Number(p);
@@ -699,19 +748,25 @@
         h += '<div class="app-card" style="margin-top:16px"><div class="app-card-head"><div><h2>Recent inquiries</h2></div></div>' +
           '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Kind</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>';
         recent.forEach(function (i) {
-          var msg = String(i.message || "").slice(0, 60);
-          h += "<tr><td><strong>" + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
-            "<td>" + esc(i.kind) + "</td><td>" + esc(msg) + "</td>" +
+          var msgText = getMsgSummary(i.message);
+          h += "<tr data-inq-json='" + esc(JSON.stringify(i)) + "'><td><strong>" + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
+            "<td>" + esc(i.kind) + "</td><td style=\"cursor:pointer;text-decoration:underline;color:#005480\">" + esc(msgText) + "</td>" +
             '<td><span class="app-badge ' + esc(i.status) + '">' + esc(i.status) + "</span></td>" +
             "<td>" + esc(fmtDate(i.created_at)) + "</td></tr>";
         });
         h += "</tbody></table></div></div>";
       }
-      card.innerHTML = h;
-    }).catch(function () {
-      card.innerHTML = '<p class="app-empty">Could not load stats.</p>';
-    });
-  }
+       card.innerHTML = h;
+       card.addEventListener("click", function (e) {
+         var row = e.target.closest("[data-inq-json]");
+         if (row) {
+           try { var i = JSON.parse(row.getAttribute("data-inq-json")); openInquiryDetail(i); } catch (err) {}
+         }
+       });
+     }).catch(function () {
+       card.innerHTML = '<p class="app-empty">Could not load stats.</p>';
+     });
+   }
 
   /* ------------------------------ Properties ------------------------------ */
 
@@ -1168,43 +1223,44 @@
     addRow.className = "app-field full";
     wrap.appendChild(addRow);
 
-    function renderChips() {
-      chipList.innerHTML = "";
-      var wrapd = document.createElement("div");
-      wrapd.className = "app-chip-list";
-      amenityList.forEach(function (a) {
-        var on = selectedAmenities.indexOf(a) >= 0;
-        var chip = document.createElement("button");
-        chip.type = "button";
-        chip.className = "app-chip" + (on ? " active" : "");
-        chip.title = "Delete " + a;
-        var label = document.createElement("span");
-        label.className = "app-chip-label";
-        label.textContent = a;
-        chip.appendChild(label);
-        var x = document.createElement("span");
-        x.className = "app-chip-x";
-        x.innerHTML = '<svg viewBox="0 0 10 10" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1L9 9M9 1L1 9"/></svg>';
-        x.addEventListener("click", function (e) {
-          e.stopPropagation();
-          var idx = amenityList.indexOf(a);
-          if (idx >= 0) amenityList.splice(idx, 1);
-          var si = selectedAmenities.indexOf(a);
-          if (si >= 0) selectedAmenities.splice(si, 1);
-          renderChips();
-        });
-        chip.appendChild(x);
-        chip.addEventListener("click", function () {
-          var si = selectedAmenities.indexOf(a);
-          if (si >= 0) selectedAmenities.splice(si, 1);
-          else selectedAmenities.push(a);
-          renderChips();
-        });
-        wrapd.appendChild(chip);
-      });
-      chipList.appendChild(wrapd);
-      amCount.innerHTML = '<div class="hint">' + selectedAmenities.length + " amenit" + (selectedAmenities.length === 1 ? "y" : "ies") + " selected</div>";
-    }
+     function renderChips() {
+       chipList.innerHTML = "";
+       var wrapd = document.createElement("div");
+       wrapd.className = "app-chip-list";
+       amenityList.forEach(function (a) {
+         var on = selectedAmenities.indexOf(a) >= 0;
+         var chip = document.createElement("button");
+         chip.type = "button";
+         chip.className = "app-chip" + (on ? " active" : "");
+         var label = document.createElement("span");
+         label.className = "app-chip-label";
+         label.textContent = a;
+         chip.appendChild(label);
+         chip.addEventListener("click", function () {
+           var si = selectedAmenities.indexOf(a);
+           if (si >= 0) selectedAmenities.splice(si, 1);
+           else selectedAmenities.push(a);
+           renderChips();
+         });
+         wrapd.appendChild(chip);
+       });
+       chipList.appendChild(wrapd);
+       amCount.innerHTML = '<div class="hint">' + selectedAmenities.length + " amenit" + (selectedAmenities.length === 1 ? "y" : "ies") + " selected</div>";
+     }
+
+     var delBtn = document.createElement("button");
+     delBtn.type = "button";
+     delBtn.className = "app-btn ghost sm";
+     delBtn.innerHTML = '<svg viewBox="0 0 10 10" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:4px"><path d="M1 1L9 9M9 1L1 9"/></svg>Delete amenities';
+     delBtn.addEventListener("click", function () {
+       if (selectedAmenities.length === 0) { showToast("No amenities selected to delete"); return; }
+       if (!window.confirm("Remove " + selectedAmenities.length + " amenity(s) from this property?")) return;
+       selectedAmenities = [];
+       renderChips();
+       showToast("Amenities removed — click Save to confirm");
+     });
+     delBtn.addEventListener("mouseenter", function () { delBtn.style.color = "#d64545"; delBtn.style.borderColor = "#d64545"; });
+     delBtn.addEventListener("mouseleave", function () { delBtn.style.color = ""; delBtn.style.borderColor = ""; });
 
     var addInput = document.createElement("input");
     addInput.type = "text";
@@ -1228,8 +1284,9 @@
     addWrap.style.cssText = "display:flex;gap:8px;align-items:center";
     addWrap.appendChild(addInput);
     addWrap.appendChild(addBtn);
-    addRow.appendChild(addWrap);
-    renderChips();
+     addRow.appendChild(addWrap);
+     wrap.appendChild(delBtn);
+     renderChips();
 
     /* actions */
     var actions = document.createElement("div");
@@ -1461,26 +1518,31 @@
         return '<button type="button" class="app-tab' + (tab === k ? " active" : "") + '" data-kind="' + k + '">' + k + "</button>";
       }).join("") + "</div>";
       card.innerHTML = head + tabs + (items === null ? '<p class="app-empty">Loading…</p>' :
-        items.length === 0 ? '<p class="app-empty">No inquiries.</p>' :
-        '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Kind</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>' +
-        items.map(function (i) {
-          return '<tr class="app-row-click" data-open="' + i.id + '"><td><strong>' + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
-            "<td>" + esc(i.kind) + "</td><td>" + esc(String(i.message || "").slice(0, 50)) + "</td>" +
-            '<td><span class="app-badge ' + esc(i.status) + '">' + esc(i.status) + "</span></td>" +
-            "<td>" + esc(fmtDate(i.created_at)) + "</td></tr>";
-        }).join("") + "</tbody></table></div>");
-      $$("[data-kind]", card).forEach(function (b) {
-        b.addEventListener("click", function () { tab = b.getAttribute("data-kind"); open = null; load(); });
-      });
-      $$("[data-open]", card).forEach(function (b) {
-        b.addEventListener("click", function () {
-          var id = Number(b.getAttribute("data-open"));
-          var row = null;
-          (items || []).forEach(function (r) { if (Number(r.id) === id) row = r; });
-          if (row) openDetail(row);
-        });
-      });
-      if (open) {
+         items.length === 0 ? '<p class="app-empty">No inquiries.</p>' :
+         '<div style="overflow-x:auto"><table class="app-table"><thead><tr><th>Name</th><th>Kind</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>' +
+         items.map(function (i) {
+           var msgText = getMsgSummary(i.message);
+           return '<tr data-inq-json="' + esc(JSON.stringify(i)) + '"><td><strong>' + esc(i.name) + "</strong><div style=\"font-size:12px;color:#9399a4\">" + esc(i.email) + "</div></td>" +
+             "<td>" + esc(i.kind) + "</td><td class=\"app-msg-link\" style=\"cursor:pointer;text-decoration:underline;color:#005480\">" + esc(msgText) + "</td>" +
+             '<td><span class="app-badge ' + esc(i.status) + '">' + esc(i.status) + "</span></td>" +
+             "<td>" + esc(fmtDate(i.created_at)) + "</td></tr>";
+         }).join("") + "</tbody></table></div>");
+       $$("[data-kind]", card).forEach(function (b) {
+         b.addEventListener("click", function () { tab = b.getAttribute("data-kind"); open = null; load(); });
+       });
+       $$("[data-inq-json]", card).forEach(function (tr) {
+         tr.addEventListener("click", function (e) {
+           if (e.target.classList.contains("app-msg-link")) return;
+           try { var row = JSON.parse(tr.getAttribute("data-inq-json")); openDetail(row); } catch (err) {}
+         });
+       });
+       $$(".app-msg-link", card).forEach(function (td) {
+         td.addEventListener("click", function (e) {
+           e.stopPropagation();
+           try { var row = JSON.parse(td.closest("[data-inq-json]").getAttribute("data-inq-json")); openInquiryDetail(row); } catch (err) {}
+         });
+       });
+       if (open) {
         var ss = $("[data-inq-status]");
         if (ss) ss.addEventListener("change", function () { setStatus(open, ss.value); closeModal(); });
         var dd = $("[data-inq-del]");

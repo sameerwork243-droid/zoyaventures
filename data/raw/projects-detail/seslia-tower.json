@@ -1,0 +1,202 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "ready",
+    "title": "Seslia Tower",
+    "slug": "seslia-tower",
+    "display_address": "Jumeirah Village Triangle",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2025",
+    "developer": "Tiger Properties",
+    "price": 943065,
+    "display_price": "943K",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>It’s an Island that provides investment services to individuals who seek to maximize their return on investment. With a vision of industrial style in mind, SESLIA Residential Tower was designed to be as functional as possible whilst showcasing the beauty of raw materials and their contrasts to one another. An industrial style approach is used across all of the tower’s public areas that will instantly immerse its visitors in a creative and modern atmosphere.</p>",
+    "tile_image": {
+        "url": "/images/projects/seslia-tower.jpg",
+        "hash": "seslia-tower.jpg",
+        "name": "seslia-tower.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/seslia-tower.jpg",
+        "hash": "seslia-tower.jpg",
+        "name": "seslia-tower.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/seslia-tower.jpg",
+        "hash": "seslia-tower.jpg",
+        "name": "seslia-tower.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/seslia-tower.jpg",
+            "hash": "seslia-tower.jpg",
+            "name": "seslia-tower.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/seslia-tower.jpg",
+            "464x312": "/images/projects/seslia-tower.jpg",
+            "696x520": "/images/projects/seslia-tower.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Jumeirah Village Triangle",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        },
+        {
+            "text": "Barbecue Area",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Gym",
+            "image": null
+        },
+        {
+            "text": "Children's Play Area",
+            "image": null
+        },
+        {
+            "text": "Sports field",
+            "image": null
+        },
+        {
+            "text": "Yoga classes",
+            "image": null
+        },
+        {
+            "text": "Near School",
+            "image": null
+        },
+        {
+            "text": "Near Expo",
+            "image": null
+        },
+        {
+            "text": "Near Mall",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "Public Parks"
+        },
+        {
+            "name": "Barbecue Area"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Gym"
+        },
+        {
+            "name": "Children's Play Area"
+        },
+        {
+            "name": "Sports field"
+        },
+        {
+            "name": "Yoga classes"
+        },
+        {
+            "name": "Near School"
+        },
+        {
+            "name": "Near Expo"
+        },
+        {
+            "name": "Near Mall"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Seslia Tower?",
+            "answer": "<p>Tiger Properties is the developer behind Seslia Tower.</p>"
+        },
+        {
+            "question": "Where is Seslia Tower located?",
+            "answer": "<p>Seslia Tower is located in Jumeirah Village Triangle, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Seslia Tower?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/seslia-tower.jpg",
+        "hash": "seslia-tower.jpg",
+        "name": "seslia-tower.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/seslia-tower.jpg",
+        "hash": "seslia-tower.jpg",
+        "name": "seslia-tower.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Seslia Tower | Zoya Ventures Real Estate",
+        "metaDescription": "It’s an Island that provides investment services to individuals who seek to maximize their return on investment. With a vision of industrial style i"
+    }
+}

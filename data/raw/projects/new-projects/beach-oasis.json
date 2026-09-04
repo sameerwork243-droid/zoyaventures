@@ -1,0 +1,161 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/beach-oasis",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "beach-oasis",
+                        "title": "Beach Oasis 1 & 2",
+                        "about": "Beach Oasis 1 and 2 is a contemporary low-rise residential development offering a range of studio, one-bedroom, and two-bedroom apartments. Situated in the vibrant Studio City, this community is designed to provide an exceptional living experience with excellent facilities and amenities.",
+                        "price": 881000,
+                        "display_price": "881K",
+                        "currency": "AED",
+                        "developer": "azizi-developments",
+                        "community": "dubai-studio-city",
+                        "display_address": "Dubai Studio City",
+                        "completion_year": "2026",
+                        "status": "under-construction",
+                        "building_type": [
+                            "apartment"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/beach-oasis.jpg",
+                                "464x312": "/images/projects/beach-oasis.jpg",
+                                "696x520": "/images/projects/beach-oasis.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/beach-oasis.jpg",
+                                "464x312": "/images/projects/beach-oasis.jpg",
+                                "696x520": "/images/projects/beach-oasis.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/beach-oasis.jpg",
+                        "features": [
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "Restaurant"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Concierge Service"
+                            },
+                            {
+                                "name": "Children's Play Area"
+                            },
+                            {
+                                "name": "Sports field"
+                            },
+                            {
+                                "name": "Space to work"
+                            },
+                            {
+                                "name": "Gym"
+                            },
+                            {
+                                "name": "Near Golf"
+                            },
+                            {
+                                "name": "Private beach"
+                            },
+                            {
+                                "name": "Barbecue Area"
+                            },
+                            {
+                                "name": "Near Mall"
+                            },
+                            {
+                                "name": "Near Hospital"
+                            },
+                            {
+                                "name": "Public Parks"
+                            },
+                            {
+                                "name": "Children's Pool"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "Restaurant"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Concierge Service"
+                            },
+                            {
+                                "text": "Children's Play Area"
+                            },
+                            {
+                                "text": "Sports field"
+                            },
+                            {
+                                "text": "Space to work"
+                            },
+                            {
+                                "text": "Gym"
+                            },
+                            {
+                                "text": "Near Golf"
+                            },
+                            {
+                                "text": "Private beach"
+                            },
+                            {
+                                "text": "Barbecue Area"
+                            },
+                            {
+                                "text": "Near Mall"
+                            },
+                            {
+                                "text": "Near Hospital"
+                            },
+                            {
+                                "text": "Public Parks"
+                            },
+                            {
+                                "text": "Children's Pool"
+                            }
+                        ],
+                        "objectID": "zoya-beach-oasis"
+                    }
+                ]
+            }
+        }
+    }
+}

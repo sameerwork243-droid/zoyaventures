@@ -1,0 +1,66 @@
+{
+  "componentChunkName": "component---src-templates-team-detail-template-js",
+  "path": "/team/naeem-iqbal/",
+  "result": {
+    "data": {
+      "strapiTeam": {
+        "services": null,
+        "locations": "Dubai",
+        "strapi_id": 999,
+        "id": "8f1c2a4e-7b3d-4e5f-9a6c-1d2e3f4a5b6c",
+        "rank": 0,
+        "image": {
+          "url": "/images/team/naeem-iqbal.png?v=20260903a"
+        },
+        "slug": "naeem-iqbal",
+        "publish": true,
+        "phone": "+971 568 308 221",
+        "office_phone": "+971 568 308 221",
+        "name": "Naeem Iqbal",
+        "experience_since": null,
+        "license": null,
+        "email": "zoyaventure15@gmail.com",
+        "designation": "CEO",
+        "extra": {
+          "profile_image": "/images/team/naeem-iqbal.png?v=20260903a"
+        },
+        "about": {
+          "data": {
+            "about": "At Zoya Venture Real Estate, we believe real estate is more than property \u2014 it's about creating value, trust, and lasting communities. Our mission is to deliver quality developments and seamless experiences that our clients can rely on. With a dedicated team and a clear vision, we continue to build spaces that inspire, elevate lifestyles, and stand the test of time. Thank you for trusting us as your partner in building a better future."
+          }
+        },
+        "sale_summary": null,
+        "category": {
+          "strapi_json_value": ["Management"],
+          "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"
+        },
+        "languages": {
+          "strapi_json_value": ["English"],
+          "id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+        },
+        "reviews": [],
+        "bio": null,
+        "achievements": null,
+        "countries": null,
+        "clients": null,
+        "years": null,
+        "negotiator_mapping": null,
+        "negotiator_id": null,
+        "show_transaction": false,
+        "imagetransforms": null,
+        "ggfx_results": [],
+        "community": {
+          "strapi_json_value": ["General"]
+        },
+        "blogs": [],
+        "developers": []
+      }
+    },
+    "pageContext": {
+      "id": "8f1c2a4e-7b3d-4e5f-9a6c-1d2e3f4a5b6c",
+      "email": "zoyaventure15@gmail.com",
+      "negotiator_id": null
+    }
+  },
+  "staticQueryHashes": []
+}

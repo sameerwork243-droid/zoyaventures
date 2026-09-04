@@ -522,32 +522,11 @@
   user-select: none;
 }
 
-.app-chip .app-chip-label {
-  white-space: nowrap;
-}
+ .app-chip .app-chip-label {
+   white-space: nowrap;
+ }
 
-.app-chip .app-chip-x {
-  align-items: center;
-  color: #d64545;
-  display: inline-flex;
-  height: 16px;
-  justify-content: center;
-  margin-left: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all 0.15s ease;
-  width: 0;
-}
-
-.app-chip:hover {
-  background: #e9eef4;
-}
-
-.app-chip:hover .app-chip-x {
-  margin-left: 7px;
-  opacity: 1;
-  width: 16px;
-}
+ .app-chip:hover {
 
 .app-chip.active {
   background: #005480;
@@ -557,10 +536,6 @@
 
 .app-chip.active:hover {
   background: #003f63;
-}
-
-.app-chip.active .app-chip-x {
-  color: #fff;
 }
 
 @media screen and (max-width: 992px) {

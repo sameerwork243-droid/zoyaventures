@@ -1,0 +1,101 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/davinci-tower",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "davinci-tower",
+                        "title": "DaVinci Tower",
+                        "about": "Dar Al Arkan presents a new luxury venture DaVinci Tower by Pagani within Dubai that features the state of the art design 2, 3 & 4 bedroom apartments and penthouses. This unique design high-rise façade is designed with the magnetic art elevation that presents an unmatched architecture that is further lined with premium amenities at service. With its strategic location near to the Dubai Canal, the development overlooks the world’s tallest architecture Burj Khalifa. While located in proximity to the major highways, and marks easy navigation to the rest of the city.",
+                        "price": 7144171,
+                        "display_price": "7.14M",
+                        "currency": "AED",
+                        "developer": "dar-al-arkan",
+                        "community": "business-bay",
+                        "display_address": "Business Bay",
+                        "completion_year": "2025",
+                        "status": "ready",
+                        "building_type": [
+                            "apartment"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/davinci-tower.jpg",
+                                "464x312": "/images/projects/davinci-tower.jpg",
+                                "696x520": "/images/projects/davinci-tower.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/davinci-tower.jpg",
+                                "464x312": "/images/projects/davinci-tower.jpg",
+                                "696x520": "/images/projects/davinci-tower.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/davinci-tower.jpg",
+                        "features": [
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "Restaurant"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Concierge Service"
+                            },
+                            {
+                                "name": "Public Parks"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "Restaurant"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Concierge Service"
+                            },
+                            {
+                                "text": "Public Parks"
+                            }
+                        ],
+                        "objectID": "zoya-davinci-tower"
+                    }
+                ]
+            }
+        }
+    }
+}

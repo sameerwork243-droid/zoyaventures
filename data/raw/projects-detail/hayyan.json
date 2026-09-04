@@ -1,0 +1,160 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "under-construction",
+    "title": "Hayyan",
+    "slug": "hayyan",
+    "display_address": "Sharjah",
+    "building_type": [
+        "townhouse"
+    ],
+    "completion_year": "2028",
+    "developer": "Alef Group",
+    "price": 2719000,
+    "display_price": "2.72M",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>Hayyan is a rare find in the UAE where you and your loved ones spend time in a tranquil environment, uniquely designed for an immersive experience of nature, culture and society in natural landscapes. Hayyan provides the most genuine living experience where people connect to nature in a tranquil habitat in Sharjah — featuring the largest swimmable water lagoon in Sharjah, the largest community park, the most dense green project, allotments for organic edible gardens, a club house and a community mall.</p>",
+    "tile_image": {
+        "url": "/images/projects/hayyan.jpg",
+        "hash": "hayyan.jpg",
+        "name": "hayyan.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/hayyan.jpg",
+        "hash": "hayyan.jpg",
+        "name": "hayyan.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/hayyan.jpg",
+        "hash": "hayyan.jpg",
+        "name": "hayyan.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/hayyan.jpg",
+            "hash": "hayyan.jpg",
+            "name": "hayyan.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/hayyan.jpg",
+            "464x312": "/images/projects/hayyan.jpg",
+            "696x520": "/images/projects/hayyan.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Sharjah",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "Indoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Near School",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "Indoor swimming pool"
+        },
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Near School"
+        },
+        {
+            "name": "Public Parks"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Hayyan?",
+            "answer": "<p>Alef Group is the developer behind Hayyan.</p>"
+        },
+        {
+            "question": "Where is Hayyan located?",
+            "answer": "<p>Hayyan is located in Sharjah, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Hayyan?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/hayyan.jpg",
+        "hash": "hayyan.jpg",
+        "name": "hayyan.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/hayyan.jpg",
+        "hash": "hayyan.jpg",
+        "name": "hayyan.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Hayyan | Zoya Ventures Real Estate",
+        "metaDescription": "Hayyan is a rare find in the UAE where you and your loved ones spend time in a tranquil environment, uniquely designed for an immersive experience of "
+    }
+}

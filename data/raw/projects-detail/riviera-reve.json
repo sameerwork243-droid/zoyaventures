@@ -1,0 +1,195 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "under-construction",
+    "title": "Riviera Rêve",
+    "slug": "riviera-reve",
+    "display_address": "Mohammed Bin Rashid City",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2026",
+    "developer": "Azizi",
+    "price": 2620000,
+    "display_price": "2.62M",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>Riviera is one of Azizi’s flagship developments located in Meydan at the heart of Mohammed Bin Rashid City (MBR City) in Dubai. In a prime location, close to Meydan Racecourse, the home of The Dubai World Cup and a variety of sports and leisure facilities, Riviera offers a desirable address and is within close proximity to Downtown Dubai and Dubai International Airport. Inspired by the French Riviera, the iconic mixed-use community will be home to residential apartments, retail outlets and a variety of onsite amenities.</p>",
+    "tile_image": {
+        "url": "/images/projects/riviera-reve.jpg",
+        "hash": "riviera-reve.jpg",
+        "name": "riviera-reve.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/riviera-reve.jpg",
+        "hash": "riviera-reve.jpg",
+        "name": "riviera-reve.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/riviera-reve.jpg",
+        "hash": "riviera-reve.jpg",
+        "name": "riviera-reve.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/riviera-reve.jpg",
+            "hash": "riviera-reve.jpg",
+            "name": "riviera-reve.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/riviera-reve.jpg",
+            "464x312": "/images/projects/riviera-reve.jpg",
+            "696x520": "/images/projects/riviera-reve.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Mohammed Bin Rashid City",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "Indoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "Restaurant",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        },
+        {
+            "text": "Near School",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Near the beach",
+            "image": null
+        },
+        {
+            "text": "Sports field",
+            "image": null
+        },
+        {
+            "text": "Space to work",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Children's Play Area",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "Indoor swimming pool"
+        },
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "Restaurant"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Public Parks"
+        },
+        {
+            "name": "Near School"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Near the beach"
+        },
+        {
+            "name": "Sports field"
+        },
+        {
+            "name": "Space to work"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Children's Play Area"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Riviera Rêve?",
+            "answer": "<p>Azizi is the developer behind Riviera Rêve.</p>"
+        },
+        {
+            "question": "Where is Riviera Rêve located?",
+            "answer": "<p>Riviera Rêve is located in Mohammed Bin Rashid City, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Riviera Rêve?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/riviera-reve.jpg",
+        "hash": "riviera-reve.jpg",
+        "name": "riviera-reve.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/riviera-reve.jpg",
+        "hash": "riviera-reve.jpg",
+        "name": "riviera-reve.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Riviera Rêve | Zoya Ventures Real Estate",
+        "metaDescription": "Riviera is one of Azizi’s flagship developments located in Meydan at the heart of Mohammed Bin Rashid City (MBR City) in Dubai. In a prime location,"
+    }
+}

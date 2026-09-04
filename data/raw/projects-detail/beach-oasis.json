@@ -1,0 +1,223 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "under-construction",
+    "title": "Beach Oasis 1 & 2",
+    "slug": "beach-oasis",
+    "display_address": "Dubai Studio City",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2026",
+    "developer": "Azizi",
+    "price": 881000,
+    "display_price": "881K",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>Beach Oasis 1 and 2 is a contemporary low-rise residential development offering a range of studio, one-bedroom, and two-bedroom apartments. Situated in the vibrant Studio City, this community is designed to provide an exceptional living experience with excellent facilities and amenities.</p>",
+    "tile_image": {
+        "url": "/images/projects/beach-oasis.jpg",
+        "hash": "beach-oasis.jpg",
+        "name": "beach-oasis.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/beach-oasis.jpg",
+        "hash": "beach-oasis.jpg",
+        "name": "beach-oasis.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/beach-oasis.jpg",
+        "hash": "beach-oasis.jpg",
+        "name": "beach-oasis.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/beach-oasis.jpg",
+            "hash": "beach-oasis.jpg",
+            "name": "beach-oasis.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/beach-oasis.jpg",
+            "464x312": "/images/projects/beach-oasis.jpg",
+            "696x520": "/images/projects/beach-oasis.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Dubai Studio City",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Restaurant",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Children's Play Area",
+            "image": null
+        },
+        {
+            "text": "Sports field",
+            "image": null
+        },
+        {
+            "text": "Space to work",
+            "image": null
+        },
+        {
+            "text": "Gym",
+            "image": null
+        },
+        {
+            "text": "Near Golf",
+            "image": null
+        },
+        {
+            "text": "Private beach",
+            "image": null
+        },
+        {
+            "text": "Barbecue Area",
+            "image": null
+        },
+        {
+            "text": "Near Mall",
+            "image": null
+        },
+        {
+            "text": "Near Hospital",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        },
+        {
+            "text": "Children's Pool",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Restaurant"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Children's Play Area"
+        },
+        {
+            "name": "Sports field"
+        },
+        {
+            "name": "Space to work"
+        },
+        {
+            "name": "Gym"
+        },
+        {
+            "name": "Near Golf"
+        },
+        {
+            "name": "Private beach"
+        },
+        {
+            "name": "Barbecue Area"
+        },
+        {
+            "name": "Near Mall"
+        },
+        {
+            "name": "Near Hospital"
+        },
+        {
+            "name": "Public Parks"
+        },
+        {
+            "name": "Children's Pool"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Beach Oasis 1 & 2?",
+            "answer": "<p>Azizi is the developer behind Beach Oasis 1 & 2.</p>"
+        },
+        {
+            "question": "Where is Beach Oasis 1 & 2 located?",
+            "answer": "<p>Beach Oasis 1 & 2 is located in Dubai Studio City, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Beach Oasis 1 & 2?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/beach-oasis.jpg",
+        "hash": "beach-oasis.jpg",
+        "name": "beach-oasis.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/beach-oasis.jpg",
+        "hash": "beach-oasis.jpg",
+        "name": "beach-oasis.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Beach Oasis 1 & 2 | Zoya Ventures Real Estate",
+        "metaDescription": "Beach Oasis 1 and 2 is a contemporary low-rise residential development offering a range of studio, one-bedroom, and two-bedroom apartments. Situated i"
+    }
+}

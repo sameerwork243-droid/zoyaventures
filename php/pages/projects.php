@@ -480,8 +480,8 @@ function project_live_detail(array $hit, array $detail, string $route): string
         }
     }
     $videoUrl = (string) ($detail['video_module']['video_url'] ?? '');
-    $whatsapp = 'https://wa.provident.ae/inquire?phone=971505390249';
-    $tel = 'tel:+971505390249';
+    $whatsapp = 'https://wa.provident.ae/inquire?phone=971568308221';
+    $tel = 'tel:+971568308221';
     $navIds = [
         ['label' => 'Details', 'id' => 'offplan-details'],
         ['label' => 'Gallery', 'id' => 'offplan-gallery'],

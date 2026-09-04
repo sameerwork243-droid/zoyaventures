@@ -1,0 +1,216 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "ready",
+    "title": "Opus",
+    "slug": "opus",
+    "display_address": "Business Bay",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2023",
+    "developer": "Omniyat",
+    "price": 5124299,
+    "display_price": "5.12M",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>The Opus is an iconic lifestyle development by Omniyat and designed by world-renowned architect Zaha Hadid, it features a limited number of furnished residences. Comprising of two structures forming a single cube that appears to hover over the ground, the project is also home to ME Hotel by Melia Group of Hotel. Providing an extraordinary degree of personalized and luxurious five-star services for guests and owners alike, the development redefines the art of living in the midst of visual opulence.</p>",
+    "tile_image": {
+        "url": "/images/projects/opus.jpg",
+        "hash": "opus.jpg",
+        "name": "opus.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/opus.jpg",
+        "hash": "opus.jpg",
+        "name": "opus.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/opus.jpg",
+        "hash": "opus.jpg",
+        "name": "opus.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/opus.jpg",
+            "hash": "opus.jpg",
+            "name": "opus.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/opus.jpg",
+            "464x312": "/images/projects/opus.jpg",
+            "696x520": "/images/projects/opus.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Business Bay",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "Private cinema for residents",
+            "image": null
+        },
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Restaurant",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Near Golf",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Space to work",
+            "image": null
+        },
+        {
+            "text": "Sports field",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Barbecue Area",
+            "image": null
+        },
+        {
+            "text": "Gym",
+            "image": null
+        },
+        {
+            "text": "Servicing of apartments",
+            "image": null
+        },
+        {
+            "text": "SPA",
+            "image": null
+        },
+        {
+            "text": "Valet",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "Private cinema for residents"
+        },
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Restaurant"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Near Golf"
+        },
+        {
+            "name": "Public Parks"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Space to work"
+        },
+        {
+            "name": "Sports field"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Barbecue Area"
+        },
+        {
+            "name": "Gym"
+        },
+        {
+            "name": "Servicing of apartments"
+        },
+        {
+            "name": "SPA"
+        },
+        {
+            "name": "Valet"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Opus?",
+            "answer": "<p>Omniyat is the developer behind Opus.</p>"
+        },
+        {
+            "question": "Where is Opus located?",
+            "answer": "<p>Opus is located in Business Bay, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Opus?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/opus.jpg",
+        "hash": "opus.jpg",
+        "name": "opus.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/opus.jpg",
+        "hash": "opus.jpg",
+        "name": "opus.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Opus | Zoya Ventures Real Estate",
+        "metaDescription": "The Opus is an iconic lifestyle development by Omniyat and designed by world-renowned architect Zaha Hadid, it features a limited number of furnished "
+    }
+}

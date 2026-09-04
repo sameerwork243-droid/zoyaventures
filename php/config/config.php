@@ -7,7 +7,7 @@ define('APP_PHONE', '+971 568 308 221');
 define('APP_PHONE_LINK', '+971568308221');
 define('APP_WHATSAPP', '971568308221');
 define('APP_EMAIL', 'zoyaventure15@gmail.com');
-define('APP_MAP_QUERY', 'Dubai Marina');
+define('APP_MAP_QUERY', 'Iris Bay Tower, Business Bay, Dubai');
 define('APP_SOCIAL', ['instagram', 'facebook', 'linkedin', 'x', 'youtube']);
 
 define('APP_BRAND_PRIMARY', '#EE7133');
@@ -17,7 +17,7 @@ define('APP_GTM_ID', 'GTM-PGNHTGZ5');
 define('APP_COPYRIGHT_YEAR', '2026');
 
 // Bump on every CSS/JS deploy so browsers and the CDN fetch fresh assets.
-define('APP_ASSET_VER', '2026082409');
+define('APP_ASSET_VER', '2026090401');
 
 define('SESSION_COOKIE', 'provident_session');
 define('SESSION_TTL', 7 * 24 * 3600 * 1000);      // 7 days (ms — matches SESSION_TTL_MS)

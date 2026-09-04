@@ -1,0 +1,153 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "ready",
+    "title": "DaVinci Tower",
+    "slug": "davinci-tower",
+    "display_address": "Business Bay",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2025",
+    "developer": "Dar Al Arkan",
+    "price": 7144171,
+    "display_price": "7.14M",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>Dar Al Arkan presents a new luxury venture DaVinci Tower by Pagani within Dubai that features the state of the art design 2, 3 & 4 bedroom apartments and penthouses. This unique design high-rise façade is designed with the magnetic art elevation that presents an unmatched architecture that is further lined with premium amenities at service. With its strategic location near to the Dubai Canal, the development overlooks the world’s tallest architecture Burj Khalifa. While located in proximity to the major highways, and marks easy navigation to the rest of the city.</p>",
+    "tile_image": {
+        "url": "/images/projects/davinci-tower.jpg",
+        "hash": "davinci-tower.jpg",
+        "name": "davinci-tower.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/davinci-tower.jpg",
+        "hash": "davinci-tower.jpg",
+        "name": "davinci-tower.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/davinci-tower.jpg",
+        "hash": "davinci-tower.jpg",
+        "name": "davinci-tower.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/davinci-tower.jpg",
+            "hash": "davinci-tower.jpg",
+            "name": "davinci-tower.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/davinci-tower.jpg",
+            "464x312": "/images/projects/davinci-tower.jpg",
+            "696x520": "/images/projects/davinci-tower.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Business Bay",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "Restaurant",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Concierge Service",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "Restaurant"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Concierge Service"
+        },
+        {
+            "name": "Public Parks"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of DaVinci Tower?",
+            "answer": "<p>Dar Al Arkan is the developer behind DaVinci Tower.</p>"
+        },
+        {
+            "question": "Where is DaVinci Tower located?",
+            "answer": "<p>DaVinci Tower is located in Business Bay, Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in DaVinci Tower?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/davinci-tower.jpg",
+        "hash": "davinci-tower.jpg",
+        "name": "davinci-tower.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/davinci-tower.jpg",
+        "hash": "davinci-tower.jpg",
+        "name": "davinci-tower.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "DaVinci Tower | Zoya Ventures Real Estate",
+        "metaDescription": "Dar Al Arkan presents a new luxury venture DaVinci Tower by Pagani within Dubai that features the state of the art design 2, 3 & 4 bedroom apartments "
+    }
+}

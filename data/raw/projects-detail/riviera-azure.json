@@ -1,0 +1,216 @@
+{
+    "id": 0,
+    "search_type": "sales",
+    "department": "new_developments",
+    "status": "ready",
+    "title": "Riviera Azure",
+    "slug": "riviera-azure",
+    "display_address": "Nad Al Sheba (Meydan One)",
+    "building_type": [
+        "apartment"
+    ],
+    "completion_year": "2025",
+    "developer": "Azizi",
+    "price": 1901000,
+    "display_price": "1.9M",
+    "currency": "AED",
+    "lattitude": null,
+    "longitude": null,
+    "min_bedrooms": 1,
+    "max_bedrooms": 6,
+    "display_bedrooms": null,
+    "about": "<p>Striking, exquisite and bespoke, Riviera Azure is a statement of high-end beachfront living. An outstanding crystal lagoon, a vibrant boulevard, and an endless array of recreational activities are just some of the amenities offered to you at Riviera Azure. Designed with solar panels and vertical greenery inspired by the water movement across the lagoon, this architectural masterpiece is the ultimate expression of luxury and comfort.</p>",
+    "tile_image": {
+        "url": "/images/projects/riviera-azure.jpg",
+        "hash": "riviera-azure.jpg",
+        "name": "riviera-azure.jpg"
+    },
+    "banner_image": {
+        "url": "/images/projects/riviera-azure.jpg",
+        "hash": "riviera-azure.jpg",
+        "name": "riviera-azure.jpg"
+    },
+    "banner_image_mobile": {
+        "url": "/images/projects/riviera-azure.jpg",
+        "hash": "riviera-azure.jpg",
+        "name": "riviera-azure.jpg"
+    },
+    "media_images": [
+        {
+            "url": "/images/projects/riviera-azure.jpg",
+            "hash": "riviera-azure.jpg",
+            "name": "riviera-azure.jpg"
+        }
+    ],
+    "images": [
+        {
+            "340x252": "/images/projects/riviera-azure.jpg",
+            "464x312": "/images/projects/riviera-azure.jpg",
+            "696x520": "/images/projects/riviera-azure.jpg"
+        }
+    ],
+    "floor_plans": [],
+    "payment_plan_text": "Flexible payment plans available on request",
+    "payment_plans": [],
+    "community": "Nad Al Sheba (Meydan One)",
+    "publish": 1,
+    "amenities": [
+        {
+            "text": "Lounge area for residents",
+            "image": null
+        },
+        {
+            "text": "CCTV Security system",
+            "image": null
+        },
+        {
+            "text": "Outdoor swimming pool",
+            "image": null
+        },
+        {
+            "text": "Restaurant",
+            "image": null
+        },
+        {
+            "text": "Gym",
+            "image": null
+        },
+        {
+            "text": "Shared Swimming Pool",
+            "image": null
+        },
+        {
+            "text": "Barbecue Area",
+            "image": null
+        },
+        {
+            "text": "Children's Pool",
+            "image": null
+        },
+        {
+            "text": "Children's Play Area",
+            "image": null
+        },
+        {
+            "text": "Public Parks",
+            "image": null
+        },
+        {
+            "text": "Near Golf",
+            "image": null
+        },
+        {
+            "text": "Space to work",
+            "image": null
+        },
+        {
+            "text": "Sports field",
+            "image": null
+        },
+        {
+            "text": "Sauna",
+            "image": null
+        },
+        {
+            "text": "Near School",
+            "image": null
+        },
+        {
+            "text": "Pet Friendly",
+            "image": null
+        }
+    ],
+    "features": [
+        {
+            "name": "Lounge area for residents"
+        },
+        {
+            "name": "CCTV Security system"
+        },
+        {
+            "name": "Outdoor swimming pool"
+        },
+        {
+            "name": "Restaurant"
+        },
+        {
+            "name": "Gym"
+        },
+        {
+            "name": "Shared Swimming Pool"
+        },
+        {
+            "name": "Barbecue Area"
+        },
+        {
+            "name": "Children's Pool"
+        },
+        {
+            "name": "Children's Play Area"
+        },
+        {
+            "name": "Public Parks"
+        },
+        {
+            "name": "Near Golf"
+        },
+        {
+            "name": "Space to work"
+        },
+        {
+            "name": "Sports field"
+        },
+        {
+            "name": "Sauna"
+        },
+        {
+            "name": "Near School"
+        },
+        {
+            "name": "Pet Friendly"
+        }
+    ],
+    "characteristics_module": null,
+    "location_tile": null,
+    "brochure": null,
+    "video_module": {
+        "thumbnail": null,
+        "video_url": null
+    },
+    "more_info": [
+        {
+            "question": "Who is the developer of Riviera Azure?",
+            "answer": "<p>Azizi is the developer behind Riviera Azure.</p>"
+        },
+        {
+            "question": "Where is Riviera Azure located?",
+            "answer": "<p>Riviera Azure is located in Nad Al Sheba (Meydan One), Dubai.</p>"
+        },
+        {
+            "question": "How can I invest in Riviera Azure?",
+            "answer": "<p>To invest, explore this project and speak with our specialists at Zoya Ventures Real Estate for expert guidance and support.</p>"
+        }
+    ],
+    "add_plan": [],
+    "country": "Dubai",
+    "future_launch": false,
+    "permit_number": null,
+    "documents": null,
+    "ads_image": {
+        "url": "/images/projects/riviera-azure.jpg",
+        "hash": "riviera-azure.jpg",
+        "name": "riviera-azure.jpg"
+    },
+    "ads_mobile_image": {
+        "url": "/images/projects/riviera-azure.jpg",
+        "hash": "riviera-azure.jpg",
+        "name": "riviera-azure.jpg"
+    },
+    "ads_sidebar_image": null,
+    "agent_category": "A",
+    "agent_segmentation": "Standard",
+    "seo": {
+        "metaTitle": "Riviera Azure | Zoya Ventures Real Estate",
+        "metaDescription": "Striking, exquisite and bespoke, Riviera Azure is a statement of high-end beachfront living. An outstanding crystal lagoon, a vibrant boulevard, and a"
+    }
+}

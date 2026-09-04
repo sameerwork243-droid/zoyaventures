@@ -1,0 +1,155 @@
+{
+    "componentChunkName": "component---src-pages-new-projects-js",
+    "path": "new-projects/riviera-azure",
+    "result": {
+        "serverData": {
+            "data": {
+                "status": true,
+                "hits": [
+                    {
+                        "rank": null,
+                        "slug": "riviera-azure",
+                        "title": "Riviera Azure",
+                        "about": "Striking, exquisite and bespoke, Riviera Azure is a statement of high-end beachfront living. An outstanding crystal lagoon, a vibrant boulevard, and an endless array of recreational activities are just some of the amenities offered to you at Riviera Azure. Designed with solar panels and vertical greenery inspired by the water movement across the lagoon, this architectural masterpiece is the ultimate expression of luxury and comfort.",
+                        "price": 1901000,
+                        "display_price": "1.9M",
+                        "currency": "AED",
+                        "developer": "azizi-developments",
+                        "community": "nad-al-sheba-meydan-one",
+                        "display_address": "Nad Al Sheba (Meydan One)",
+                        "completion_year": "2025",
+                        "status": "ready",
+                        "building_type": [
+                            "apartment"
+                        ],
+                        "min_bedrooms": 1,
+                        "max_bedrooms": 6,
+                        "display_bedrooms": null,
+                        "department": "new_developments",
+                        "search_type": "sales",
+                        "future_launch": false,
+                        "agent_category": "A",
+                        "publish": true,
+                        "images": [
+                            {
+                                "340x252": "/images/projects/riviera-azure.jpg",
+                                "464x312": "/images/projects/riviera-azure.jpg",
+                                "696x520": "/images/projects/riviera-azure.jpg"
+                            }
+                        ],
+                        "images1": [
+                            {
+                                "340x252": "/images/projects/riviera-azure.jpg",
+                                "464x312": "/images/projects/riviera-azure.jpg",
+                                "696x520": "/images/projects/riviera-azure.jpg"
+                            }
+                        ],
+                        "images2": [],
+                        "banner_image": "/images/projects/riviera-azure.jpg",
+                        "features": [
+                            {
+                                "name": "Lounge area for residents"
+                            },
+                            {
+                                "name": "CCTV Security system"
+                            },
+                            {
+                                "name": "Outdoor swimming pool"
+                            },
+                            {
+                                "name": "Restaurant"
+                            },
+                            {
+                                "name": "Gym"
+                            },
+                            {
+                                "name": "Shared Swimming Pool"
+                            },
+                            {
+                                "name": "Barbecue Area"
+                            },
+                            {
+                                "name": "Children's Pool"
+                            },
+                            {
+                                "name": "Children's Play Area"
+                            },
+                            {
+                                "name": "Public Parks"
+                            },
+                            {
+                                "name": "Near Golf"
+                            },
+                            {
+                                "name": "Space to work"
+                            },
+                            {
+                                "name": "Sports field"
+                            },
+                            {
+                                "name": "Sauna"
+                            },
+                            {
+                                "name": "Near School"
+                            },
+                            {
+                                "name": "Pet Friendly"
+                            }
+                        ],
+                        "amenities": [
+                            {
+                                "text": "Lounge area for residents"
+                            },
+                            {
+                                "text": "CCTV Security system"
+                            },
+                            {
+                                "text": "Outdoor swimming pool"
+                            },
+                            {
+                                "text": "Restaurant"
+                            },
+                            {
+                                "text": "Gym"
+                            },
+                            {
+                                "text": "Shared Swimming Pool"
+                            },
+                            {
+                                "text": "Barbecue Area"
+                            },
+                            {
+                                "text": "Children's Pool"
+                            },
+                            {
+                                "text": "Children's Play Area"
+                            },
+                            {
+                                "text": "Public Parks"
+                            },
+                            {
+                                "text": "Near Golf"
+                            },
+                            {
+                                "text": "Space to work"
+                            },
+                            {
+                                "text": "Sports field"
+                            },
+                            {
+                                "text": "Sauna"
+                            },
+                            {
+                                "text": "Near School"
+                            },
+                            {
+                                "text": "Pet Friendly"
+                            }
+                        ],
+                        "objectID": "zoya-riviera-azure"
+                    }
+                ]
+            }
+        }
+    }
+}
