@@ -297,3 +297,70 @@ function now_iso(): string
 {
     return gmdate('Y-m-d\TH:i:s.v\Z');
 }
+
+/**
+ * Apply the Zoya Ventures logo as a top-left watermark to an image.
+ * Works with JPEG, PNG, WebP. Preserves original format and aspect ratio.
+ * Returns true on success, false on failure. Errors are logged but not exposed.
+ */
+function apply_logo_watermark(string $imagePath): bool
+{
+    $logoPath = __DIR__ . '/../images/logo.png';
+    if (!file_exists($logoPath)) { error_log('Watermark: logo.png not found'); return false; }
+    if (!file_exists($imagePath)) { error_log('Watermark: image not found: ' . $imagePath); return false; }
+
+    $logoInfo = @getimagesize($logoPath);
+    if ($logoInfo === false) { error_log('Watermark: cannot read logo.png'); return false; }
+
+    $imageInfo = @getimagesize($imagePath);
+    if ($imageInfo === false) { error_log('Watermark: cannot read image'); return false; }
+
+    $mime = $imageInfo['mime'] ?? '';
+    $ext = match($mime) {
+        'image/jpeg' => 'jpeg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        default => null,
+    };
+    if ($ext === null) { error_log('Watermark: unsupported mime ' . $mime); return false; }
+
+    $srcFunc = match($ext) {
+        'jpeg' => 'imagecreatefromjpeg',
+        'png' => 'imagecreatefrompng',
+        'webp' => 'imagecreatefromwebp',
+    };
+    $dstFunc = match($ext) {
+        'jpeg' => 'imagejpeg',
+        'png' => 'imagepng',
+        'webp' => 'imagewebp',
+    };
+
+    $src = @$srcFunc($imagePath);
+    if (!$src) { error_log('Watermark: cannot create image resource'); return false; }
+    $sw = imagesx($src); $sh = imagesy($src);
+    if ($sw < 50 || $sh < 50) { imagedestroy($src); return false; }
+
+    $logoW = $logoInfo[0]; $logoH = $logoInfo[1];
+    $maxLogoW = (int)($sw * 0.25);
+    $maxLogoH = (int)($sh * 0.12);
+    $scale = min($maxLogoW / max($logoW, 1), $maxLogoH / max($logoH, 1), 1.0);
+    $finalW = (int)($logoW * $scale);
+    $finalH = (int)($logoH * $scale);
+    if ($finalW < 1 || $finalH < 1) { imagedestroy($src); return false; }
+
+    $logo = @imagecreatefrompng($logoPath);
+    if (!$logo) { imagedestroy($src); return false; }
+    $scaledLogo = imagecreatetruecolor($finalW, $finalH);
+    imagecopyresampled($scaledLogo, $logo, 0, 0, 0, 0, $finalW, $finalH, $logoW, $logoH);
+    imagedestroy($logo);
+
+    $margin = (int)min(30, $sw * 0.03, $sh * 0.03);
+    imagecopy($src, $scaledLogo, $margin, $margin, 0, 0, $finalW, $finalH);
+    imagedestroy($scaledLogo);
+
+    $quality = ($ext === 'jpeg') ? 85 : 9;
+    $result = @$dstFunc($src, $imagePath, $quality);
+    imagedestroy($src);
+    if (!$result) { error_log('Watermark: failed to save image'); }
+    return $result;
+}

@@ -25,10 +25,6 @@ function project_dev_slug(?string $developer): string
 
 function project_beds(array $h): string
 {
-    if (!empty($h['display_bedrooms'])) return (string) $h['display_bedrooms'];
-    if (isset($h['min_bedrooms']) && $h['min_bedrooms'] !== null && isset($h['max_bedrooms']) && $h['max_bedrooms'] !== null) {
-        return (string) $h['min_bedrooms'] . ' - ' . (string) $h['max_bedrooms'];
-    }
     return '';
 }
 
@@ -92,8 +88,8 @@ function render_offplan_card(array $h): string
     $devSlug = project_dev_slug($h['developer'] ?? null);
     $beds = project_beds($h);
     $price = '';
-    if (!empty($h['display_price'])) $price = 'AED ' . (string) $h['display_price'];
-    elseif (!empty($h['price'])) $price = 'AED ' . number_format((float) $h['price']);
+if (!empty($h['display_price'])) $price = (string) $h['display_price'];
+elseif (!empty($h['price'])) $price = number_format((float) $h['price']);
     $slides = '';
     foreach (array_slice($allImages, 0, 3) as $i => $src) {
         $slides .= '<div class="swiper-slide"><img loading="' . ($i === 0 ? 'eager' : 'lazy') . '" src="' . esc($src) . '" alt="' . esc($btLabel) . '" /></div>';
@@ -228,7 +224,7 @@ function project_simple_detail(array $hit, string $route): string
     if (!empty($hit['display_address'])) $out .= '<p class="location">' . esc((string) $hit['display_address']) . '</p>';
     $out .= '</div>';
     $out .= '<div class="cta-section">';
-    if (!empty($hit['display_price'])) $out .= '<p class="price">AED ' . esc((string) $hit['display_price']) . '</p>';
+    if (!empty($hit['display_price'])) $out .= '<p class="price">' . esc((string) $hit['display_price']) . '</p>';
     $out .= '<a class="button button-orange" href="#register"><span>Register Interest</span></a>';
     $out .= '<a class="button button-white" href="tel:+971568308221"><span>&#127482;&#127480; Call Us</span></a>';
     $out .= '</div></div></div>';
@@ -244,7 +240,7 @@ function project_simple_detail(array $hit, string $route): string
     $out .= '<div class="description">' . ($hit['about'] ?? '') . '</div>';
     $out .= '</div></div>';
     $out .= '<div class="col-xl-4 col-lg-12"><div class="right-section">';
-    $price = !empty($hit['display_price']) ? 'AED ' . (string) $hit['display_price'] : (!empty($hit['price']) ? 'AED ' . number_format((float) $hit['price']) : '&#8212;');
+    $price = !empty($hit['display_price']) ? (string) $hit['display_price'] : (!empty($hit['price']) ? number_format((float) $hit['price']) : '&#8212;');
     $out .= '<div class="item-wrap"><p class="label">Starting Price</p><p class="value">' . $price . '</p></div>';
     if ($beds !== '') $out .= '<div class="item-wrap"><p class="label">Bedrooms</p><p class="value">' . esc($beds) . '</p></div>';
     if (!empty($hit['completion_year'])) $out .= '<div class="item-wrap"><p class="label">Completion</p><p class="value">' . esc((string) $hit['completion_year']) . '</p></div>';
@@ -438,9 +434,9 @@ function project_live_detail(array $hit, array $detail, string $route): string
     $devSlug = project_dev_slug($developer);
     $bannerDesktop = (string) ($detail['banner_image']['url'] ?? project_banner_desktop($hit) ?? '');
     $bannerMobile = (string) ($detail['banner_image_mobile']['url'] ?? $detail['banner_image']['url'] ?? project_banner_mobile($hit, $bannerDesktop) ?? $bannerDesktop);
-    if (!empty($detail['display_price'])) $displayPrice = 'AED ' . (string) $detail['display_price'];
-    elseif (!empty($hit['display_price'])) $displayPrice = 'AED ' . (string) $hit['display_price'];
-    elseif (!empty($detail['price'])) $displayPrice = 'AED ' . number_format((float) $detail['price']);
+    if (!empty($detail['display_price'])) $displayPrice = (string) $detail['display_price'];
+    elseif (!empty($hit['display_price'])) $displayPrice = (string) $hit['display_price'];
+    elseif (!empty($detail['price'])) $displayPrice = number_format((float) $detail['price']);
     else $displayPrice = '';
 
     $gallery = [];

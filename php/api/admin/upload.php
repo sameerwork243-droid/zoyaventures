@@ -40,6 +40,11 @@ if (!move_uploaded_file($f['tmp_name'], $dir . '/' . $name)) {
     json_response(['error' => 'Could not store file'], 500);
 }
 
+if (!apply_logo_watermark($dir . '/' . $name)) {
+    @unlink($dir . '/' . $name);
+    json_response(['error' => 'Watermark processing failed'], 500);
+}
+
 $url = '/uploads/images/' . $name;
 db_run("INSERT INTO media_library (url, kind, alt, created_at) VALUES (?, 'image', '', ?)", [$url, now_iso()]);
 

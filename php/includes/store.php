@@ -287,6 +287,38 @@ function project_corpus(): array
             }
         }
     }
+    if (db_enabled()) {
+        foreach (db_projects() as $dbh) {
+            if (!project_has_detail($dbh)) continue;
+            $slug = rtrim(strtolower((string) ($dbh['slug'] ?? '')), '.');
+            $exists = false;
+            foreach ($out as $h) { if (rtrim(strtolower((string) ($h['slug'] ?? '')), '.') === $slug) { $exists = true; break; } }
+            if ($exists) continue;
+            $images = [];
+            foreach (db_json_arr($dbh['images'] ?? '') as $u) {
+                $images[] = ['340x252' => $u, '464x312' => $u, '696x520' => $u];
+            }
+            $banner = (string) ($dbh['banner_image'] ?? '');
+            $out[] = [
+                'slug' => (string) $dbh['slug'],
+                'title' => (string) $dbh['title'],
+                'developer' => (string) $dbh['developer'],
+                'status' => (string) $dbh['status'],
+                'price' => (int) $dbh['price'],
+                'display_address' => (string) $dbh['display_address'],
+                'community' => (string) $dbh['community'],
+                'building_type' => db_json_arr($dbh['building_type'] ?? ''),
+                'department' => (string) $dbh['department'],
+                'min_bedrooms' => (int) ($dbh['bedrooms_min'] ?? 0),
+                'max_bedrooms' => (int) ($dbh['bedrooms_max'] ?? 0),
+                'completion_year' => $dbh['completion_year'] !== null ? (int) $dbh['completion_year'] : null,
+                'images' => $images,
+                'banner_image' => $banner !== '' ? [['696x520' => $banner, '464x312' => $banner, '340x252' => $banner]] : [],
+                'display_price' => !empty($dbh['display_price']) ? (string) $dbh['display_price'] : '',
+                'about' => (string) ($dbh['about'] ?? ''),
+            ];
+        }
+    }
     $cache = $out;
     return $out;
 }

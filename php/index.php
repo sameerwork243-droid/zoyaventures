@@ -203,12 +203,38 @@ if (!isset($model)) {
     $pd = get_page_data($routeBase);
     $model = $pd ? classify($pd, $routeBase) : null;
 
+    // Merge DB projects into project listings so admin-created projects appear.
+    if ($model && $model['kind'] === 'project' && db_enabled()) {
+        $db = db_projects();
+        if (count($db)) {
+            $existing = [];
+            foreach ($model['data']['hits'] ?? [] as $h) {
+                $s = rtrim(strtolower((string) ($h['slug'] ?? '')), '.');
+                if ($s !== '') $existing[$s] = true;
+            }
+            foreach ($db as $dbh) {
+                $slug = rtrim(strtolower((string) ($dbh['slug'] ?? '')), '.');
+                if ($slug !== '' && !isset($existing[$slug])) {
+                    $model['data']['hits'][] = $dbh;
+                    $existing[$slug] = true;
+                }
+            }
+            $model['data']['hits'] = array_values($model['data']['hits']);
+            $model['data']['nbHits'] = count($model['data']['hits']);
+        }
+    }
+
     // project route with mismatched slug → try project by slug
     if ($model && $model['kind'] === 'project' && preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)) {
         $last = (string) end(array_values(array_filter(explode('/', $routeBase))));
         $cur = $model['data']['hits'][0] ?? null;
         if (!$cur || rtrim((string) ($cur['slug'] ?? ''), '.') !== $last) {
             $p = project_by_slug($last);
+            if (!$p && db_enabled()) {
+                foreach (db_projects() as $dbh) {
+                    if ((string) ($dbh['slug'] ?? '') === $last) { $p = $dbh; break; }
+                }
+            }
             if ($p) $model = ['kind' => 'project', 'data' => ['hits' => [$p], 'nbHits' => 1, 'page' => 0, 'nbPages' => 1, 'hitsPerPage' => 1, 'content' => null], 'route' => $routeBase];
         }
     } elseif (!$model && preg_match('#^/new-projects/[a-z0-9-]+$#', $routeBase)) {
