@@ -42,6 +42,18 @@ function admin_crud_dispatch(array $config): never
 
     $body = json_body();
 
+    // Auto-generate slug from title if slug is empty on POST.
+    if ($method === 'POST' && isset($cols['slug']) && trim((string)($body['slug'] ?? '')) === '') {
+        $title = trim((string)($body['title'] ?? $body[$labelCol] ?? ''));
+        if ($title !== '') {
+            $body['slug'] = preg_replace('/-+/', '-', trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($title)), '-'));
+        }
+    }
+    // Default published to 1 on POST if not provided.
+    if ($method === 'POST' && isset($cols['published']) && (!array_key_exists('published', $body) || $body['published'] === '' || $body['published'] === null)) {
+        $body['published'] = 1;
+    }
+
     if ($method === 'POST' || $method === 'PUT') {
         $set = [];
         $params = [];

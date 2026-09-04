@@ -1464,7 +1464,6 @@
     }
     function openDetail(row) {
       open = row;
-      render();
       if (!modalRoot) return;
       openModal("Inquiry", function (body) {
         var key = row.kind || "generic";
@@ -1497,6 +1496,7 @@
           }
           body.innerHTML = detailRows([["Name", row.name || "—"], ["Email", row.email || "—"], ["Phone", row.phone || "—"], ["Message", msg]]) + detailActions(row);
         }
+        bindInqDetail(row);
       });
     }
     function detailRows(rows) {
@@ -1536,21 +1536,25 @@
            try { var row = JSON.parse(tr.getAttribute("data-inq-json")); openDetail(row); } catch (err) {}
          });
        });
-       $$(".app-msg-link", card).forEach(function (td) {
-         td.addEventListener("click", function (e) {
-           e.stopPropagation();
-           try { var row = JSON.parse(td.closest("[data-inq-json]").getAttribute("data-inq-json")); openInquiryDetail(row); } catch (err) {}
-         });
-       });
-       if (open) {
-        var ss = $("[data-inq-status]");
-        if (ss) ss.addEventListener("change", function () { setStatus(open, ss.value); closeModal(); });
-        var dd = $("[data-inq-del]");
-        if (dd) dd.addEventListener("click", function () { remove(open); closeModal(); });
+        $$(".app-msg-link", card).forEach(function (td) {
+          td.addEventListener("click", function (e) {
+            e.stopPropagation();
+            try { var row = JSON.parse(td.closest("[data-inq-json]").getAttribute("data-inq-json")); openInquiryDetail(row); } catch (err) {}
+          });
+        });
       }
+      load();
     }
-    load();
-  }
+
+    function bindInqDetail(row) {
+      var ss = document.querySelector("[data-inq-status]");
+      if (ss) ss.addEventListener("change", function () {
+        api("/api/admin/inquiries", { method: "PATCH", headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }, body: "json=" + encodeURIComponent(JSON.stringify({ id: row.id, status: ss.value })) })
+          .then(function () { showToast('Status: ' + ss.value); closeModal(); load(); });
+      });
+      var dd = document.querySelector("[data-inq-del]");
+      if (dd) dd.addEventListener("click", function () { remove(row); closeModal(); });
+    }
 
   /* ------------------------------ Listings (kind=listing) ------------------------------ */
 
@@ -2079,6 +2083,7 @@ var FIELDS = [
         b.addEventListener("click", function () { tab = b.getAttribute("data-more"); render(); });
       });
       var target = document.createElement("div");
+      target.style.marginTop = "28px";
       card.appendChild(target);
       if (tab === "about") kvManager(target, "about", "About Us", [
         { key: "hero_title", label: "Main paragraph", type: "textarea", full: true },
