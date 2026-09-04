@@ -320,6 +320,6 @@ $loadingCard = '<div class="app-card"><p class="app-empty">Loading&hellip;</p></
 </div>
 <div data-modal-root></div>
 <script>window.ADMIN_BOOT = <?php echo json_encode($boot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;</script>
-<script src="/admin/assets/js/admin-app.js" defer></script>
+<script src="/admin/assets/js/admin-app.js?v=<?= APP_ASSET_VER ?>" defer></script>
 </body>
 </html>
